@@ -1,0 +1,15 @@
+<Project>
+
+    <!-- Properties folder -->
+    <PropertyGroup>
+        <DotSettingsFilePath>$(MSBuildProjectFile).DotSettings</DotSettingsFilePath>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Condition="Exists('$(DotSettingsFilePath)')" Update="$(DotSettingsFilePath)" Visible="false" />
+        <None Condition="Exists('$(DotSettingsFilePath)')" Include="$(DotSettingsFilePath)" Link="Properties/$(DotSettingsFilePath)" />
+    </ItemGroup>
+
+    <!-- Code analysis -->
+    <Import Project="$(MSBuildThisFileDirectory)/../analysis/CodeAnalysis.targets" />
+
+</Project>

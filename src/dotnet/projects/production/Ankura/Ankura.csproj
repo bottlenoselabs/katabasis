@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- MSBuild project settings -->
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Platforms>x64</Platforms>
+		<RootNamespace />
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<!-- Custom project settings -->
+	<PropertyGroup>
+		<EnableAnalyzers>true</EnableAnalyzers>
+		<IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
+	</PropertyGroup>
+	
+</Project>

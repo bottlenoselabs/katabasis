@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- MSBuild project settings -->
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <PublishReadyToRun>false</PublishReadyToRun>
+        <TieredCompilation>false</TieredCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RootNamespace>Ankura.Samples.Triangle</RootNamespace>
+        <AssemblyName>Ankura.Samples.Triangle</AssemblyName>
+    </PropertyGroup>
+
+    <!-- Custom project settings -->
+    <PropertyGroup>
+        <EnableAnalyzers>true</EnableAnalyzers>
+        <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
+    </PropertyGroup>
+
+    <!-- Project references -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\production\Ankura.FNA\Ankura.FNA.csproj" />
+        <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
+    </ItemGroup>
+    
+    <!-- Assets -->
+    <ItemGroup>
+      <None Update="Content/Shaders/**/*.xnb">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

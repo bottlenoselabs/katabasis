@@ -1,8 +1,16 @@
+# Build artifacts
 bin/
 obj/
-obj_core/
-*.pidb
+
+# JetBrains
+.idea/
+
+# VisualStudio
+*.vs
+
+# User specific
 *.user
 *.userprefs
-*.suo
-*.vs
+
+# macOS
+.DS_Store

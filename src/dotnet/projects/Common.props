@@ -1,0 +1,22 @@
+<Project>
+
+    <!-- MSBuild project settings -->
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <!-- Custom project settings -->
+    <PropertyGroup>
+        <IncludeStyleCop>false</IncludeStyleCop>
+    </PropertyGroup>
+
+    <!-- NuGet -->
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)NuGet.config" Link="Properties/NuGet.config" />
+    </ItemGroup>
+
+</Project>
