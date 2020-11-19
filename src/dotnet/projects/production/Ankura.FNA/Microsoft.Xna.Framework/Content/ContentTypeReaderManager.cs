@@ -130,7 +130,6 @@ namespace Microsoft.Xna.Framework.Content
 				Vector2Reader hVector2Reader = new Vector2Reader();
 				Vector3Reader hVector3Reader = new Vector3Reader();
 				Vector4Reader hVector4Reader = new Vector4Reader();
-				CurveReader hCurveReader = new CurveReader();
 				IndexBufferReader hIndexBufferReader = new IndexBufferReader();
 				MatrixReader hMatrixReader = new MatrixReader();
 				BasicEffectReader hBasicEffectReader = new BasicEffectReader();
