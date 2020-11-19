@@ -9,6 +9,7 @@
 
 #region Using Statements
 using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 #endregion
 

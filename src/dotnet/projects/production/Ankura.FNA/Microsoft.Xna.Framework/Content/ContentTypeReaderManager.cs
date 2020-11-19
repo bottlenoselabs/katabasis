@@ -15,6 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 #endregion
@@ -139,7 +140,7 @@ namespace Microsoft.Xna.Framework.Content
 				ArrayReader<float> hArrayFloatReader = new ArrayReader<float>();
 				ArrayReader<Vector2> hArrayVector2Reader = new ArrayReader<Vector2>();
 				ListReader<Vector2> hListVector2Reader = new ListReader<Vector2>();
-				ArrayReader<Matrix> hArrayMatrixReader = new ArrayReader<Matrix>();
+				ArrayReader<Matrix4x4> hArrayMatrixReader = new ArrayReader<Matrix4x4>();
 				EnumReader<Microsoft.Xna.Framework.Graphics.Blend> hEnumBlendReader = new EnumReader<Graphics.Blend>();
 				NullableReader<Rectangle> hNullableRectReader = new NullableReader<Rectangle>();
 				EffectMaterialReader hEffectMaterialReader = new EffectMaterialReader();

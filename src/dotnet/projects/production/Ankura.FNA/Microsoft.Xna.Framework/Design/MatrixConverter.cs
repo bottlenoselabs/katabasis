@@ -12,6 +12,8 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
+using System.Numerics;
+
 #endregion
 
 namespace Microsoft.Xna.Framework.Design
@@ -44,7 +46,7 @@ namespace Microsoft.Xna.Framework.Design
 			ITypeDescriptorContext context,
 			IDictionary propertyValues
 		) {
-			return (object) new Matrix(
+			return (object) new Matrix4x4(
 				(float) propertyValues["M11"],
 				(float) propertyValues["M12"],
 				(float) propertyValues["M13"],

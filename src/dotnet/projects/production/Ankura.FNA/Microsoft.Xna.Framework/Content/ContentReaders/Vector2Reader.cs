@@ -7,6 +7,8 @@
  */
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Content
 {
 	internal class Vector2Reader : ContentTypeReader<Vector2>

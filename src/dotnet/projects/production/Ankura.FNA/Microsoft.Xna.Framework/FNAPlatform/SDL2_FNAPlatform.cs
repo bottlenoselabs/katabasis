@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 using SDL2;

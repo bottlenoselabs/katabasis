@@ -10,6 +10,7 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -225,12 +226,12 @@ namespace Microsoft.Xna.Framework.Graphics
 			return result;
 		}
 
-		public Matrix GetValueMatrixTranspose()
+		public Matrix4x4 GetValueMatrixTranspose()
 		{
 			unsafe
 			{
 				float* resPtr = (float*) values;
-				return new Matrix(
+				return new Matrix4x4(
 					resPtr[0],
 					resPtr[1],
 					resPtr[2],
@@ -251,15 +252,15 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public Matrix[] GetValueMatrixTransposeArray(int count)
+		public Matrix4x4[] GetValueMatrixTransposeArray(int count)
 		{
-			Matrix[] result = new Matrix[count];
+			Matrix4x4[] result = new Matrix4x4[count];
 			unsafe
 			{
 				float* resPtr = (float*) values;
 				for (int i = 0; i < count; i += 1, resPtr += 16)
 				{
-					result[i] = new Matrix(
+					result[i] = new Matrix4x4(
 						resPtr[0],
 						resPtr[1],
 						resPtr[2],
@@ -282,12 +283,12 @@ namespace Microsoft.Xna.Framework.Graphics
 			return result;
 		}
 
-		public Matrix GetValueMatrix()
+		public Matrix4x4 GetValueMatrix()
 		{
 			unsafe
 			{
 				float* resPtr = (float*) values;
-				return new Matrix(
+				return new Matrix4x4(
 					resPtr[0],
 					resPtr[4],
 					resPtr[8],
@@ -308,15 +309,15 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public Matrix[] GetValueMatrixArray(int count)
+		public Matrix4x4[] GetValueMatrixArray(int count)
 		{
-			Matrix[] result = new Matrix[count];
+			Matrix4x4[] result = new Matrix4x4[count];
 			unsafe
 			{
 				float* resPtr = (float*) values;
 				for (int i = 0; i < count; i += 1, resPtr += 16)
 				{
-					result[i] = new Matrix(
+					result[i] = new Matrix4x4(
 						resPtr[0],
 						resPtr[4],
 						resPtr[8],
@@ -559,7 +560,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public void SetValueTranspose(Matrix value)
+		public void SetValueTranspose(Matrix4x4 value)
 		{
 			// FIXME: All Matrix sizes... this will get ugly. -flibit
 			unsafe
@@ -644,7 +645,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public void SetValueTranspose(Matrix[] value)
+		public void SetValueTranspose(Matrix4x4[] value)
 		{
 			// FIXME: All Matrix sizes... this will get ugly. -flibit
 			unsafe
@@ -744,7 +745,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public void SetValue(Matrix value)
+		public void SetValue(Matrix4x4 value)
 		{
 			// FIXME: All Matrix sizes... this will get ugly. -flibit
 			unsafe
@@ -829,7 +830,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public void SetValue(Matrix[] value)
+		public void SetValue(Matrix4x4[] value)
 		{
 			// FIXME: All Matrix sizes... this will get ugly. -flibit
 			unsafe

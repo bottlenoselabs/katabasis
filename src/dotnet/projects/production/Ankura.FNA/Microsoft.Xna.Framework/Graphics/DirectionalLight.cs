@@ -7,6 +7,8 @@
  */
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Graphics
 {
 	public sealed class DirectionalLight

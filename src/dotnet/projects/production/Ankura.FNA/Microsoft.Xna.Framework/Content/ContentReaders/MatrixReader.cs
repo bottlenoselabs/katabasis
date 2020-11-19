@@ -7,18 +7,20 @@
  */
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Content
 {
-	class MatrixReader : ContentTypeReader<Matrix>
+	class MatrixReader : ContentTypeReader<Matrix4x4>
 	{
 		#region Protected Read Method
 
-		protected internal override Matrix Read(
+		protected internal override Matrix4x4 Read(
 			ContentReader input,
-			Matrix existingInstance
+			Matrix4x4 existingInstance
 		) {
 			// 4x4 matrix
-			return new Matrix(
+			return new Matrix4x4(
 				input.ReadSingle(),
 				input.ReadSingle(),
 				input.ReadSingle(),

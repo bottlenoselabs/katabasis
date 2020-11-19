@@ -9,6 +9,8 @@
 
 #region Using Statements
 using System;
+using System.Numerics;
+
 #endregion
 
 namespace Microsoft.Xna.Framework.Graphics
@@ -217,12 +219,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		/// <returns></returns>
 		public Vector3 Project(
 			Vector3 source,
-			Matrix projection,
-			Matrix view,
-			Matrix world
+			Matrix4x4 projection,
+			Matrix4x4 view,
+			Matrix4x4 world
 		) {
-			Matrix matrix = Matrix.Multiply(
-				Matrix.Multiply(world, view),
+			Matrix4x4 matrix = Matrix4x4.Multiply(
+				Matrix4x4.Multiply(world, view),
 				projection
 			);
 			Vector3 vector = Vector3.Transform(source, matrix);
@@ -249,14 +251,9 @@ namespace Microsoft.Xna.Framework.Graphics
 		/// <param name="view">The view <see cref="Matrix"/>.</param>
 		/// <param name="world">The world <see cref="Matrix"/>.</param>
 		/// <returns></returns>
-		public Vector3 Unproject(Vector3 source, Matrix projection, Matrix view, Matrix world)
+		public Vector3 Unproject(Vector3 source, Matrix4x4 projection, Matrix4x4 view, Matrix4x4 world)
 		{
-			Matrix matrix = Matrix.Invert(
-				Matrix.Multiply(
-					Matrix.Multiply(world, view),
-					projection
-				)
-			);
+			Matrix4x4.Invert((world * view) * projection, out var matrix);
 			source.X = (((source.X - X) / ((float) Width)) * 2f) - 1f;
 			source.Y = -((((source.Y - Y) / ((float) Height)) * 2f) - 1f);
 			source.Z = (source.Z - MinDepth) / (MaxDepth - MinDepth);
