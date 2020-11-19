@@ -308,13 +308,6 @@ namespace Microsoft.Xna.Framework.Content
 			return base.Read7BitEncodedInt();
 		}
 
-		internal BoundingSphere ReadBoundingSphere()
-		{
-			Vector3 position = ReadVector3();
-			float radius = ReadSingle();
-			return new BoundingSphere(position, radius);
-		}
-
 		#endregion
 
 		#region Private Methods
