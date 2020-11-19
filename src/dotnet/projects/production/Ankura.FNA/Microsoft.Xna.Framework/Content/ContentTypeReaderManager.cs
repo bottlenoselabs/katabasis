@@ -15,6 +15,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 #endregion
@@ -116,9 +117,6 @@ namespace Microsoft.Xna.Framework.Content
 				SByteReader hSByteReader = new SByteReader();
 				DateTimeReader hDateTimeReader = new DateTimeReader();
 				DecimalReader hDecimalReader = new DecimalReader();
-				BoundingSphereReader hBoundingSphereReader = new BoundingSphereReader();
-				BoundingFrustumReader hBoundingFrustumReader = new BoundingFrustumReader();
-				RayReader hRayReader = new RayReader();
 				ListReader<char> hCharListReader = new ListReader<Char>();
 				ListReader<Rectangle> hRectangleListReader = new ListReader<Rectangle>();
 				ArrayReader<Rectangle> hRectangleArrayReader = new ArrayReader<Rectangle>();
@@ -133,9 +131,7 @@ namespace Microsoft.Xna.Framework.Content
 				Vector2Reader hVector2Reader = new Vector2Reader();
 				Vector3Reader hVector3Reader = new Vector3Reader();
 				Vector4Reader hVector4Reader = new Vector4Reader();
-				CurveReader hCurveReader = new CurveReader();
 				IndexBufferReader hIndexBufferReader = new IndexBufferReader();
-				BoundingBoxReader hBoundingBoxReader = new BoundingBoxReader();
 				MatrixReader hMatrixReader = new MatrixReader();
 				BasicEffectReader hBasicEffectReader = new BasicEffectReader();
 				VertexBufferReader hVertexBufferReader = new VertexBufferReader();
@@ -144,14 +140,13 @@ namespace Microsoft.Xna.Framework.Content
 				ArrayReader<float> hArrayFloatReader = new ArrayReader<float>();
 				ArrayReader<Vector2> hArrayVector2Reader = new ArrayReader<Vector2>();
 				ListReader<Vector2> hListVector2Reader = new ListReader<Vector2>();
-				ArrayReader<Matrix> hArrayMatrixReader = new ArrayReader<Matrix>();
+				ArrayReader<Matrix4x4> hArrayMatrixReader = new ArrayReader<Matrix4x4>();
 				EnumReader<Microsoft.Xna.Framework.Graphics.Blend> hEnumBlendReader = new EnumReader<Graphics.Blend>();
 				NullableReader<Rectangle> hNullableRectReader = new NullableReader<Rectangle>();
 				EffectMaterialReader hEffectMaterialReader = new EffectMaterialReader();
 				ExternalReferenceReader hExternalReferenceReader = new ExternalReferenceReader();
 				SoundEffectReader hSoundEffectReader = new SoundEffectReader();
 				SongReader hSongReader = new SongReader();
-				ModelReader hModelReader = new ModelReader();
 				Int32Reader hInt32Reader = new Int32Reader();
 			}
 #pragma warning restore 0219, 0649

@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
@@ -16,8 +17,8 @@ namespace Ankura.Samples.CubeTextured
         private IndexBuffer _indexBuffer = null!;
         private Texture2D _texture = null!;
 
-        private Matrix _viewProjectionMatrix;
-        private Matrix _worldViewProjectionMatrix;
+        private Matrix4x4 _viewProjectionMatrix;
+        private Matrix4x4 _worldViewProjectionMatrix;
         private float _rotationX;
         private float _rotationY;
 
@@ -25,9 +26,6 @@ namespace Ankura.Samples.CubeTextured
         {
             Content.RootDirectory = "Content";
             Window.Title = "DNA Samples: Cube Textured";
-
-            // XNA crap: strong reference is put in the Services; no, you should not use Services
-            new GraphicsDeviceManager(this);
         }
 
         protected override void LoadContent()
@@ -245,12 +243,12 @@ namespace Ankura.Samples.CubeTextured
             var aspectRatio = (float)viewport.Width / viewport.Height;
             var nearPlaneDistance = 0.01f;
             var farPlaneDistance = 10.0f;
-            var projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
+            var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
 
             var cameraPosition = new Vector3(0.0f, 1.5f, 6.0f);
             var cameraTarget = Vector3.Zero;
             var cameraUpVector = Vector3.UnitY;
-            var viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, cameraUpVector);
+            var viewMatrix = Matrix4x4.CreateLookAt(cameraPosition, cameraTarget, cameraUpVector);
 
             _viewProjectionMatrix = viewMatrix * projectionMatrix;
         }
@@ -261,8 +259,8 @@ namespace Ankura.Samples.CubeTextured
 
             _rotationX += 1.0f * deltaSeconds;
             _rotationY += 2.0f * deltaSeconds;
-            var rotationMatrixX = Matrix.CreateFromAxisAngle(Vector3.UnitX, _rotationX);
-            var rotationMatrixY = Matrix.CreateFromAxisAngle(Vector3.UnitY, _rotationY);
+            var rotationMatrixX = Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, _rotationX);
+            var rotationMatrixY = Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, _rotationY);
             var modelToWorldMatrix = rotationMatrixX * rotationMatrixY;
 
             _worldViewProjectionMatrix = modelToWorldMatrix * _viewProjectionMatrix;

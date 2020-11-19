@@ -9,6 +9,8 @@
 
 #region Using Statements
 using System;
+using System.Numerics;
+
 #endregion
 
 namespace Microsoft.Xna.Framework.Audio
@@ -104,9 +106,9 @@ namespace Microsoft.Xna.Framework.Audio
 		public AudioListener()
 		{
 			listenerData = new FAudio.F3DAUDIO_LISTENER();
-			Forward = Vector3.Forward;
+			Forward = new Vector3(0, 0, -1);
 			Position = Vector3.Zero;
-			Up = Vector3.Up;
+			Up = new Vector3(0, 1, 0);
 			Velocity = Vector3.Zero;
 
 			/* Unused variables, defaults based on XNA behavior */

@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.Numerics;
 using Microsoft.Xna.Framework;
 
 namespace Ankura.Samples.Clear
@@ -13,9 +14,6 @@ namespace Ankura.Samples.Clear
         public App()
         {
             Window.Title = "DNA Samples: Clear";
-
-            // XNA crap: strong reference is put in the Services; no, you should not use Services
-            new GraphicsDeviceManager(this);
 
             _clearColor = Color.Red.ToVector4();
         }

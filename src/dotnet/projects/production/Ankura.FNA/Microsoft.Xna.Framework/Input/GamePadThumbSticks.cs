@@ -9,6 +9,8 @@
 
 #region Using Statements
 using System;
+using System.Numerics;
+
 #endregion
 
 namespace Microsoft.Xna.Framework.Input
@@ -111,11 +113,11 @@ namespace Microsoft.Xna.Framework.Input
 		{
 			if (left.LengthSquared() > 1.0f)
 			{
-				left.Normalize();
+				left = Vector2.Normalize(left);
 			}
 			if (right.LengthSquared() > 1.0f)
 			{
-				right.Normalize();
+				right = Vector2.Normalize(right);
 			}
 		}
 

@@ -11,6 +11,8 @@
  */
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Content
 {
 	internal class QuaternionReader : ContentTypeReader<Quaternion>

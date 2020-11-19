@@ -15,6 +15,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Numerics;
 using System.Text;
 
 using Microsoft.Xna.Framework.Design;

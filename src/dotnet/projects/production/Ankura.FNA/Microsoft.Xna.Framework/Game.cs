@@ -32,12 +32,6 @@ namespace Microsoft.Xna.Framework
 
 		#region Public Properties
 
-		public GameComponentCollection Components
-		{
-			get;
-			private set;
-		}
-
 		private ContentManager INTERNAL_content;
 		public ContentManager Content
 		{
@@ -59,19 +53,7 @@ namespace Microsoft.Xna.Framework
 		{
 			get
 			{
-				if (graphicsDeviceService == null)
-				{
-					graphicsDeviceService = (IGraphicsDeviceService)
-						Services.GetService(typeof(IGraphicsDeviceService));
-
-					if (graphicsDeviceService == null)
-					{
-						throw new InvalidOperationException(
-							"No Graphics Device Service"
-						);
-					}
-				}
-				return graphicsDeviceService.GraphicsDevice;
+				return GraphicsDeviceManager.Instance.GraphicsDevice;
 			}
 		}
 
@@ -171,13 +153,7 @@ namespace Microsoft.Xna.Framework
 				INTERNAL_targetElapsedTime = value;
 			}
 		}
-
-		public GameServiceContainer Services
-		{
-			get;
-			private set;
-		}
-
+		
 		public GameWindow Window
 		{
 			get;
@@ -193,21 +169,7 @@ namespace Microsoft.Xna.Framework
 		#endregion
 
 		#region Private Variables
-
-		/* You will notice that these lists have some locks on them in the code.
-		 * Technically this is not accurate to XNA4, as they just happily crash
-		 * whenever there's an Add/Remove happening mid-copy.
-		 *
-		 * But do you really think I want to get reports about that crap?
-		 * -flibit
-		 */
-		private List<IUpdateable> updateableComponents;
-		private List<IUpdateable> currentlyUpdatingComponents;
-		private List<IDrawable> drawableComponents;
-		private List<IDrawable> currentlyDrawingComponents;
-
-		private IGraphicsDeviceService graphicsDeviceService;
-		private IGraphicsDeviceManager graphicsDeviceManager;
+		
 		private GraphicsAdapter currentAdapter;
 		private bool hasInitialized;
 		private bool suppressDraw;
@@ -244,14 +206,7 @@ namespace Microsoft.Xna.Framework
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
 			LaunchParameters = new LaunchParameters();
-			Components = new GameComponentCollection();
-			Services = new GameServiceContainer();
-			Content = new ContentManager(Services);
-
-			updateableComponents = new List<IUpdateable>();
-			currentlyUpdatingComponents = new List<IUpdateable>();
-			drawableComponents = new List<IDrawable>();
-			currentlyDrawingComponents = new List<IDrawable>();
+			Content = new ContentManager();
 
 			IsMouseVisible = false;
 			IsFixedTimeStep = true;
@@ -275,6 +230,8 @@ namespace Microsoft.Xna.Framework
 
 			// Ready to run the loop!
 			RunApplication = true;
+			
+			GraphicsDeviceManager.Instance = new GraphicsDeviceManager(this);
 		}
 
 		#endregion
@@ -306,26 +263,13 @@ namespace Microsoft.Xna.Framework
 			{
 				if (disposing)
 				{
-					// Dispose loaded game components.
-					for (int i = 0; i < Components.Count; i += 1)
-					{
-						IDisposable disposable = Components[i] as IDisposable;
-						if (disposable != null)
-						{
-							disposable.Dispose();
-						}
-					}
-
 					if (Content != null)
 					{
 						Content.Dispose();
 					}
-
-					if (graphicsDeviceService != null)
-					{
-						// FIXME: Does XNA4 require the GDM to be disposable? -flibit
-						(graphicsDeviceService as IDisposable).Dispose();
-					}
+					
+					// FIXME: Does XNA4 require the GDM to be disposable? -flibit
+					(GraphicsDeviceManager.Instance as IDisposable).Dispose();
 
 					if (Window != null)
 					{
@@ -585,19 +529,13 @@ namespace Microsoft.Xna.Framework
 
 		protected virtual bool BeginDraw()
 		{
-			if (graphicsDeviceManager != null)
-			{
-				return graphicsDeviceManager.BeginDraw();
-			}
+			GraphicsDeviceManager.Instance.BeginDraw();
 			return true;
 		}
 
 		protected virtual void EndDraw()
 		{
-			if (graphicsDeviceManager != null)
-			{
-				graphicsDeviceManager.EndDraw();
-			}
+			GraphicsDeviceManager.Instance.EndDraw();
 		}
 
 		protected virtual void BeginRun()
@@ -618,23 +556,6 @@ namespace Microsoft.Xna.Framework
 
 		protected virtual void Initialize()
 		{
-			/* According to the information given on MSDN, all GameComponents
-			 * in Components at the time Initialize() is called are initialized:
-			 *
-			 * http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.game.initialize.aspx
-			 *
-			 * Note, however, that we are NOT using a foreach. It's actually
-			 * possible to add something during initialization, and those must
-			 * also be initialized. There may be a safer way to account for it,
-			 * considering it may be possible to _remove_ components as well,
-			 * but for now, let's worry about initializing everything we get.
-			 * -flibit
-			 */
-			for (int i = 0; i < Components.Count; i += 1)
-			{
-				Components[i].Initialize();
-			}
-
 			/* This seems like a condition that warrants a major
 			 * exception more than a silent failure, but for some
 			 * reason it's okay... but only sort of. You can get
@@ -642,53 +563,19 @@ namespace Microsoft.Xna.Framework
 			 * but everything gets super broken on the IManager side
 			 * (IService doesn't seem to matter anywhere else).
 			 */
-			graphicsDeviceService = (IGraphicsDeviceService)
-				Services.GetService(typeof(IGraphicsDeviceService));
-			if (	graphicsDeviceService != null &&
-				graphicsDeviceService.GraphicsDevice != null	)
+			if (GraphicsDeviceManager.Instance.GraphicsDevice != null)
 			{
-				graphicsDeviceService.DeviceDisposing += (o, e) => UnloadContent();
+				GraphicsDeviceManager.Instance.DeviceDisposing += (o, e) => UnloadContent();
 				LoadContent();
 			}
 		}
 
 		protected virtual void Draw(GameTime gameTime)
 		{
-			lock (drawableComponents)
-			{
-				for (int i = 0; i < drawableComponents.Count; i += 1)
-				{
-					currentlyDrawingComponents.Add(drawableComponents[i]);
-				}
-			}
-			foreach (IDrawable drawable in currentlyDrawingComponents)
-			{
-				if (drawable.Visible)
-				{
-					drawable.Draw(gameTime);
-				}
-			}
-			currentlyDrawingComponents.Clear();
 		}
 
 		protected virtual void Update(GameTime gameTime)
 		{
-			lock (updateableComponents)
-			{
-				for (int i = 0; i < updateableComponents.Count; i += 1)
-				{
-					currentlyUpdatingComponents.Add(updateableComponents[i]);
-				}
-			}
-			foreach (IUpdateable updateable in currentlyUpdatingComponents)
-			{
-				if (updateable.Enabled)
-				{
-					updateable.Update(gameTime);
-				}
-			}
-			currentlyUpdatingComponents.Clear();
-
 			FrameworkDispatcher.Update();
 		}
 
@@ -757,78 +644,9 @@ namespace Microsoft.Xna.Framework
 			 * will not get called. Just... please, make the service
 			 * before calling Run().
 			 */
-			graphicsDeviceManager = (IGraphicsDeviceManager)
-				Services.GetService(typeof(IGraphicsDeviceManager));
-			if (graphicsDeviceManager != null)
-			{
-				graphicsDeviceManager.CreateDevice();
-			}
+			GraphicsDeviceManager.Instance.CreateDevice();
 
 			Initialize();
-
-			/* We need to do this after virtual Initialize(...) is called.
-			 * 1. Categorize components into IUpdateable and IDrawable lists.
-			 * 2. Subscribe to Added/Removed events to keep the categorized
-			 * lists synced and to Initialize future components as they are
-			 * added.
-			 */
-			updateableComponents.Clear();
-			drawableComponents.Clear();
-			for (int i = 0; i < Components.Count; i += 1)
-			{
-				CategorizeComponent(Components[i]);
-			}
-			Components.ComponentAdded += OnComponentAdded;
-			Components.ComponentRemoved += OnComponentRemoved;
-		}
-
-		private void CategorizeComponent(IGameComponent component)
-		{
-			IUpdateable updateable = component as IUpdateable;
-			if (updateable != null)
-			{
-				lock (updateableComponents)
-				{
-					SortUpdateable(updateable);
-				}
-				updateable.UpdateOrderChanged += OnUpdateOrderChanged;
-			}
-
-			IDrawable drawable = component as IDrawable;
-			if (drawable != null)
-			{
-				lock (drawableComponents)
-				{
-					SortDrawable(drawable);
-				}
-				drawable.DrawOrderChanged += OnDrawOrderChanged;
-			}
-		}
-
-		private void SortUpdateable(IUpdateable updateable)
-		{
-			for (int i = 0; i < updateableComponents.Count; i += 1)
-			{
-				if (updateable.UpdateOrder < updateableComponents[i].UpdateOrder)
-				{
-					updateableComponents.Insert(i, updateable);
-					return;
-				}
-			}
-			updateableComponents.Add(updateable);
-		}
-
-		private void SortDrawable(IDrawable drawable)
-		{
-			for (int i = 0; i < drawableComponents.Count; i += 1)
-			{
-				if (drawable.DrawOrder < drawableComponents[i].DrawOrder)
-				{
-					drawableComponents.Insert(i, drawable);
-					return;
-				}
-			}
-			drawableComponents.Add(drawable);
 		}
 
 		private void BeforeLoop()
@@ -878,64 +696,6 @@ namespace Microsoft.Xna.Framework
 		#endregion
 
 		#region Private Event Handlers
-
-		private void OnComponentAdded(
-			object sender,
-			GameComponentCollectionEventArgs e
-		) {
-			/* Since we only subscribe to ComponentAdded after the graphics
-			 * devices are set up, it is safe to just blindly call Initialize.
-			 */
-			e.GameComponent.Initialize();
-			CategorizeComponent(e.GameComponent);
-		}
-
-		private void OnComponentRemoved(
-			object sender,
-			GameComponentCollectionEventArgs e
-		) {
-			IUpdateable updateable = e.GameComponent as IUpdateable;
-			if (updateable != null)
-			{
-				lock (updateableComponents)
-				{
-					updateableComponents.Remove(updateable);
-				}
-				updateable.UpdateOrderChanged -= OnUpdateOrderChanged;
-			}
-
-			IDrawable drawable = e.GameComponent as IDrawable;
-			if (drawable != null)
-			{
-				lock (drawableComponents)
-				{
-					drawableComponents.Remove(drawable);
-				}
-				drawable.DrawOrderChanged -= OnDrawOrderChanged;
-			}
-		}
-
-		private void OnUpdateOrderChanged(object sender, EventArgs e)
-		{
-			// FIXME: Is there a better way to re-sort one item? -flibit
-			IUpdateable updateable = sender as IUpdateable;
-			lock (updateableComponents)
-			{
-				updateableComponents.Remove(updateable);
-				SortUpdateable(updateable);
-			}
-		}
-
-		private void OnDrawOrderChanged(object sender, EventArgs e)
-		{
-			// FIXME: Is there a better way to re-sort one item? -flibit
-			IDrawable drawable = sender as IDrawable;
-			lock (drawableComponents)
-			{
-				drawableComponents.Remove(drawable);
-				SortDrawable(drawable);
-			}
-		}
 
 		private void OnUnhandledException(
 			object sender,

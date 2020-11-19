@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
@@ -18,9 +19,6 @@ namespace Ankura.Samples.Triangle
         {
             Window.Title = "DNA Samples: Triangle";
             Content.RootDirectory = "Content";
-
-            // XNA crap: strong reference is put in the Services; no, you should not use Services
-            new GraphicsDeviceManager(this);
         }
 
         protected override void LoadContent()

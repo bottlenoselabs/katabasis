@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------------
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Graphics
 {
     /// <summary>
@@ -68,8 +70,8 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             Viewport viewport = GraphicsDevice.Viewport;
 
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
-            Matrix halfPixelOffset = Matrix.CreateTranslation(-0.5f, -0.5f, 0);
+            Matrix4x4 projection = Matrix4x4.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
+            Matrix4x4 halfPixelOffset = Matrix4x4.CreateTranslation(-0.5f, -0.5f, 0);
 
             matrixParam.SetValue(halfPixelOffset * projection);
         }

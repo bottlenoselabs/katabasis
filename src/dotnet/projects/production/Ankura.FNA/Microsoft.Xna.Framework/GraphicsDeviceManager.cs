@@ -16,8 +16,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Microsoft.Xna.Framework
 {
-	public class GraphicsDeviceManager : IGraphicsDeviceService, IDisposable, IGraphicsDeviceManager
+	public class GraphicsDeviceManager : IDisposable
 	{
+		public static GraphicsDeviceManager Instance { get; internal set; }
+
 		#region Public Properties
 
 		public GraphicsProfile GraphicsProfile
@@ -187,11 +189,16 @@ namespace Microsoft.Xna.Framework
 
 		#region Public Constructor
 
-		public GraphicsDeviceManager(Game game)
+		internal GraphicsDeviceManager(Game game)
 		{
 			if (game == null)
 			{
 				throw new ArgumentNullException("The game cannot be null!");
+			}
+
+			if (Instance != null)
+			{
+				throw new InvalidOperationException("GraphicsDeviceManager already created!");
 			}
 
 			this.game = game;
@@ -207,14 +214,6 @@ namespace Microsoft.Xna.Framework
 			INTERNAL_synchronizeWithVerticalRetrace = true;
 
 			INTERNAL_preferMultiSampling = false;
-
-			if (game.Services.GetService(typeof(IGraphicsDeviceManager)) != null)
-			{
-				throw new ArgumentException("Graphics Device Manager Already Present");
-			}
-
-			game.Services.AddService(typeof(IGraphicsDeviceManager), this);
-			game.Services.AddService(typeof(IGraphicsDeviceService), this);
 
 			prefsChanged = true;
 			useResizedBackBuffer = false;
@@ -279,7 +278,7 @@ namespace Microsoft.Xna.Framework
 			 */
 			if (graphicsDevice == null)
 			{
-				(this as IGraphicsDeviceManager).CreateDevice();
+				CreateDevice();
 				return;
 			}
 
@@ -501,7 +500,7 @@ namespace Microsoft.Xna.Framework
 
 		#region IGraphicsDeviceManager Methods
 
-		void IGraphicsDeviceManager.CreateDevice()
+		internal void CreateDevice()
 		{
 			// This function can recreate the device from scratch!
 			if (graphicsDevice != null)
@@ -549,7 +548,7 @@ namespace Microsoft.Xna.Framework
 			OnDeviceCreated(this, EventArgs.Empty);
 		}
 
-		bool IGraphicsDeviceManager.BeginDraw()
+		internal bool BeginDraw()
 		{
 			if (graphicsDevice == null)
 			{
@@ -560,7 +559,7 @@ namespace Microsoft.Xna.Framework
 			return true;
 		}
 
-		void IGraphicsDeviceManager.EndDraw()
+		internal void EndDraw()
 		{
 			if (graphicsDevice != null && drawBegun)
 			{

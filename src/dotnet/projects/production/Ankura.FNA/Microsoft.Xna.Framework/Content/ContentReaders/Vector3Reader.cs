@@ -11,6 +11,8 @@
  */
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Content
 {
 	internal class Vector3Reader : ContentTypeReader<Vector3>

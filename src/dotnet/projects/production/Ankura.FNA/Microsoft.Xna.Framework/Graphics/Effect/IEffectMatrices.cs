@@ -7,23 +7,25 @@
  */
 #endregion
 
+using System.Numerics;
+
 namespace Microsoft.Xna.Framework.Graphics
 {
 	public interface IEffectMatrices
 	{
-		Matrix Projection
+		Matrix4x4 Projection
 		{
 			get;
 			set;
 		}
 
-		Matrix View
+		Matrix4x4 View
 		{
 			get;
 			set;
 		}
 
-		Matrix World
+		Matrix4x4 World
 		{
 			get;
 			set;
