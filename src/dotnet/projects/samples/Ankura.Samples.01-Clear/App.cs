@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.Numerics;
 using Microsoft.Xna.Framework;
 
 namespace Ankura.Samples.Clear
