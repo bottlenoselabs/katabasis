@@ -76,40 +76,6 @@ namespace Microsoft.Xna.Framework
 		}
 
 		/// <summary>
-		/// The top-left coordinates of this <see cref="Rectangle"/>.
-		/// </summary>
-		public Point Location
-		{
-			get
-			{
-				return new Point(X, Y);
-			}
-			set
-			{
-				X = value.X;
-				Y = value.Y;
-			}
-		}
-
-		/// <summary>
-		/// A <see cref="Point"/> located in the center of this <see cref="Rectangle"/>'s bounds.
-		/// </summary>
-		/// <remarks>
-		/// If <see cref="Width"/> or <see cref="Height"/> is an odd number,
-		/// the center point will be rounded down.
-		/// </remarks>
-		public Point Center
-		{
-			get
-			{
-				return new Point(
-					X + (Width / 2),
-					Y + (Height / 2)
-				);
-			}
-		}
-
-		/// <summary>
 		/// Whether or not this <see cref="Rectangle"/> has a width and
 		/// height of 0, and a position of (0, 0).
 		/// </summary>
@@ -225,19 +191,6 @@ namespace Microsoft.Xna.Framework
 		}
 
 		/// <summary>
-		/// Gets whether or not the provided <see cref="Point"/> lies within the bounds of this <see cref="Rectangle"/>.
-		/// </summary>
-		/// <param name="value">The coordinates to check for inclusion in this <see cref="Rectangle"/>.</param>
-		/// <returns><c>true</c> if the provided <see cref="Point"/> lies inside this <see cref="Rectangle"/>. <c>false</c> otherwise.</returns>
-		public bool Contains(Point value)
-		{
-			return (	(this.X <= value.X) &&
-					(value.X < (this.X + this.Width)) &&
-					(this.Y <= value.Y) &&
-					(value.Y < (this.Y + this.Height))	);
-		}
-
-		/// <summary>
 		/// Gets whether or not the provided <see cref="Rectangle"/> lies within the bounds of this <see cref="Rectangle"/>.
 		/// </summary>
 		/// <param name="value">The <see cref="Rectangle"/> to check for inclusion in this <see cref="Rectangle"/>.</param>
@@ -250,31 +203,12 @@ namespace Microsoft.Xna.Framework
 					((value.Y + value.Height) <= (this.Y + this.Height))	);
 		}
 
-		public void Contains(ref Point value, out bool result)
-		{
-			result = (	(this.X <= value.X) &&
-					(value.X < (this.X + this.Width)) &&
-					(this.Y <= value.Y) &&
-					(value.Y < (this.Y + this.Height))	);
-		}
-
 		public void Contains(ref Rectangle value, out bool result)
 		{
 			result = (	(this.X <= value.X) &&
 					((value.X + value.Width) <= (this.X + this.Width)) &&
 					(this.Y <= value.Y) &&
 					((value.Y + value.Height) <= (this.Y + this.Height))	);
-		}
-
-		/// <summary>
-		/// Increments this <see cref="Rectangle"/>'s <see cref="Location"/> by the
-		/// x and y components of the provided <see cref="Point"/>.
-		/// </summary>
-		/// <param name="offset">The x and y components to add to this <see cref="Rectangle"/>'s <see cref="Location"/>.</param>
-		public void Offset(Point offset)
-		{
-			X += offset.X;
-			Y += offset.Y;
 		}
 
 		/// <summary>
