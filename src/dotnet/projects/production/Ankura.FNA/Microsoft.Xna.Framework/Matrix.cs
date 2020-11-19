@@ -1463,58 +1463,6 @@ namespace Microsoft.Xna.Framework
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="Matrix"/> that flattens geometry into a specified <see cref="Plane"/> as if casting a shadow from a specified light source.
-		/// </summary>
-		/// <param name="lightDirection">A vector specifying the direction from which the light that will cast the shadow is coming.</param>
-		/// <param name="plane">The plane onto which the new matrix should flatten geometry so as to cast a shadow.</param>
-		/// <returns>A <see cref="Matrix"/> that can be used to flatten geometry onto the specified plane from the specified direction. </returns>
-		public static Matrix CreateShadow(Vector3 lightDirection, Plane plane)
-		{
-			Matrix result;
-			CreateShadow(ref lightDirection, ref plane, out result);
-			return result;
-		}
-
-		/// <summary>
-		/// Creates a new <see cref="Matrix"/> that flattens geometry into a specified <see cref="Plane"/> as if casting a shadow from a specified light source.
-		/// </summary>
-		/// <param name="lightDirection">A vector specifying the direction from which the light that will cast the shadow is coming.</param>
-		/// <param name="plane">The plane onto which the new matrix should flatten geometry so as to cast a shadow.</param>
-		/// <param name="result">A <see cref="Matrix"/> that can be used to flatten geometry onto the specified plane from the specified direction as an output parameter.</param>
-		public static void CreateShadow(
-			ref Vector3 lightDirection,
-			ref Plane plane,
-			out Matrix result)
-		{
-			float dot = (
-				(plane.Normal.X * lightDirection.X) +
-				(plane.Normal.Y * lightDirection.Y) +
-				(plane.Normal.Z * lightDirection.Z)
-			);
-			float x = -plane.Normal.X;
-			float y = -plane.Normal.Y;
-			float z = -plane.Normal.Z;
-			float d = -plane.D;
-
-			result.M11 = (x * lightDirection.X) + dot;
-			result.M12 = x * lightDirection.Y;
-			result.M13 = x * lightDirection.Z;
-			result.M14 = 0;
-			result.M21 = y * lightDirection.X;
-			result.M22 = (y * lightDirection.Y) + dot;
-			result.M23 = y * lightDirection.Z;
-			result.M24 = 0;
-			result.M31 = z * lightDirection.X;
-			result.M32 = z * lightDirection.Y;
-			result.M33 = (z * lightDirection.Z) + dot;
-			result.M34 = 0;
-			result.M41 = d * lightDirection.X;
-			result.M42 = d * lightDirection.Y;
-			result.M43 = d * lightDirection.Z;
-			result.M44 = dot;
-		}
-
-		/// <summary>
 		/// Creates a new translation <see cref="Matrix"/>.
 		/// </summary>
 		/// <param name="xPosition">X coordinate of translation.</param>
@@ -1596,51 +1544,6 @@ namespace Microsoft.Xna.Framework
 			result.M41 = xPosition;
 			result.M42 = yPosition;
 			result.M43 = zPosition;
-			result.M44 = 1;
-		}
-
-		/// <summary>
-		/// Creates a new reflection <see cref="Matrix"/>.
-		/// </summary>
-		/// <param name="value">The plane that used for reflection calculation.</param>
-		/// <returns>The reflection <see cref="Matrix"/>.</returns>
-		public static Matrix CreateReflection(Plane value)
-		{
-			Matrix result;
-			CreateReflection(ref value, out result);
-			return result;
-		}
-
-		/// <summary>
-		/// Creates a new reflection <see cref="Matrix"/>.
-		/// </summary>
-		/// <param name="value">The plane that used for reflection calculation.</param>
-		/// <param name="result">The reflection <see cref="Matrix"/> as an output parameter.</param>
-		public static void CreateReflection(ref Plane value, out Matrix result)
-		{
-			Plane plane;
-			Plane.Normalize(ref value, out plane);
-			float x = plane.Normal.X;
-			float y = plane.Normal.Y;
-			float z = plane.Normal.Z;
-			float num3 = -2f * x;
-			float num2 = -2f * y;
-			float num = -2f * z;
-			result.M11 = (num3 * x) + 1f;
-			result.M12 = num2 * x;
-			result.M13 = num * x;
-			result.M14 = 0;
-			result.M21 = num3 * y;
-			result.M22 = (num2 * y) + 1;
-			result.M23 = num * y;
-			result.M24 = 0;
-			result.M31 = num3 * z;
-			result.M32 = num2 * z;
-			result.M33 = (num * z) + 1;
-			result.M34 = 0;
-			result.M41 = num3 * plane.D;
-			result.M42 = num2 * plane.D;
-			result.M43 = num * plane.D;
 			result.M44 = 1;
 		}
 
