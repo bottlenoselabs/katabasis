@@ -53,19 +53,7 @@ namespace Microsoft.Xna.Framework
 		{
 			get
 			{
-				if (graphicsDeviceService == null)
-				{
-					graphicsDeviceService = (IGraphicsDeviceService)
-						Services.GetService(typeof(IGraphicsDeviceService));
-
-					if (graphicsDeviceService == null)
-					{
-						throw new InvalidOperationException(
-							"No Graphics Device Service"
-						);
-					}
-				}
-				return graphicsDeviceService.GraphicsDevice;
+				return GraphicsDeviceManager.Instance.GraphicsDevice;
 			}
 		}
 
@@ -165,13 +153,7 @@ namespace Microsoft.Xna.Framework
 				INTERNAL_targetElapsedTime = value;
 			}
 		}
-
-		public GameServiceContainer Services
-		{
-			get;
-			private set;
-		}
-
+		
 		public GameWindow Window
 		{
 			get;
@@ -187,9 +169,7 @@ namespace Microsoft.Xna.Framework
 		#endregion
 
 		#region Private Variables
-
-		private IGraphicsDeviceService graphicsDeviceService;
-		private IGraphicsDeviceManager graphicsDeviceManager;
+		
 		private GraphicsAdapter currentAdapter;
 		private bool hasInitialized;
 		private bool suppressDraw;
@@ -226,8 +206,7 @@ namespace Microsoft.Xna.Framework
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
 			LaunchParameters = new LaunchParameters();
-			Services = new GameServiceContainer();
-			Content = new ContentManager(Services);
+			Content = new ContentManager();
 
 			IsMouseVisible = false;
 			IsFixedTimeStep = true;
@@ -251,6 +230,8 @@ namespace Microsoft.Xna.Framework
 
 			// Ready to run the loop!
 			RunApplication = true;
+			
+			GraphicsDeviceManager.Instance = new GraphicsDeviceManager(this);
 		}
 
 		#endregion
@@ -286,12 +267,9 @@ namespace Microsoft.Xna.Framework
 					{
 						Content.Dispose();
 					}
-
-					if (graphicsDeviceService != null)
-					{
-						// FIXME: Does XNA4 require the GDM to be disposable? -flibit
-						(graphicsDeviceService as IDisposable).Dispose();
-					}
+					
+					// FIXME: Does XNA4 require the GDM to be disposable? -flibit
+					(GraphicsDeviceManager.Instance as IDisposable).Dispose();
 
 					if (Window != null)
 					{
@@ -551,19 +529,13 @@ namespace Microsoft.Xna.Framework
 
 		protected virtual bool BeginDraw()
 		{
-			if (graphicsDeviceManager != null)
-			{
-				return graphicsDeviceManager.BeginDraw();
-			}
+			GraphicsDeviceManager.Instance.BeginDraw();
 			return true;
 		}
 
 		protected virtual void EndDraw()
 		{
-			if (graphicsDeviceManager != null)
-			{
-				graphicsDeviceManager.EndDraw();
-			}
+			GraphicsDeviceManager.Instance.EndDraw();
 		}
 
 		protected virtual void BeginRun()
@@ -591,12 +563,9 @@ namespace Microsoft.Xna.Framework
 			 * but everything gets super broken on the IManager side
 			 * (IService doesn't seem to matter anywhere else).
 			 */
-			graphicsDeviceService = (IGraphicsDeviceService)
-				Services.GetService(typeof(IGraphicsDeviceService));
-			if (	graphicsDeviceService != null &&
-				graphicsDeviceService.GraphicsDevice != null	)
+			if (GraphicsDeviceManager.Instance.GraphicsDevice != null)
 			{
-				graphicsDeviceService.DeviceDisposing += (o, e) => UnloadContent();
+				GraphicsDeviceManager.Instance.DeviceDisposing += (o, e) => UnloadContent();
 				LoadContent();
 			}
 		}
@@ -675,12 +644,7 @@ namespace Microsoft.Xna.Framework
 			 * will not get called. Just... please, make the service
 			 * before calling Run().
 			 */
-			graphicsDeviceManager = (IGraphicsDeviceManager)
-				Services.GetService(typeof(IGraphicsDeviceManager));
-			if (graphicsDeviceManager != null)
-			{
-				graphicsDeviceManager.CreateDevice();
-			}
+			GraphicsDeviceManager.Instance.CreateDevice();
 
 			Initialize();
 		}

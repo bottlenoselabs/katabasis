@@ -28,7 +28,7 @@ namespace Microsoft.Xna.Framework.Content
 		public ResourceContentManager(
 			IServiceProvider servicesProvider,
 			ResourceManager resource
-		) : base(servicesProvider) {
+		) {
 			if (resource == null)
 			{
 				throw new ArgumentNullException("resource");

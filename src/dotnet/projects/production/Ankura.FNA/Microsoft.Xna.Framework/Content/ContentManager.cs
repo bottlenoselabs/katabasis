@@ -23,16 +23,6 @@ namespace Microsoft.Xna.Framework.Content
 {
 	public partial class ContentManager : IDisposable
 	{
-		#region Public ServiceProvider Property
-
-		public IServiceProvider ServiceProvider
-		{
-			get;
-			private set;
-		}
-
-		#endregion
-
 		#region Public RootDirectory Property
 
 		public string RootDirectory
@@ -98,13 +88,8 @@ namespace Microsoft.Xna.Framework.Content
 
 		#region Public Constructors
 
-		public ContentManager(IServiceProvider serviceProvider)
+		public ContentManager()
 		{
-			if (serviceProvider == null)
-			{
-				throw new ArgumentNullException("serviceProvider");
-			}
-			ServiceProvider = serviceProvider;
 			RootDirectory = string.Empty;
 			AddContentManager(this);
 		}
@@ -119,7 +104,7 @@ namespace Microsoft.Xna.Framework.Content
 			{
 				throw new ArgumentNullException("rootDirectory");
 			}
-			ServiceProvider = serviceProvider;
+			
 			RootDirectory = rootDirectory;
 			AddContentManager(this);
 		}
@@ -466,14 +451,7 @@ namespace Microsoft.Xna.Framework.Content
 		{
 			if (graphicsDevice == null)
 			{
-				IGraphicsDeviceService result = ServiceProvider.GetService(
-					typeof(IGraphicsDeviceService)
-				) as IGraphicsDeviceService;
-				if (result == null)
-				{
-					throw new ContentLoadException("No Graphics Device Service");
-				}
-				graphicsDevice = result.GraphicsDevice;
+				graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			}
 			return graphicsDevice;
 		}
