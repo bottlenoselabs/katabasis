@@ -117,7 +117,6 @@ namespace Microsoft.Xna.Framework.Content
 				DateTimeReader hDateTimeReader = new DateTimeReader();
 				DecimalReader hDecimalReader = new DecimalReader();
 				BoundingSphereReader hBoundingSphereReader = new BoundingSphereReader();
-				BoundingFrustumReader hBoundingFrustumReader = new BoundingFrustumReader();
 				ListReader<char> hCharListReader = new ListReader<Char>();
 				ListReader<Rectangle> hRectangleListReader = new ListReader<Rectangle>();
 				ArrayReader<Rectangle> hRectangleArrayReader = new ArrayReader<Rectangle>();
