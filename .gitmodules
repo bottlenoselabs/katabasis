@@ -1,1 +1,13 @@
 
+[submodule "ext/FAudio"]
+	path = ext/FAudio
+	url = https://github.com/FNA-XNA/FAudio.git
+[submodule "ext/FNA3D"]
+	path = ext/FNA3D
+	url = https://github.com/FNA-XNA/FNA3D.git
+[submodule "ext/SDL2-CS"]
+	path = ext/SDL2-CS
+	url = https://github.com/flibitijibibo/SDL2-CS.git
+[submodule "ext/Theorafile"]
+	path = ext/Theorafile
+	url = https://github.com/FNA-XNA/Theorafile.git
