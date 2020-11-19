@@ -24,9 +24,6 @@ namespace Ankura.Samples.Cube
         {
             Content.RootDirectory = "Content";
             Window.Title = "DNA Samples: Cube";
-
-            // XNA crap: strong reference is put in the Services; no, you should not use Services
-            new GraphicsDeviceManager(this);
         }
 
         protected override void LoadContent()

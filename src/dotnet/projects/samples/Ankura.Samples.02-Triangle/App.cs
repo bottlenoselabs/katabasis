@@ -18,9 +18,6 @@ namespace Ankura.Samples.Triangle
         {
             Window.Title = "DNA Samples: Triangle";
             Content.RootDirectory = "Content";
-
-            // XNA crap: strong reference is put in the Services; no, you should not use Services
-            new GraphicsDeviceManager(this);
         }
 
         protected override void LoadContent()

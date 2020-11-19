@@ -14,9 +14,6 @@ namespace Ankura.Samples.Clear
         {
             Window.Title = "DNA Samples: Clear";
 
-            // XNA crap: strong reference is put in the Services; no, you should not use Services
-            new GraphicsDeviceManager(this);
-
             _clearColor = Color.Red.ToVector4();
         }
 
