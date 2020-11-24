@@ -124,4 +124,9 @@
       <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Microsoft.Xna.Framework\Graphics\Effect\StockEffects\FXB\*.fxb" />
+      <EmbeddedResource Include="Microsoft.Xna.Framework\Graphics\Effect\StockEffects\FXB\*.fxb" />
+    </ItemGroup>
+
 </Project>

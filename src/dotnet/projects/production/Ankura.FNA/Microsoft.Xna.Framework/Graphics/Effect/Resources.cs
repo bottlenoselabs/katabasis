@@ -8,6 +8,8 @@
 #endregion
 
 #region Using Statements
+
+using System;
 using System.IO;
 #endregion
 
@@ -121,7 +123,7 @@ namespace Microsoft.Xna.Framework.Graphics
 		private static byte[] GetResource(string name)
 		{
 			Stream stream = typeof(Resources).Assembly.GetManifestResourceStream(
-				"Microsoft.Xna.Framework.Graphics.Effect.Resources." + name + ".fxb"
+				"Microsoft.Xna.Framework.Graphics.Effect.StockEffects.FXB." + name + ".fxb"
 			);
 			using (MemoryStream ms = new MemoryStream())
 			{
