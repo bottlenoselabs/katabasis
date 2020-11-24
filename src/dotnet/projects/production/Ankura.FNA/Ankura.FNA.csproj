@@ -41,14 +41,14 @@
             <PackagePath>runtimes/win-x64/native/FAudio.dll</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FAudio/osx-x64/libFAudio.0.dylib">
-            <Link>libs/osx-x64/libFAudio.dylib</Link>
+            <Link>libs/osx-x64/libFAudio.0.dylib</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/osx-x64/native/libFAudio.dylib</PackagePath>
+            <PackagePath>runtimes/osx-x64/native/libFAudio.0.dylib</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FAudio/linux-x64/libFAudio.so.0">
-            <Link>libs/linux-x64/libFAudio.so</Link>
+            <Link>libs/linux-x64/libFAudio.so.0</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/linux-x64/native/libFAudio.so</PackagePath>
+            <PackagePath>runtimes/linux-x64/native/libFAudio.so.0</PackagePath>
         </Content>
     </ItemGroup>
 
@@ -59,9 +59,9 @@
             <PackagePath>runtimes/win-x64/native/FNA3D.dll</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libFNA3D.0.dylib">
-            <Link>libs/osx-x64/libFNA3D.dylib</Link>
+            <Link>libs/osx-x64/libFNA3D.0.dylib</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/osx-x64/native/libFNA3D.dylib</PackagePath>
+            <PackagePath>runtimes/osx-x64/native/libFNA3D.0.dylib</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libMoltenVK.dylib">
             <Link>libs/osx-x64/libMoltenVK.dylib</Link>
@@ -69,14 +69,14 @@
             <PackagePath>runtimes/osx-x64/native/libMoltenVK.dylib</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libvulkan.1.dylib">
-            <Link>libs/osx-x64/libvulkan.dylib</Link>
+            <Link>libs/osx-x64/libvulkan.1.dylib</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/osx-x64/native/libvulkan.dylib</PackagePath>
+            <PackagePath>runtimes/osx-x64/native/libvulkan.1.dylib</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FNA3D/linux-x64/libFNA3D.so.0">
-            <Link>libs/linux-x64/libFNA3D.so</Link>
+            <Link>libs/linux-x64/libFNA3D.so.0</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/linux-x64/native/libFNA3D.so</PackagePath>
+            <PackagePath>runtimes/linux-x64/native/libFNA3D.so.0</PackagePath>
         </Content>
     </ItemGroup>
 
@@ -87,14 +87,14 @@
             <PackagePath>runtimes/win-x64/native/SDL2.dll</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/SDL2/osx-x64/libSDL2-2.0.0.dylib">
-            <Link>libs/osx-x64/libSDL2.dylib</Link>
+            <Link>libs/osx-x64/libSDL2-2.0.0.dylib</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/osx-x64/native/libSDL2.dylib</PackagePath>
+            <PackagePath>runtimes/osx-x64/native/libSDL2-2.0.0.dylib</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/SDL2/linux-x64/libSDL2-2.0.so.0">
-            <Link>libs/linux-x64/libSDL2.so</Link>
+            <Link>libs/linux-x64/libSDL2-2.0.so.0</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>runtimes/linux-x64/native/libSDL2.so</PackagePath>
+            <PackagePath>runtimes/linux-x64/native/libSDL2-2.0.so.0</PackagePath>
         </Content>
     </ItemGroup>
 

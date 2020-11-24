@@ -130,7 +130,7 @@ namespace Ankura
             };
         }
 
-        public static string GetLibraryPath(string libraryName)
+        private static string GetLibraryPath(string libraryName)
         {
             var platform = GetRuntimePlatform();
             var libraryPrefix = platform == RuntimePlatform.Windows ? string.Empty : "lib";
