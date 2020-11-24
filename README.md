@@ -9,6 +9,23 @@
 
 While there is `MonoGame` and `FNA`, both are laying bricks ontop of the `XNA` API. The focus of `Ankura` is take the good things of `XNA` and dump the rest.
 
+## Developers: Building from Source
+
+### Prerequisites
+
+1. Download and install [.NET 5](https://dotnet.microsoft.com/download).
+2. If you are on Windows, [install Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+3. Optional: If you are on Windows, [install Windows terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started).
+4. Run `bash ./get-fna-libs.sh` in terminal / powershell / command prompt.
+
+### Visual Studio / Rider / MonoDevelop
+
+Open `./src/dotnet/Ankura.sln`
+
+### Command Line Interface (CLI)
+
+`dotnet build ./src/dotnet/Ankura.sln`
+
 ## Versioning
 
 `Ankura` uses [calendar versioning](https://calver.org) and [semantic versioning](https://semver.org) (or combination thereof) where appropriate. For example, the version scheme used for some libraries is `YYYY.MM.DD` and for others its `MAJOR.MINOR.PATCH-TAG`.
@@ -28,7 +45,7 @@ Packages are uploaded to my personal feed: `https://www.myget.org/F/lithiumtoast
 
 ## License
 
-`Ankura` is licensed under the Microsoft Public License (MS-PL) - see the [LICENSE file](LICENSE) for details.
+`Ankura` is licensed under the Microsoft Public License (MS-PL). See the [LICENSE file](LICENSE) for details.
 
 `Ankura` uses LzxDecoder.cs, released under a dual MS-PL/LGPL license.
 See lzxdecoder.LICENSE for details.

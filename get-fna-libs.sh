@@ -29,6 +29,7 @@ fi
 mkdir -p $MY_DIR/lib
 
 # Move files to specific places...
+echo "Moving files ..."
 # FAudio
 FAUDIO_LIB_DIR=$MY_DIR/lib/FAudio
 mkdir -p $FAUDIO_LIB_DIR/linux-x64
