@@ -177,6 +177,12 @@ namespace Ankura
             string libraryFileNameWithoutExtension,
             out string result)
         {
+            if (!Directory.Exists(directoryPath))
+            {
+                result = string.Empty;
+                return false;
+            }
+
             var searchPattern = $"*{libraryFileExtension}";
             var filePaths = Directory.EnumerateFiles(directoryPath, searchPattern);
             foreach (var filePath in filePaths)
