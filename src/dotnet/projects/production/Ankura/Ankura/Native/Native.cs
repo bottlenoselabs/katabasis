@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
@@ -12,6 +13,8 @@ namespace Ankura
 {
     public static class Native
     {
+        private static IEnumerable<string>? _searchDirectories;
+
         public static void SetDllImportResolver(Assembly assembly)
         {
             NativeLibrary.SetDllImportResolver(assembly, Resolver);
@@ -130,6 +133,25 @@ namespace Ankura
             };
         }
 
+        private static IEnumerable<string> GetSearchDirectories()
+        {
+            if (_searchDirectories != null)
+            {
+                return _searchDirectories;
+            }
+
+            var platform = GetRuntimePlatform();
+            var runtimeIdentifier = GetRuntimeIdentifier(platform);
+
+            return _searchDirectories = new[]
+            {
+                Environment.CurrentDirectory,
+                AppDomain.CurrentDomain.BaseDirectory!,
+                $"libs/{runtimeIdentifier}",
+                $"runtimes/{runtimeIdentifier}/native"
+            };
+        }
+
         private static string GetLibraryPath(string libraryName)
         {
             var platform = GetRuntimePlatform();
@@ -137,26 +159,13 @@ namespace Ankura
             var libraryFileExtension = GetLibraryFileExtension(platform);
             var libraryFileName = $"{libraryPrefix}{libraryName}";
 
-            var currentDirectory = Environment.CurrentDirectory;
-            if (TryFindLibraryPath(currentDirectory, libraryFileExtension, libraryFileName, out string result))
+            var directories = GetSearchDirectories();
+            foreach (var directory in directories)
             {
-                return result;
-            }
-
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory ?? string.Empty;
-            if (!string.IsNullOrEmpty(baseDirectory))
-            {
-                if (TryFindLibraryPath(baseDirectory, libraryFileExtension, libraryFileName, out result))
+                if (TryFindLibraryPath(directory, libraryFileExtension, libraryFileName, out var result))
                 {
                     return result;
                 }
-            }
-
-            var rid = GetRuntimeIdentifier(platform);
-            var nativeDirectory = $"libs/{rid}";
-            if (TryFindLibraryPath(nativeDirectory, libraryFileExtension, libraryFileName, out result))
-            {
-                return result;
             }
 
             throw new Exception($"Could not find the library path for {libraryName}.");
