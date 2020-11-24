@@ -86,6 +86,9 @@ jobs:
       with:
         dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
 
+    - name: "Downlaod FNA libraries"
+      run: bash ./get-fna-libs.sh
+
     - name: "Install dependencies"
       run: dotnet restore '${{ env.SOLUTION_PATH }}' --verbosity quiet
 
