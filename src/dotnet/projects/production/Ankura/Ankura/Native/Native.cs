@@ -13,7 +13,17 @@ namespace Ankura
 {
     public static class Native
     {
-        private static IEnumerable<string>? _searchDirectories;
+        private static IEnumerable<string>? _librarySearchDirectories;
+        private static RuntimePlatform? _platform;
+
+        public static RuntimePlatform RuntimePlatform
+        {
+            get
+            {
+                _platform ??= GetRuntimePlatform();
+                return _platform.Value;
+            }
+        }
 
         public static void SetDllImportResolver(Assembly assembly)
         {
@@ -25,8 +35,7 @@ namespace Ankura
         {
             EnsureIs64BitArchitecture();
 
-            var platform = GetRuntimePlatform();
-            return platform switch
+            return RuntimePlatform switch
             {
                 RuntimePlatform.Linux => libdl.dlopen(libraryFilePath, 0x101),
                 RuntimePlatform.Windows => Kernel32.LoadLibrary(libraryFilePath),
@@ -37,8 +46,7 @@ namespace Ankura
 
         public static bool FreeLibrary(IntPtr libraryHandle)
         {
-            var platform = GetRuntimePlatform();
-            return platform switch
+            return RuntimePlatform switch
             {
                 RuntimePlatform.Linux => libdl.dlclose(libraryHandle) == 0,
                 RuntimePlatform.Windows => Kernel32.FreeLibrary(libraryHandle) != 0,
@@ -49,8 +57,7 @@ namespace Ankura
 
         public static IntPtr GetLibraryFunctionPointer(IntPtr libraryHandle, string functionName)
         {
-            var platform = GetRuntimePlatform();
-            return platform switch
+            return RuntimePlatform switch
             {
                 RuntimePlatform.Linux => libdl.dlsym(libraryHandle, functionName),
                 RuntimePlatform.Windows => Kernel32.GetProcAddress(libraryHandle, functionName),
@@ -84,7 +91,7 @@ namespace Ankura
             return Marshal.GetDelegateForFunctionPointer<T>(functionHandle);
         }
 
-        public static RuntimePlatform GetRuntimePlatform()
+        private static RuntimePlatform GetRuntimePlatform()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -105,7 +112,7 @@ namespace Ankura
             return RuntimePlatform.Unknown;
         }
 
-        public static string GetLibraryFileExtension(RuntimePlatform platform)
+        private static string GetLibraryFileExtension(RuntimePlatform platform)
         {
             return platform switch
             {
@@ -119,31 +126,30 @@ namespace Ankura
             };
         }
 
-        public static string GetRuntimeIdentifier(RuntimePlatform platform)
+        private static string GetRuntimeIdentifier()
         {
-            return platform switch
+            return RuntimePlatform switch
             {
-                RuntimePlatform.Windows => "win-x64",
+                RuntimePlatform.Windows => Environment.Is64BitProcess ? "win-x64" : "win-x86",
                 RuntimePlatform.macOS => "osx-x64",
                 RuntimePlatform.Linux => "linux-x64",
                 RuntimePlatform.Android => throw new NotImplementedException(),
                 RuntimePlatform.iOS => throw new NotImplementedException(),
                 RuntimePlatform.Unknown => throw new NotSupportedException(),
-                _ => throw new ArgumentOutOfRangeException(nameof(platform), platform, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(RuntimePlatform), RuntimePlatform, null)
             };
         }
 
         private static IEnumerable<string> GetSearchDirectories()
         {
-            if (_searchDirectories != null)
+            if (_librarySearchDirectories != null)
             {
-                return _searchDirectories;
+                return _librarySearchDirectories;
             }
 
-            var platform = GetRuntimePlatform();
-            var runtimeIdentifier = GetRuntimeIdentifier(platform);
+            var runtimeIdentifier = GetRuntimeIdentifier();
 
-            return _searchDirectories = new[]
+            return _librarySearchDirectories = new[]
             {
                 Environment.CurrentDirectory,
                 AppDomain.CurrentDomain.BaseDirectory!,
@@ -154,9 +160,8 @@ namespace Ankura
 
         private static string GetLibraryPath(string libraryName)
         {
-            var platform = GetRuntimePlatform();
-            var libraryPrefix = platform == RuntimePlatform.Windows ? string.Empty : "lib";
-            var libraryFileExtension = GetLibraryFileExtension(platform);
+            var libraryPrefix = RuntimePlatform == RuntimePlatform.Windows ? string.Empty : "lib";
+            var libraryFileExtension = GetLibraryFileExtension(RuntimePlatform);
             var libraryFileName = $"{libraryPrefix}{libraryName}";
 
             var directories = GetSearchDirectories();

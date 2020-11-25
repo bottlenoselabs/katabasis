@@ -40,6 +40,11 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackagePath>runtimes/win-x64/native/FAudio.dll</PackagePath>
         </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FAudio/win-x86/FAudio.dll">
+            <Link>libs/win-x86/FAudio.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/FAudio.dll</PackagePath>
+        </Content>
         <Content Include="$(RepositoryRootPath)/lib/FAudio/osx-x64/libFAudio.0.dylib">
             <Link>libs/osx-x64/libFAudio.0.dylib</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -57,6 +62,11 @@
             <Link>libs/win-x64/FNA3D.dll</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackagePath>runtimes/win-x64/native/FNA3D.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/win-x86/FNA3D.dll">
+            <Link>libs/win-x86/FNA3D.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/FNA3D.dll</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libFNA3D.0.dylib">
             <Link>libs/osx-x64/libFNA3D.0.dylib</Link>
@@ -86,6 +96,11 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackagePath>runtimes/win-x64/native/SDL2.dll</PackagePath>
         </Content>
+        <Content Include="$(RepositoryRootPath)/lib/SDL2/win-x86/SDL2.dll">
+            <Link>libs/win-x86/SDL2.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/SDL2.dll</PackagePath>
+        </Content>
         <Content Include="$(RepositoryRootPath)/lib/SDL2/osx-x64/libSDL2-2.0.0.dylib">
             <Link>libs/osx-x64/libSDL2-2.0.0.dylib</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -103,6 +118,11 @@
             <Link>libs/win-x64/libtheorafile.dll</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackagePath>runtimes/win-x64/native/libtheorafile.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/theorafile/win-x86/libtheorafile.dll">
+            <Link>libs/win-x86/libtheorafile.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/libtheorafile.dll</PackagePath>
         </Content>
         <Content Include="$(RepositoryRootPath)/lib/theorafile/osx-x64/libtheorafile.dylib">
             <Link>libs/osx-x64/libtheorafile.dylib</Link>
