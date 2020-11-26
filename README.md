@@ -26,22 +26,29 @@ Open `./src/dotnet/Ankura.sln`
 
 `dotnet build ./src/dotnet/Ankura.sln`
 
+## Developers: NuGet Packages
+
+Packages are uploaded to my personal feed: `https://www.myget.org/F/lithiumtoast/api/v3/index.json`. This includes rolling builds from pull-requests and tags (releases). No, I won't upload the packages to nuget.org; at this stage of development I want to control if I can delete packages if I wish to rename the project. I will consider uploading *tags* to nuget.org at later version; rolling builds will never be uploaded to nuget.org.
+
+## Developers: Migration Guide from FNA/MonoGame
+
+A guide is available for migrating to Ankura from FNA/MonoGame. The guide includes outlining the differences between Ankura and FNA/MonoGame with examples of how to solve common problems.
+
+For FNA, see [MIGRATION-GUIDE-FNA.md](MIGRATION-GUIDE-FNA.md).  
+For MonoGame, see [MIGRATION-GUIDE-MONOGAME.md](MIGRATION-GUIDE-MONOGAME.md).
+
 ## Versioning
 
 `Ankura` uses [calendar versioning](https://calver.org) and [semantic versioning](https://semver.org) (or combination thereof) where appropriate. For example, the version scheme used for some libraries is `YYYY.MM.DD` and for others its `MAJOR.MINOR.PATCH-TAG`.
 
 ### Semantic Versioning
 
-`Ankura` uses [`GitVersion`](https://github.com/GitTools/GitVersion) to determine the exact semantic version for each build with [GitHub actions](https://docs.github.com/en/free-pro-team@latest/actions/guides/about-continuous-integration) (automated workflows). 
+`Ankura` uses [GitVersion](https://github.com/GitTools/GitVersion) to determine the exact semantic version for each build with [GitHub actions](https://docs.github.com/en/free-pro-team@latest/actions/guides/about-continuous-integration) (automated workflows). 
 
 ### Releases
 
 Git tags are releases; when a new tag is created, the version is automatically bumped automatically to the specified tag version.
 For a complete list of the release versions, see the [tags on this repository](https://github.com/craftworkgames/Ankura/tags).
-
-## NuGet Packages
-
-Packages are uploaded to my personal feed: `https://www.myget.org/F/lithiumtoast/api/v3/index.json`. This includes rolling builds from pull-requests and tags (releases).
 
 ## License
 
