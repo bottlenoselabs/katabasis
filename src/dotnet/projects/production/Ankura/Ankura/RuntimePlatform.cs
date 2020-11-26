@@ -19,7 +19,7 @@ namespace Ankura
         Unknown = 0,
 
         /// <summary>
-        ///     Desktop versions of Windows on 64-bit computing architecture. Includes Windows 7, Windows 8.1,
+        ///     Desktop versions of Windows on 32-bit or 64-bit computing architecture. Includes Windows 7, Windows 8.1,
         ///     Windows 10, and up.
         /// </summary>
         Windows = 1 << 0,
