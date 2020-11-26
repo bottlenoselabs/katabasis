@@ -86,11 +86,9 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructors
 
 		public RenderTarget2D(
-			GraphicsDevice graphicsDevice,
 			int width,
 			int height
 		) : this(
-			graphicsDevice,
 			width,
 			height,
 			false,
@@ -102,14 +100,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public RenderTarget2D(
-			GraphicsDevice graphicsDevice,
 			int width,
 			int height,
 			bool mipMap,
 			SurfaceFormat preferredFormat,
 			DepthFormat preferredDepthFormat
 		) : this(
-			graphicsDevice,
 			width,
 			height,
 			mipMap,
@@ -121,7 +117,6 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public RenderTarget2D(
-			GraphicsDevice graphicsDevice,
 			int width,
 			int height,
 			bool mipMap,
@@ -130,12 +125,13 @@ namespace Microsoft.Xna.Framework.Graphics
 			int preferredMultiSampleCount,
 			RenderTargetUsage usage
 		) : base(
-			graphicsDevice,
 			width,
 			height,
 			mipMap,
 			preferredFormat
-		) {
+		)
+		{
+			var graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			DepthStencilFormat = preferredDepthFormat;
 			MultiSampleCount = FNA3D.FNA3D_GetMaxMultiSampleCount(
 				graphicsDevice.GLDevice,

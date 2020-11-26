@@ -37,9 +37,7 @@ namespace Microsoft.Xna.Framework.Content
 			Effect existingInstance
 		) {
 			int length = input.ReadInt32();
-			Effect effect = new Effect(
-				input.ContentManager.GetGraphicsDevice(),
-				input.ReadBytes(length)
+			Effect effect = new Effect(input.ReadBytes(length)
 			);
 			effect.Name = input.AssetName;
 			return effect;

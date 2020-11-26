@@ -141,36 +141,27 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		#region Public Constructor
 
-		public SpriteBatch(GraphicsDevice graphicsDevice)
+		public SpriteBatch()
 		{
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-			GraphicsDevice = graphicsDevice;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 
 			vertexInfo = new VertexPositionColorTexture4[MAX_SPRITES];
 			textureInfo = new Texture2D[MAX_SPRITES];
 			spriteInfos = new SpriteInfo[MAX_SPRITES];
 			sortedSpriteInfos = new IntPtr[MAX_SPRITES];
 			vertexBuffer = new DynamicVertexBuffer(
-				graphicsDevice,
 				typeof(VertexPositionColorTexture),
 				MAX_VERTICES,
 				BufferUsage.WriteOnly
 			);
 			indexBuffer = new IndexBuffer(
-				graphicsDevice,
 				IndexElementSize.SixteenBits,
 				MAX_INDICES,
 				BufferUsage.WriteOnly
 			);
 			indexBuffer.SetData(indexData);
 
-			spriteEffect = new Effect(
-				graphicsDevice,
-				spriteEffectCode
-			);
+			spriteEffect = new Effect(spriteEffectCode);
 			spriteMatrixTransform = spriteEffect.Parameters["MatrixTransform"].values;
 			spriteEffectPass = spriteEffect.CurrentTechnique.Passes[0];
 

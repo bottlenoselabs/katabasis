@@ -47,12 +47,10 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructors
 
 		public IndexBuffer(
-			GraphicsDevice graphicsDevice,
 			IndexElementSize indexElementSize,
 			int indexCount,
 			BufferUsage bufferUsage
 		) : this(
-			graphicsDevice,
 			indexElementSize,
 			indexCount,
 			bufferUsage,
@@ -61,13 +59,11 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public IndexBuffer(
-			GraphicsDevice graphicsDevice,
 			Type indexType,
 			int indexCount,
 			BufferUsage usage
 		) : this(
-			graphicsDevice,
-			SizeForType(graphicsDevice, indexType),
+			SizeForType(indexType),
 			indexCount,
 			usage,
 			false
@@ -79,14 +75,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Protected Constructors
 
 		protected IndexBuffer(
-			GraphicsDevice graphicsDevice,
 			Type indexType,
 			int indexCount,
 			BufferUsage usage,
 			bool dynamic
 		) : this(
-			graphicsDevice,
-			SizeForType(graphicsDevice, indexType),
+			SizeForType(indexType),
 			indexCount,
 			usage,
 			dynamic
@@ -94,18 +88,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		protected IndexBuffer(
-			GraphicsDevice graphicsDevice,
 			IndexElementSize indexElementSize,
 			int indexCount,
 			BufferUsage usage,
 			bool dynamic
 		) {
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-
-			GraphicsDevice = graphicsDevice;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			IndexElementSize = indexElementSize;
 			IndexCount = indexCount;
 			BufferUsage = usage;
@@ -313,10 +301,9 @@ namespace Microsoft.Xna.Framework.Graphics
 		/// <summary>
 		/// Gets the relevant IndexElementSize enum value for the given type.
 		/// </summary>
-		/// <param name="graphicsDevice">The graphics device.</param>
 		/// <param name="type">The type to use for the index buffer</param>
 		/// <returns>The IndexElementSize enum value that matches the type</returns>
-		private static IndexElementSize SizeForType(GraphicsDevice graphicsDevice, Type type)
+		private static IndexElementSize SizeForType(Type type)
 		{
 			int sizeInBytes = Marshal.SizeOf(type);
 

@@ -47,12 +47,10 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructors
 
 		public VertexBuffer(
-			GraphicsDevice graphicsDevice,
 			VertexDeclaration vertexDeclaration,
 			int vertexCount,
 			BufferUsage bufferUsage
 		) : this(
-			graphicsDevice,
 			vertexDeclaration,
 			vertexCount,
 			bufferUsage,
@@ -61,12 +59,10 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public VertexBuffer(
-			GraphicsDevice graphicsDevice,
 			Type type,
 			int vertexCount,
 			BufferUsage bufferUsage
 		) : this(
-			graphicsDevice,
 			VertexDeclaration.FromType(type),
 			vertexCount,
 			bufferUsage,
@@ -79,26 +75,20 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Protected Constructor
 
 		protected VertexBuffer(
-			GraphicsDevice graphicsDevice,
 			VertexDeclaration vertexDeclaration,
 			int vertexCount,
 			BufferUsage bufferUsage,
 			bool dynamic
 		) {
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-
-			GraphicsDevice = graphicsDevice;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			VertexDeclaration = vertexDeclaration;
 			VertexCount = vertexCount;
 			BufferUsage = bufferUsage;
 
 			// Make sure the graphics device is assigned in the vertex declaration.
-			if (vertexDeclaration.GraphicsDevice != graphicsDevice)
+			if (vertexDeclaration.GraphicsDevice != GraphicsDevice)
 			{
-				vertexDeclaration.GraphicsDevice = graphicsDevice;
+				vertexDeclaration.GraphicsDevice = GraphicsDevice;
 			}
 
 			buffer = FNA3D.FNA3D_GenVertexBuffer(

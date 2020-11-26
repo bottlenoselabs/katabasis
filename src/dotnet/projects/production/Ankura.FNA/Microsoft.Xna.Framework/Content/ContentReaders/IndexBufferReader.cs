@@ -30,7 +30,6 @@ namespace Microsoft.Xna.Framework.Content
 				if (sixteenBits)
 				{
 					indexBuffer = new IndexBuffer(
-						input.ContentManager.GetGraphicsDevice(),
 						IndexElementSize.SixteenBits,
 						dataSize / 2,
 						BufferUsage.None
@@ -39,7 +38,6 @@ namespace Microsoft.Xna.Framework.Content
 				else
 				{
 					indexBuffer = new IndexBuffer(
-						input.ContentManager.GetGraphicsDevice(),
 						IndexElementSize.ThirtyTwoBits,
 						dataSize / 4,
 						BufferUsage.None

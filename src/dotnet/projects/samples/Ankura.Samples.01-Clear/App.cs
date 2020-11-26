@@ -4,6 +4,7 @@
 using System;
 using System.Numerics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Ankura.Samples.Clear
 {
@@ -16,6 +17,11 @@ namespace Ankura.Samples.Clear
             Window.Title = "DNA Samples: Clear";
 
             _clearColor = Color.Red.ToVector4();
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
         }
 
         protected override void Draw(GameTime gameTime)

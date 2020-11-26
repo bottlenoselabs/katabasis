@@ -44,11 +44,9 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructors
 
 		public Texture2D(
-			GraphicsDevice graphicsDevice,
 			int width,
 			int height
 		) : this(
-			graphicsDevice,
 			width,
 			height,
 			false,
@@ -57,18 +55,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public Texture2D(
-			GraphicsDevice graphicsDevice,
 			int width,
 			int height,
 			bool mipMap,
 			SurfaceFormat format
 		) {
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-
-			GraphicsDevice = graphicsDevice;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			Width = width;
 			Height = height;
 			LevelCount = mipMap ? CalculateMipLevels(width, height) : 1;
@@ -364,7 +356,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		#region Public Static Texture2D Load Methods
 
-		public static Texture2D FromStream(GraphicsDevice graphicsDevice, Stream stream)
+		public static Texture2D FromStream(Stream stream)
 		{
 			if (stream.CanSeek && stream.Position == stream.Length)
 			{
@@ -380,7 +372,6 @@ namespace Microsoft.Xna.Framework.Graphics
 			);
 
 			Texture2D result = new Texture2D(
-				graphicsDevice,
 				width,
 				height
 			);
@@ -419,7 +410,6 @@ namespace Microsoft.Xna.Framework.Graphics
 			);
 
 			Texture2D result = new Texture2D(
-				graphicsDevice,
 				realWidth,
 				realHeight
 			);
@@ -485,7 +475,6 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public static Texture2D DDSFromStreamEXT(
-			GraphicsDevice graphicsDevice,
 			Stream stream
 		) {
 			Texture2D result;
@@ -508,7 +497,6 @@ namespace Microsoft.Xna.Framework.Graphics
 
 			// Allocate/Load texture
 			result = new Texture2D(
-				graphicsDevice,
 				width,
 				height,
 				levels > 1,

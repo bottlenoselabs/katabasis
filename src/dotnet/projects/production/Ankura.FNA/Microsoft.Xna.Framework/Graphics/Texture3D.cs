@@ -41,19 +41,13 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructor
 
 		public Texture3D(
-			GraphicsDevice graphicsDevice,
 			int width,
 			int height,
 			int depth,
 			bool mipMap,
 			SurfaceFormat format
 		) {
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-
-			GraphicsDevice = graphicsDevice;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			Width = width;
 			Height = height;
 			Depth = depth;

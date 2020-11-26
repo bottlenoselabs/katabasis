@@ -64,7 +64,6 @@ namespace Microsoft.Xna.Framework.Content
 
 			return new Video(
 				path,
-				input.ContentManager.GetGraphicsDevice(),
 				durationMS,
 				width,
 				height,

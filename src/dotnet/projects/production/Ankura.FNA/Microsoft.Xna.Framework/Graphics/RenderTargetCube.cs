@@ -121,7 +121,6 @@ namespace Microsoft.Xna.Framework.Graphics
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RenderTargetCube"/> class.
 		/// </summary>
-		/// <param name="graphicsDevice">The graphics device.</param>
 		/// <param name="size">The width and height of a texture cube face in pixels.</param>
 		/// <param name="mipMap">
 		/// <see langword="true"/> to generate a full mipmap chain; otherwise <see langword="false"/>.
@@ -129,13 +128,11 @@ namespace Microsoft.Xna.Framework.Graphics
 		/// <param name="preferredFormat">The preferred format of the surface.</param>
 		/// <param name="preferredDepthFormat">The preferred format of the depth-stencil buffer.</param>
 		public RenderTargetCube(
-			GraphicsDevice graphicsDevice,
 			int size,
 			bool mipMap,
 			SurfaceFormat preferredFormat,
 			DepthFormat preferredDepthFormat
 		) : this(
-			graphicsDevice,
 			size,
 			mipMap,
 			preferredFormat,
@@ -158,7 +155,6 @@ namespace Microsoft.Xna.Framework.Graphics
 		/// <param name="preferredMultiSampleCount">The preferred number of multisample locations.</param>
 		/// <param name="usage">The usage mode of the render target.</param>
 		public RenderTargetCube(
-			GraphicsDevice graphicsDevice,
 			int size,
 			bool mipMap,
 			SurfaceFormat preferredFormat,
@@ -166,11 +162,12 @@ namespace Microsoft.Xna.Framework.Graphics
 			int preferredMultiSampleCount,
 			RenderTargetUsage usage
 		) : base(
-			graphicsDevice,
 			size,
 			mipMap,
 			preferredFormat
-		) {
+		)
+		{
+			var graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			DepthStencilFormat = preferredDepthFormat;
 			MultiSampleCount = FNA3D.FNA3D_GetMaxMultiSampleCount(
 				graphicsDevice.GLDevice,

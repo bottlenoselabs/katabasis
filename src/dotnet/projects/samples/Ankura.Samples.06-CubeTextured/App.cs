@@ -186,7 +186,7 @@ namespace Ankura.Samples.CubeTextured
             vertices[23].Color = color6;
             vertices[23].TextureCoordinates = new Vector2(leftU, bottomV);
 
-            var buffer = new VertexBuffer(GraphicsDevice, Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
@@ -208,7 +208,7 @@ namespace Ankura.Samples.CubeTextured
                 22, 21, 20, 23, 22, 20 // rectangle 6 of cube, top, counter-clockwise, base vertex: 20
             };
 
-            var buffer = new IndexBuffer(GraphicsDevice, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
+            var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(indices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
@@ -226,7 +226,7 @@ namespace Ankura.Samples.CubeTextured
                 Color.Black, Color.White, Color.Black, Color.White
             };
 
-            var texture = new Texture2D(GraphicsDevice, 4, 4);
+            var texture = new Texture2D(4, 4);
             ref var dataReference = ref MemoryMarshal.GetReference(pixelData);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<Color>() * pixelData.Length;

@@ -66,10 +66,7 @@ namespace Microsoft.Xna.Framework.Media
 		private void GL_initialize()
 		{
 			// Load the YUV->RGBA Effect
-			shaderProgram = new Effect(
-				currentDevice,
-				Resources.YUVToRGBAEffect
-			);
+			shaderProgram = new Effect(Resources.YUVToRGBAEffect);
 			unsafe
 			{
 				stateChangesPtr = Marshal.AllocHGlobal(
@@ -80,7 +77,6 @@ namespace Microsoft.Xna.Framework.Media
 			// Allocate the vertex buffer
 			vertBuffer = new VertexBufferBinding(
 				new VertexBuffer(
-					currentDevice,
 					VertexPositionTexture.VertexDeclaration,
 					4,
 					BufferUsage.WriteOnly
@@ -139,21 +135,18 @@ namespace Microsoft.Xna.Framework.Media
 				}
 			}
 			yuvTextures[0] = new Texture2D(
-				currentDevice,
 				yWidth,
 				yHeight,
 				false,
 				SurfaceFormat.Alpha8
 			);
 			yuvTextures[1] = new Texture2D(
-				currentDevice,
 				uvWidth,
 				uvHeight,
 				false,
 				SurfaceFormat.Alpha8
 			);
 			yuvTextures[2] = new Texture2D(
-				currentDevice,
 				uvWidth,
 				uvHeight,
 				false,
@@ -639,7 +632,6 @@ namespace Microsoft.Xna.Framework.Media
 				RenderTargetBinding overlap = videoTexture[0];
 				videoTexture[0] = new RenderTargetBinding(
 					new RenderTarget2D(
-						currentDevice,
 						Video.yWidth,
 						Video.yHeight,
 						false,

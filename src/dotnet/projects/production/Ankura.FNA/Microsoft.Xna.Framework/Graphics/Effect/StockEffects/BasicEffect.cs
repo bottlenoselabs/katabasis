@@ -359,8 +359,8 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <summary>
         /// Creates a new BasicEffect with default parameter settings.
         /// </summary>
-        public BasicEffect(GraphicsDevice device)
-            : base(device, Resources.BasicEffect)
+        public BasicEffect()
+            : base(Resources.BasicEffect)
         {
             CacheEffectParameters(null);
 

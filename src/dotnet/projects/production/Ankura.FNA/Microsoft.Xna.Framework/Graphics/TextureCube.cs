@@ -34,17 +34,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructor
 
 		public TextureCube(
-			GraphicsDevice graphicsDevice,
 			int size,
 			bool mipMap,
 			SurfaceFormat format
-		) {
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-
-			GraphicsDevice = graphicsDevice;
+		)
+		{
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			Size = size;
 			LevelCount = mipMap ? CalculateMipLevels(size) : 1;
 
@@ -293,7 +288,6 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Static TextureCube Extensions
 
 		public static TextureCube DDSFromStreamEXT(
-			GraphicsDevice graphicsDevice,
 			Stream stream
 		) {
 			TextureCube result;
@@ -316,7 +310,6 @@ namespace Microsoft.Xna.Framework.Graphics
 
 			// Allocate/Load texture
 			result = new TextureCube(
-				graphicsDevice,
 				width,
 				levels > 1,
 				format

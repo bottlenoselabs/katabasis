@@ -43,9 +43,9 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
             _indexBuffer = CreateIndexBuffer();
 
             _renderTargets = new RenderTarget2D[3];
-            _renderTargets[0] = new RenderTarget2D(GraphicsDevice, 800, 600);
-            _renderTargets[1] = new RenderTarget2D(GraphicsDevice, 800, 600);
-            _renderTargets[2] = new RenderTarget2D(GraphicsDevice, 800, 600);
+            _renderTargets[0] = new RenderTarget2D(800, 600);
+            _renderTargets[1] = new RenderTarget2D(800, 600);
+            _renderTargets[2] = new RenderTarget2D(800, 600);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -174,7 +174,7 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
             vertices[2].TextureCoordinates = new Vector2(0, 1);
             vertices[3].TextureCoordinates = new Vector2(1, 1);
 
-            var buffer = new VertexBuffer(GraphicsDevice, VertexTexture.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(VertexTexture.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<VertexTexture>() * vertices.Length;
@@ -260,7 +260,7 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
             vertices[23].Position = new Vector3(rightX, topY, backZ);
             vertices[23].Brightness = brightness6;
 
-            var buffer = new VertexBuffer(GraphicsDevice, VertexPositionBrightness.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(VertexPositionBrightness.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<VertexPositionBrightness>() * vertices.Length;
@@ -282,7 +282,7 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
                 22, 21, 20, 23, 22, 20 // rectangle 6 of cube, top, counter-clockwise, base vertex: 20
             };
 
-            var buffer = new IndexBuffer(GraphicsDevice, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
+            var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(indices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<ushort>() * indices.Length;

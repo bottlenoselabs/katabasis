@@ -94,12 +94,8 @@ namespace Microsoft.Xna.Framework.Content
 			AddContentManager(this);
 		}
 
-		public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
+		public ContentManager(string rootDirectory)
 		{
-			if (serviceProvider == null)
-			{
-				throw new ArgumentNullException("serviceProvider");
-			}
 			if (rootDirectory == null)
 			{
 				throw new ArgumentNullException("rootDirectory");
@@ -344,14 +340,12 @@ namespace Microsoft.Xna.Framework.Content
 						xnbHeader[3] == ' '	)
 					{
 						texture = Texture2D.DDSFromStreamEXT(
-							GetGraphicsDevice(),
 							stream
 						);
 					}
 					else
 					{
 						texture = Texture2D.FromStream(
-							GetGraphicsDevice(),
 							stream
 						);
 					}
@@ -361,7 +355,6 @@ namespace Microsoft.Xna.Framework.Content
 				else if (typeof(T) == typeof(TextureCube))
 				{
 					TextureCube texture = TextureCube.DDSFromStreamEXT(
-						GetGraphicsDevice(),
 						stream
 					);
 					texture.Name = assetName;
@@ -377,7 +370,7 @@ namespace Microsoft.Xna.Framework.Content
 				{
 					byte[] data = new byte[stream.Length];
 					stream.Read(data, 0, (int) stream.Length);
-					Effect effect = new Effect(GetGraphicsDevice(), data);
+					Effect effect = new Effect(data);
 					effect.Name = assetName;
 					result = effect;
 				}
@@ -389,7 +382,7 @@ namespace Microsoft.Xna.Framework.Content
 				else if (typeof(T) == typeof(Video))
 				{
 					// FIXME: Not using the stream! -flibit
-					result = new Video(modifiedAssetName, GetGraphicsDevice());
+					result = new Video(modifiedAssetName);
 					FNALoggerEXT.LogWarn(
 						"Video " +
 						modifiedAssetName +
@@ -445,15 +438,6 @@ namespace Microsoft.Xna.Framework.Content
 			{
 				disposableAssets.Add(disposable);
 			}
-		}
-
-		internal GraphicsDevice GetGraphicsDevice()
-		{
-			if (graphicsDevice == null)
-			{
-				graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
-			}
-			return graphicsDevice;
 		}
 
 		#endregion

@@ -149,7 +149,7 @@ namespace Ankura.Samples.ParticlesInstancing
             vertices[5].Position = new Vector3(0, r, 0);
             vertices[5].Color = Color.Magenta;
 
-            var buffer = new VertexBuffer(GraphicsDevice, VertexPositionColor.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(VertexPositionColor.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<VertexPositionColor>() * vertices.Length;
@@ -169,7 +169,7 @@ namespace Ankura.Samples.ParticlesInstancing
                 5, 3, 4, 5, 4, 1
             };
 
-            var buffer = new IndexBuffer(GraphicsDevice, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
+            var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(indices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
@@ -179,7 +179,7 @@ namespace Ankura.Samples.ParticlesInstancing
 
         private VertexBuffer CreateBufferInstanceData()
         {
-            var buffer = new DynamicVertexBuffer(GraphicsDevice, VertexPosition.Declaration, _maximumParticlesCount, BufferUsage.WriteOnly);
+            var buffer = new DynamicVertexBuffer(VertexPosition.Declaration, _maximumParticlesCount, BufferUsage.WriteOnly);
             return buffer;
         }
 

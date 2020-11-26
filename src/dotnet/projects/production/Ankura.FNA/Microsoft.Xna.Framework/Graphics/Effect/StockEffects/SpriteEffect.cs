@@ -28,8 +28,8 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <summary>
         /// Creates a new SpriteEffect.
         /// </summary>
-        public SpriteEffect(GraphicsDevice device)
-            : base(device, Resources.SpriteEffect)
+        public SpriteEffect()
+            : base(Resources.SpriteEffect)
         {
             CacheEffectParameters();
         }

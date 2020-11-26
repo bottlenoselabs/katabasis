@@ -256,8 +256,8 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <summary>
         /// Creates a new AlphaTestEffect with default parameter settings.
         /// </summary>
-        public AlphaTestEffect(GraphicsDevice device)
-            : base(device, Resources.AlphaTestEffect)
+        public AlphaTestEffect()
+            : base(Resources.AlphaTestEffect)
         {
             CacheEffectParameters();
         }

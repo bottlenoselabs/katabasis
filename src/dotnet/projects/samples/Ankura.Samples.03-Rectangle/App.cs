@@ -71,7 +71,7 @@ namespace Ankura.Samples.Rectangle
             vertices[3].Position = new Vector3(-0.5f, -0.5f, 0.5f);
             vertices[3].Color = Color.Yellow;
 
-            var buffer = new VertexBuffer(GraphicsDevice, Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
@@ -88,7 +88,7 @@ namespace Ankura.Samples.Rectangle
                 0, 2, 3 // triangle 2 indices
             };
 
-            var buffer = new IndexBuffer(GraphicsDevice, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
+            var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(indices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<ushort>() * indices.Length;

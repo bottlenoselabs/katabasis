@@ -213,14 +213,14 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		#region Public Constructor
 
-		public Effect(GraphicsDevice graphicsDevice, byte[] effectCode)
+		public Effect(byte[] effectCode)
 		{
-			GraphicsDevice = graphicsDevice;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 
 			// Send the blob to the GLDevice to be parsed/compiled
 			IntPtr effectData;
 			FNA3D.FNA3D_CreateEffect(
-				graphicsDevice.GLDevice,
+				GraphicsDevice.GLDevice,
 				effectCode,
 				effectCode.Length,
 				out glEffect,

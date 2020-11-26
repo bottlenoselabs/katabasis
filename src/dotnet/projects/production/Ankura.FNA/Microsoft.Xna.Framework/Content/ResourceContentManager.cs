@@ -26,7 +26,6 @@ namespace Microsoft.Xna.Framework.Content
 		#region Public Constructor
 
 		public ResourceContentManager(
-			IServiceProvider servicesProvider,
 			ResourceManager resource
 		) {
 			if (resource == null)

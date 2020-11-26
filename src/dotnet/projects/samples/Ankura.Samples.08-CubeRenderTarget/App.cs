@@ -194,7 +194,7 @@ namespace Ankura.Samples.CubeRenderTarget
             vertices[23].Position = new Vector3(rightX, topY, backZ);
             vertices[23].Color = color6;
 
-            var buffer = new VertexBuffer(GraphicsDevice, VertexPositionColor.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(VertexPositionColor.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<VertexPositionColor>() * vertices.Length;
@@ -285,7 +285,7 @@ namespace Ankura.Samples.CubeRenderTarget
             vertices[23].Position = new Vector3(rightX, topY, backZ);
             vertices[23].TextureCoordinates = new Vector2(leftU, bottomV);
 
-            var buffer = new VertexBuffer(GraphicsDevice, VertexPositionTexture.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(VertexPositionTexture.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<VertexPositionTexture>() * vertices.Length;
@@ -307,7 +307,7 @@ namespace Ankura.Samples.CubeRenderTarget
                 22, 21, 20, 23, 22, 20 // rectangle 6 of cube, top, counter-clockwise, base vertex: 20
             };
 
-            var buffer = new IndexBuffer(GraphicsDevice, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
+            var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(indices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
@@ -317,7 +317,7 @@ namespace Ankura.Samples.CubeRenderTarget
 
         private RenderTarget2D CreateRenderTarget()
         {
-            var renderTarget = new RenderTarget2D(GraphicsDevice, 512, 512);
+            var renderTarget = new RenderTarget2D(512, 512);
             return renderTarget;
         }
 

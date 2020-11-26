@@ -40,12 +40,10 @@ namespace Microsoft.Xna.Framework.Graphics
 		#region Public Constructors
 
 		public DynamicIndexBuffer(
-			GraphicsDevice graphicsDevice,
 			IndexElementSize indexElementSize,
 			int indexCount,
 			BufferUsage usage
 		) : base(
-			graphicsDevice,
 			indexElementSize,
 			indexCount,
 			usage,
@@ -54,12 +52,10 @@ namespace Microsoft.Xna.Framework.Graphics
 		}
 
 		public DynamicIndexBuffer(
-			GraphicsDevice graphicsDevice,
 			Type indexType,
 			int indexCount,
 			BufferUsage usage
 		) : base(
-			graphicsDevice,
 			indexType,
 			indexCount,
 			usage,

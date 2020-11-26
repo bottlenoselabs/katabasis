@@ -87,7 +87,7 @@ namespace Ankura.Samples.BufferOffsets
             vertices[6].Position = new Vector2(-0.25f, -0.55f);
             vertices[6].Color = Color.Yellow;
 
-            var buffer = new VertexBuffer(GraphicsDevice, Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
@@ -105,7 +105,7 @@ namespace Ankura.Samples.BufferOffsets
                 0, 2, 3 // triangle 2 of rectangle
             };
 
-            var buffer = new IndexBuffer(GraphicsDevice, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
+            var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(indices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<ushort>() * indices.Length;

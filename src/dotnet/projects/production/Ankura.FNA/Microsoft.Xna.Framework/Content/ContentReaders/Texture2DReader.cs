@@ -96,7 +96,7 @@ namespace Microsoft.Xna.Framework.Content
 			int levelCount = reader.ReadInt32();
 			int levelCountOutput = levelCount;
 
-			GraphicsDevice device = reader.ContentManager.GetGraphicsDevice();
+			GraphicsDevice device = GraphicsDeviceManager.Instance.GraphicsDevice;
 
 			// Check to see if we need to convert the surface data
 			SurfaceFormat convertedFormat = surfaceFormat;
@@ -116,7 +116,6 @@ namespace Microsoft.Xna.Framework.Content
 			if (existingInstance == null)
 			{
 				texture = new Texture2D(
-					device,
 					width,
 					height,
 					levelCountOutput > 1,

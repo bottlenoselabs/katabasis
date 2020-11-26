@@ -82,9 +82,9 @@ namespace Microsoft.Xna.Framework.Media
 
 		#region Internal Constructors
 
-		internal Video(string fileName, GraphicsDevice device)
+		internal Video(string fileName)
 		{
-			GraphicsDevice = device;
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 
 			Theorafile.th_pixel_fmt fmt;
 			Theorafile.tf_fopen(fileName, out theora);
@@ -124,13 +124,12 @@ namespace Microsoft.Xna.Framework.Media
 
 		internal Video(
 			string fileName,
-			GraphicsDevice device,
 			int durationMS,
 			int width,
 			int height,
 			float framesPerSecond,
 			VideoSoundtrackType soundtrackType
-		) : this(fileName, device) {
+		) : this(fileName) {
 			/* If you got here, you've still got the XNB file! Well done!
 			 * Except if you're running FNA, you're not using the WMV anymore.
 			 * But surely it's the same video, right...?

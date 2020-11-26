@@ -64,7 +64,7 @@ namespace Ankura.Samples.Triangle
             vertices[2].Position = new Vector3(-0.5f, -0.5f, 0.5f);
             vertices[2].Color = Color.Blue;
 
-            var buffer = new VertexBuffer(GraphicsDevice, Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             ref var dataReference = ref MemoryMarshal.GetReference(vertices);
             var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
             var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
