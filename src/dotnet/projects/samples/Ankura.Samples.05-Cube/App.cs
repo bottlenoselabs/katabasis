@@ -24,7 +24,7 @@ namespace Ankura.Samples.Cube
         public App()
         {
             Content.RootDirectory = "Content";
-            Window.Title = "DNA Samples: Cube";
+            Window.Title = "Ankura Samples: Cube";
         }
 
         protected override void LoadContent()

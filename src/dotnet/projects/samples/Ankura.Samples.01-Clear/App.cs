@@ -14,7 +14,7 @@ namespace Ankura.Samples.Clear
 
         public App()
         {
-            Window.Title = "DNA Samples: Clear";
+            Window.Title = "Ankura Samples: Clear";
 
             _clearColor = Color.Red.ToVector4();
         }

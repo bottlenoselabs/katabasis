@@ -29,7 +29,7 @@ namespace Ankura.Samples.CubeRenderTarget
         public App()
         {
             Content.RootDirectory = "Content";
-            Window.Title = "DNA Samples: Cube Render Target (RT)";
+            Window.Title = "Ankura Samples: Cube Render Target (RT)";
         }
 
         protected override void LoadContent()

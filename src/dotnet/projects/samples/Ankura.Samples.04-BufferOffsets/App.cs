@@ -18,6 +18,7 @@ namespace Ankura.Samples.BufferOffsets
 
         public App()
         {
+            Window.Title = "Ankura Samples: Buffer Offsets";
             Content.RootDirectory = "Content";
         }
 

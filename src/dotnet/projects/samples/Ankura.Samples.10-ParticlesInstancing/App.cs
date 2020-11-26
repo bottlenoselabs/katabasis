@@ -32,7 +32,7 @@ namespace Ankura.Samples.ParticlesInstancing
         public App()
         {
             Content.RootDirectory = "Content";
-            Window.Title = "DNA Samples: Particles Instancing";
+            Window.Title = "Ankura Samples: Particles Instancing";
         }
 
         protected override void LoadContent()

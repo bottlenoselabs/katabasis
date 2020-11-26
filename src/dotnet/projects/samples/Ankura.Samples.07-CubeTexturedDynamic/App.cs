@@ -35,7 +35,7 @@ namespace Ankura.Samples.CubeTextured
         public App()
         {
             Content.RootDirectory = "Content";
-            Window.Title = "DNA Samples: Cube Textured Dynamic";
+            Window.Title = "Ankura Samples: Cube Textured Dynamic";
         }
 
         protected override void LoadContent()

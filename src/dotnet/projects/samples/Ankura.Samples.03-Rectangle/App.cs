@@ -18,7 +18,7 @@ namespace Ankura.Samples.Rectangle
 
         public App()
         {
-            Window.Title = "DNA Samples: Rectangle";
+            Window.Title = "Ankura Samples: Rectangle";
             Content.RootDirectory = "Content";
         }
 
