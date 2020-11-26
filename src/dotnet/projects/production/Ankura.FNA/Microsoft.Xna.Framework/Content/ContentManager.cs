@@ -50,8 +50,7 @@ namespace Microsoft.Xna.Framework.Content
 		#endregion
 
 		#region Private Variables
-
-		private GraphicsDevice graphicsDevice;
+		
 		private Dictionary<string, object> loadedAssets = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 		private List<IDisposable> disposableAssets = new List<IDisposable>();
 		private bool disposed;
