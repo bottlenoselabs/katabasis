@@ -52,12 +52,6 @@ For a complete list of the release versions, see the [tags on this repository](h
 
 ## License
 
-`Ankura` is licensed under the Microsoft Public License (MS-PL). See the [LICENSE file](LICENSE) for details.
+`Ankura` is licensed under the Microsoft Public License (MS-PL). See the [LICENSE](LICENSE) file for details.
 
-`Ankura` uses LzxDecoder.cs, released under a dual MS-PL/LGPL license.
-See lzxdecoder.LICENSE for details.
-
-`Ankura` uses code from the Mono.Xna project, released under the MIT license.
-See monoxna.LICENSE for details.
-
-`Ankura` uses FAudio, FNA3D, SDL2-CS, and Theorafile, all of which are released under the zib license. See license files in `./ext` for details.
+`Ankura` uses [FAudio](https://github.com/FNA-XNA/FAudio), [FNA3D](https://github.com/FNA-XNA/FNA3D), [SDL2-CS](https://github.com/flibitijibibo/SDL2-CS), and [Theorafile](https://github.com/FNA-XNA/Theorafile), all of which are released under the zib license. See license files in the repositories linked above for details.
