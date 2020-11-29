@@ -144,8 +144,8 @@ namespace Ankura
             _indexBuffer.SetData(_indexData);
 
             _spriteEffect = new Effect(_spriteEffectCode);
-            _spriteMatrixTransform = _spriteEffect.Parameters["MatrixTransform"]._values;
-            _spriteEffectPass = _spriteEffect.CurrentTechnique.Passes[0];
+            _spriteMatrixTransform = _spriteEffect.Parameters!["MatrixTransform"]!._values;
+            _spriteEffectPass = _spriteEffect.CurrentTechnique!.Passes[0]!;
 
             _beginCalled = false;
             _numSprites = 0;
@@ -1362,10 +1362,10 @@ namespace Ankura
 
         private void PrepRenderState()
         {
-            GraphicsDevice.BlendState = _blendState;
+            GraphicsDevice.BlendState = _blendState!;
             GraphicsDevice.SamplerStates[0] = _samplerState;
-            GraphicsDevice.DepthStencilState = _depthStencilState;
-            GraphicsDevice.RasterizerState = _rasterizerState;
+            GraphicsDevice.DepthStencilState = _depthStencilState!;
+            GraphicsDevice.RasterizerState = _rasterizerState!;
 
             GraphicsDevice.SetVertexBuffer(_vertexBuffer);
             GraphicsDevice.Indices = _indexBuffer;
@@ -1405,7 +1405,7 @@ namespace Ankura
             GraphicsDevice.Textures[0] = texture;
             if (_customEffect != null)
             {
-                foreach (EffectPass pass in _customEffect.CurrentTechnique.Passes)
+                foreach (EffectPass pass in _customEffect.CurrentTechnique!.Passes)
                 {
                     pass.Apply();
                     GraphicsDevice.DrawIndexedPrimitives(

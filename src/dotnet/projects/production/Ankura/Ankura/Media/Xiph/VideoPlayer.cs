@@ -396,7 +396,7 @@ namespace Ankura
             }
         }
 
-        private void OnBufferRequest(object sender, EventArgs args)
+        private void OnBufferRequest(object? sender, EventArgs args)
         {
             var samples = Theorafile.tf_readaudio(
                 Video!._theora,

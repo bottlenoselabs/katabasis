@@ -88,7 +88,7 @@ namespace Ankura
             var graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
             var oldBlendState = graphicsDevice.BlendState;
 
-            AlphaBlendFunction = oldBlendState.AlphaBlendFunction;
+            AlphaBlendFunction = oldBlendState!.AlphaBlendFunction;
             AlphaDestinationBlend = oldBlendState.AlphaDestinationBlend;
             AlphaSourceBlend = oldBlendState.AlphaSourceBlend;
             ColorBlendFunction = oldBlendState.ColorBlendFunction;
@@ -182,7 +182,7 @@ namespace Ankura
             var graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
             var oldDepthStencilState = graphicsDevice.DepthStencilState;
 
-            DepthBufferEnable = oldDepthStencilState.DepthBufferEnable;
+            DepthBufferEnable = oldDepthStencilState!.DepthBufferEnable;
             DepthBufferWriteEnable = oldDepthStencilState.DepthBufferWriteEnable;
             DepthBufferFunction = oldDepthStencilState.DepthBufferFunction;
             StencilEnable = oldDepthStencilState.StencilEnable;
@@ -276,7 +276,7 @@ namespace Ankura
             var graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
             var oldRasterizerState = graphicsDevice.RasterizerState;
 
-            CullMode = oldRasterizerState.CullMode;
+            CullMode = oldRasterizerState!.CullMode;
             FillMode = oldRasterizerState.FillMode;
             DepthBias = oldRasterizerState.DepthBias;
             MultiSampleAntiAlias = oldRasterizerState.MultiSampleAntiAlias;
@@ -430,7 +430,7 @@ namespace Ankura
                     var binding = bindings[i];
                     hash = (hash * HashFactor) + (ulong)binding.InstanceFrequency;
                     hash = (hash * HashFactor) +
-                           GetVertexDeclarationHash(binding.VertexBuffer.VertexDeclaration, vertexShader);
+                           GetVertexDeclarationHash(binding.VertexBuffer!.VertexDeclaration, vertexShader);
                 }
             }
 

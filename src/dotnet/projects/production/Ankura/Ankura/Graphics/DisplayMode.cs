@@ -45,7 +45,12 @@ namespace Ankura
 
         public override bool Equals(object? obj)
         {
-            return obj as DisplayMode == this;
+            if (!(obj is DisplayMode displayMode))
+            {
+                return false;
+            }
+
+            return displayMode == this;
         }
 
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "Mutable value type.")]

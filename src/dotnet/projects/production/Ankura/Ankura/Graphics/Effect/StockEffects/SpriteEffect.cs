@@ -38,7 +38,7 @@ namespace Ankura
 
         private void CacheEffectParameters()
         {
-            _matrixParam = Parameters["MatrixTransform"];
+            _matrixParam = Parameters!["MatrixTransform"]!;
         }
     }
 }

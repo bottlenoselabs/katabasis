@@ -606,7 +606,7 @@ namespace Ankura
             return titleLocation;
         }
 
-        public static void ProgramExit(object sender, EventArgs e)
+        public static void ProgramExit(object? sender, EventArgs e)
         {
             AudioEngine.ProgramExiting = true;
 

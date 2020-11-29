@@ -122,11 +122,11 @@ namespace Ankura
 
         public SamplerStateCollection VertexSamplerStates { get; }
 
-        public BlendState BlendState { get; set; }
+        public BlendState? BlendState { get; set; }
 
-        public DepthStencilState DepthStencilState { get; set; }
+        public DepthStencilState? DepthStencilState { get; set; }
 
-        public RasterizerState RasterizerState { get; set; }
+        public RasterizerState? RasterizerState { get; set; }
 
         public Rectangle ScissorRectangle
         {
@@ -1199,7 +1199,7 @@ namespace Ankura
             {
                 FNA3D.FNA3D_SetBlendState(
                     GLDevice,
-                    ref BlendState._state);
+                    ref BlendState!._state);
                 _currentBlend = BlendState;
             }
 
@@ -1207,14 +1207,14 @@ namespace Ankura
             {
                 FNA3D.FNA3D_SetDepthStencilState(
                     GLDevice,
-                    ref DepthStencilState._state);
+                    ref DepthStencilState!._state);
                 _currentDepthStencil = DepthStencilState;
             }
 
             // Always update RasterizerState, as it depends on other device states
             FNA3D.FNA3D_ApplyRasterizerState(
                 GLDevice,
-                ref RasterizerState._state);
+                ref RasterizerState!._state);
 
             for (var sampler = 0; sampler < _modifiedSamplers.Length; sampler += 1)
             {
@@ -1261,8 +1261,8 @@ namespace Ankura
             {
                 for (var i = 0; i < _vertexBufferCount; i += 1)
                 {
-                    VertexBuffer buffer = _vertexBufferBindings[i].VertexBuffer;
-                    b[i].VertexBuffer = buffer._buffer;
+                    var buffer = _vertexBufferBindings[i].VertexBuffer;
+                    b[i].VertexBuffer = buffer!._buffer;
                     b[i].VertexDeclaration.VertexStride = buffer.VertexDeclaration.VertexStride;
                     b[i].VertexDeclaration.ElementCount = buffer.VertexDeclaration._elements.Length;
                     b[i].VertexDeclaration.Elements = buffer.VertexDeclaration._elementsPin;

@@ -86,11 +86,11 @@ namespace Ankura
             // Double the ugly, double the fun!
             INTERNAL_parseEffectStruct(effectData);
 
-            var parameters = cloneSource.Parameters;
+            var parameters = cloneSource.Parameters!;
             // Copy texture parameters, if applicable
-            for (var i = 0; i < parameters!.Count; i += 1)
+            for (var i = 0; i < parameters.Count; i += 1)
             {
-                Parameters![i]._texture = parameters[i]._texture;
+                Parameters![i]!._texture = parameters[i]!._texture;
             }
 
             // The default technique is whatever the current technique was.

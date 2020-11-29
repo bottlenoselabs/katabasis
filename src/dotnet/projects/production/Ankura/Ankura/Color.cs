@@ -63,7 +63,6 @@ namespace Ankura
             set => packedValue = (packedValue & 0x00ffffff) | ((uint)value << 24);
         }
 
-        [CLSCompliant(false)]
         public uint PackedValue
         {
             get => packedValue;

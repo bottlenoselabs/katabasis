@@ -14,7 +14,7 @@ namespace Ankura
 
 #pragma warning disable 0067
         // We never lose data, but lol XNA4 compliance -flibit
-        public event EventHandler<EventArgs> ContentLost;
+        public event EventHandler<EventArgs>? ContentLost;
 #pragma warning restore 0067
 
         public DynamicVertexBuffer(

@@ -295,22 +295,22 @@ namespace Ankura
             }
         }
 
-        protected virtual void OnDeviceCreated(object sender, EventArgs args)
+        protected virtual void OnDeviceCreated(object? sender, EventArgs args)
         {
             DeviceCreated?.Invoke(sender, args);
         }
 
-        protected virtual void OnDeviceDisposing(object sender, EventArgs args)
+        protected virtual void OnDeviceDisposing(object? sender, EventArgs args)
         {
             DeviceDisposing?.Invoke(sender, args);
         }
 
-        protected virtual void OnDeviceReset(object sender, EventArgs args)
+        protected virtual void OnDeviceReset(object? sender, EventArgs args)
         {
             DeviceReset?.Invoke(sender, args);
         }
 
-        protected virtual void OnDeviceResetting(object sender, EventArgs args)
+        protected virtual void OnDeviceResetting(object? sender, EventArgs args)
         {
             DeviceResetting?.Invoke(sender, args);
         }
@@ -338,7 +338,7 @@ namespace Ankura
             throw new NotImplementedException();
         }
 
-        private void OnClientSizeChanged(object sender, EventArgs e)
+        private void OnClientSizeChanged(object? sender, EventArgs e)
         {
             var window = sender as GameWindow;
             var size = window!.ClientBounds;
