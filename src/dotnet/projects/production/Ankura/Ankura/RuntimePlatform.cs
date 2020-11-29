@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Ankura
 {
     /// <summary>
-    ///     Defines the target platforms available with `DNA`.
+    ///     Defines the runtime platforms.
     /// </summary>
     [Flags]
     [SuppressMessage("ReSharper", "MemberCanBeInternal", Justification = "Public API.")]
