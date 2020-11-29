@@ -1,17 +1,150 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<!-- MSBuild project settings -->
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<Platforms>x64</Platforms>
-		<RootNamespace />
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
+    <!-- MSBuild project settings -->
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace />
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
 
-	<!-- Custom project settings -->
-	<PropertyGroup>
-		<EnableAnalyzers>true</EnableAnalyzers>
-		<IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
-	</PropertyGroup>
-	
+    <!-- Custom project settings -->
+    <PropertyGroup>
+        <EnableAnalyzers>true</EnableAnalyzers>
+        <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
+        <RepositoryRootPath>../../../../../</RepositoryRootPath>
+    </PropertyGroup>
+    
+    <!-- Stock effects files emedded into assembly -->
+    <ItemGroup>
+        <EmbeddedResource Include="AnkuraGraphics\Effect\StockEffects\FXB\*.fxb" />
+    </ItemGroup>
+
+    <!-- C# wrappers for native libraries -->
+    <ItemGroup>
+        <Compile Include="$(RepositoryRootPath)ext/FAudio/csharp/FAudio.cs">
+            <Link>FAudio.cs</Link>
+        </Compile>
+        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2.cs">
+            <Link>SDL2\SDL2.cs</Link>
+        </Compile>
+        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2_image.cs">
+            <Link>SDL2\SDL2_image.cs</Link>
+        </Compile>
+        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2_mixer.cs">
+            <Link>SDL2\SDL2_mixer.cs</Link>
+        </Compile>
+        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2_ttf.cs">
+            <Link>SDL2\SDL2_ttf.cs</Link>
+        </Compile>
+        <Compile Include="$(RepositoryRootPath)/ext/Theorafile/csharp/Theorafile.cs">
+            <Link>Theorafile.cs</Link>
+        </Compile>
+    </ItemGroup>
+
+    <!-- FAudio native library -->
+    <ItemGroup>
+        <Content Include="$(RepositoryRootPath)/lib/FAudio/win-x64/FAudio.dll">
+            <Link>libs/win-x64/FAudio.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x64/native/FAudio.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FAudio/win-x86/FAudio.dll">
+            <Link>libs/win-x86/FAudio.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/FAudio.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FAudio/osx-x64/libFAudio.0.dylib">
+            <Link>libs/osx-x64/libFAudio.0.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/osx-x64/native/libFAudio.0.dylib</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FAudio/linux-x64/libFAudio.so.0">
+            <Link>libs/linux-x64/libFAudio.so.0</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/linux-x64/native/libFAudio.so.0</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <!-- FNA3D native library -->
+    <ItemGroup>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/win-x64/FNA3D.dll">
+            <Link>libs/win-x64/FNA3D.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x64/native/FNA3D.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/win-x86/FNA3D.dll">
+            <Link>libs/win-x86/FNA3D.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/FNA3D.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libFNA3D.0.dylib">
+            <Link>libs/osx-x64/libFNA3D.0.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/osx-x64/native/libFNA3D.0.dylib</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libMoltenVK.dylib">
+            <Link>libs/osx-x64/libMoltenVK.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/osx-x64/native/libMoltenVK.dylib</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/osx-x64/libvulkan.1.dylib">
+            <Link>libs/osx-x64/libvulkan.1.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/osx-x64/native/libvulkan.1.dylib</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/FNA3D/linux-x64/libFNA3D.so.0">
+            <Link>libs/linux-x64/libFNA3D.so.0</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/linux-x64/native/libFNA3D.so.0</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <!-- SDL2 native library -->
+    <ItemGroup>
+        <Content Include="$(RepositoryRootPath)/lib/SDL2/win-x64/SDL2.dll">
+            <Link>libs/win-x64/SDL2.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x64/native/SDL2.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/SDL2/win-x86/SDL2.dll">
+            <Link>libs/win-x86/SDL2.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/SDL2.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/SDL2/osx-x64/libSDL2-2.0.0.dylib">
+            <Link>libs/osx-x64/libSDL2-2.0.0.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/osx-x64/native/libSDL2-2.0.0.dylib</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/SDL2/linux-x64/libSDL2-2.0.so.0">
+            <Link>libs/linux-x64/libSDL2-2.0.so.0</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/linux-x64/native/libSDL2-2.0.so.0</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <!-- theorafile native library -->
+    <ItemGroup>
+        <Content Include="$(RepositoryRootPath)/lib/theorafile/win-x64/libtheorafile.dll">
+            <Link>libs/win-x64/libtheorafile.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x64/native/libtheorafile.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/theorafile/win-x86/libtheorafile.dll">
+            <Link>libs/win-x86/libtheorafile.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x86/native/libtheorafile.dll</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/theorafile/osx-x64/libtheorafile.dylib">
+            <Link>libs/osx-x64/libtheorafile.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/osx-x64/native/libtheorafile.dylib</PackagePath>
+        </Content>
+        <Content Include="$(RepositoryRootPath)/lib/theorafile/linux-x64/libtheorafile.so">
+            <Link>libs/linux-x64/libtheorafile.so</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/linux-x64/native/libtheorafile.so</PackagePath>
+        </Content>
+    </ItemGroup>
+
 </Project>
