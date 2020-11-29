@@ -19,7 +19,6 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura.FNA\Ankura.FNA.csproj" />
         <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
     </ItemGroup>
 

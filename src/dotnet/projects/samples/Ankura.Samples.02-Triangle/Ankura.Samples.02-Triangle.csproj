@@ -19,15 +19,14 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura.FNA\Ankura.FNA.csproj" />
         <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
     </ItemGroup>
-    
+
     <!-- Assets -->
     <ItemGroup>
-      <None Update="Content/Shaders/**/*.xnb">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="Assets/Shaders/**/*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

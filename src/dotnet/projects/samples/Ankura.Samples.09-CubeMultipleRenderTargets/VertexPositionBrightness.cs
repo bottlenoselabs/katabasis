@@ -2,8 +2,6 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System.Numerics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Ankura.Samples.CubeMultipleRenderTargets
 {

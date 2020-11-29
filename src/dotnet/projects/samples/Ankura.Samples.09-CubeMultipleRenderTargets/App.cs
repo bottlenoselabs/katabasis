@@ -2,11 +2,10 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Ankura.Samples.CubeMultipleRenderTargets
 {
@@ -29,7 +28,6 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
 
         public App()
         {
-            Content.RootDirectory = "Content";
             Window.Title = "Ankura Samples: Cube Multiple Render Targets (MRT)";
         }
 
@@ -148,17 +146,17 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
 
         private Effect CreateShaderOffScreen()
         {
-            return Content.Load<Effect>("Shaders/OffScreen");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/OffScreen.fxb"));
         }
 
         private Effect CreateShaderFullScreen()
         {
-            return Content.Load<Effect>("Shaders/FullScreen");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/FullScreen.fxb"));
         }
 
         private Effect CreateShaderDebug()
         {
-            return Content.Load<Effect>("Shaders/Debug");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/Debug.fxb"));
         }
 
         private unsafe VertexBuffer CreateVertexBufferTexture()

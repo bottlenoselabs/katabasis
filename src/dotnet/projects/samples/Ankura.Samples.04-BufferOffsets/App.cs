@@ -2,11 +2,10 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Ankura.Samples.BufferOffsets
 {
@@ -19,7 +18,6 @@ namespace Ankura.Samples.BufferOffsets
         public App()
         {
             Window.Title = "Ankura Samples: Buffer Offsets";
-            Content.RootDirectory = "Content";
         }
 
         protected override void LoadContent()
@@ -60,9 +58,9 @@ namespace Ankura.Samples.BufferOffsets
             GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 3, 0, 4, 3, 2);
         }
 
-        private Effect CreateShader()
+        private static Effect CreateShader()
         {
-            return Content.Load<Effect>("Shaders/Main");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));
         }
 
         private unsafe VertexBuffer CreateVertexBuffer()

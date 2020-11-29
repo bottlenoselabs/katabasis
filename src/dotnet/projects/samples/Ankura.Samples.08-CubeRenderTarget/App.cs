@@ -2,13 +2,10 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using VertexPositionColor = Ankura.Samples.CubeRenderTarget.VertexPositionColor;
-using VertexPositionTexture = Ankura.Samples.CubeRenderTarget.VertexPositionTexture;
 
 namespace Ankura.Samples.CubeRenderTarget
 {
@@ -28,7 +25,6 @@ namespace Ankura.Samples.CubeRenderTarget
 
         public App()
         {
-            Content.RootDirectory = "Content";
             Window.Title = "Ankura Samples: Cube Render Target (RT)";
         }
 
@@ -109,12 +105,12 @@ namespace Ankura.Samples.CubeRenderTarget
 
         private Effect CreateShaderVertexPositionColor()
         {
-            return Content.Load<Effect>("Shaders/VertexPositionColor");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/VertexPositionColor.fxb"));
         }
 
         private Effect CreateShaderVertexPositionTexture()
         {
-            return Content.Load<Effect>("Shaders/VertexPositionTexture");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/VertexPositionTexture.fxb"));
         }
 
         private unsafe VertexBuffer CreateVertexBufferPositionColor()
@@ -236,7 +232,6 @@ namespace Ankura.Samples.CubeRenderTarget
             vertices[3].Position = new Vector3(leftX, topY, backZ);
             vertices[3].TextureCoordinates = new Vector2(leftU, bottomV);
             // rectangle 2; front
-            var color2 = Color.White;
             vertices[4].Position = new Vector3(leftX, bottomY, frontZ);
             vertices[4].TextureCoordinates = new Vector2(leftU, topV);
             vertices[5].Position = new Vector3(rightX, bottomY, frontZ);
@@ -246,7 +241,6 @@ namespace Ankura.Samples.CubeRenderTarget
             vertices[7].Position = new Vector3(leftX, topY, frontZ);
             vertices[7].TextureCoordinates = new Vector2(leftU, bottomV);
             // rectangle 3; left
-            var color3 = Color.White;
             vertices[8].Position = new Vector3(leftX, bottomY, backZ);
             vertices[8].TextureCoordinates = new Vector2(leftU, topV);
             vertices[9].Position = new Vector3(leftX, topY, backZ);
@@ -256,7 +250,6 @@ namespace Ankura.Samples.CubeRenderTarget
             vertices[11].Position = new Vector3(leftX, bottomY, frontZ);
             vertices[11].TextureCoordinates = new Vector2(leftU, bottomV);
             // rectangle 4; right
-            var color4 = Color.White;
             vertices[12].Position = new Vector3(rightX, bottomY, backZ);
             vertices[12].TextureCoordinates = new Vector2(leftU, topV);
             vertices[13].Position = new Vector3(rightX, topY, backZ);
@@ -266,7 +259,6 @@ namespace Ankura.Samples.CubeRenderTarget
             vertices[15].Position = new Vector3(rightX, bottomY, frontZ);
             vertices[15].TextureCoordinates = new Vector2(leftU, bottomV);
             // rectangle 5; bottom
-            var color5 = Color.White;
             vertices[16].Position = new Vector3(leftX, bottomY, backZ);
             vertices[16].TextureCoordinates = new Vector2(leftU, topV);
             vertices[17].Position = new Vector3(leftX, bottomY, frontZ);

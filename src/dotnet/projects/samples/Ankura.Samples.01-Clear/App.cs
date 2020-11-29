@@ -1,10 +1,7 @@
 // Copyright (c) Craftwork Games. All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
-using System;
 using System.Numerics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Ankura.Samples.Clear
 {
@@ -17,11 +14,6 @@ namespace Ankura.Samples.Clear
             Window.Title = "Ankura Samples: Clear";
 
             _clearColor = Color.Red.ToVector4();
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
         }
 
         protected override void Draw(GameTime gameTime)

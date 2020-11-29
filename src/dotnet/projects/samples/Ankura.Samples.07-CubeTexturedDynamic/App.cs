@@ -2,11 +2,10 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Ankura.Samples.CubeTextured
 {
@@ -34,7 +33,6 @@ namespace Ankura.Samples.CubeTextured
 
         public App()
         {
-            Content.RootDirectory = "Content";
             Window.Title = "Ankura Samples: Cube Textured Dynamic";
         }
 
@@ -161,9 +159,9 @@ namespace Ankura.Samples.CubeTextured
             }
         }
 
-        private Effect CreateShader()
+        private static Effect CreateShader()
         {
-            return Content.Load<Effect>("Shaders/Main");
+            return Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));
         }
 
         private unsafe VertexBuffer CreateVertexBuffer()
