@@ -19,28 +19,6 @@
         <EmbeddedResource Include="AnkuraGraphics\Effect\StockEffects\FXB\*.fxb" />
     </ItemGroup>
 
-    <!-- C# wrappers for native libraries -->
-    <ItemGroup>
-        <Compile Include="$(RepositoryRootPath)ext/FAudio/csharp/FAudio.cs">
-            <Link>FAudio.cs</Link>
-        </Compile>
-        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2.cs">
-            <Link>SDL2\SDL2.cs</Link>
-        </Compile>
-        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2_image.cs">
-            <Link>SDL2\SDL2_image.cs</Link>
-        </Compile>
-        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2_mixer.cs">
-            <Link>SDL2\SDL2_mixer.cs</Link>
-        </Compile>
-        <Compile Include="$(RepositoryRootPath)/ext/SDL2-CS/src/SDL2_ttf.cs">
-            <Link>SDL2\SDL2_ttf.cs</Link>
-        </Compile>
-        <Compile Include="$(RepositoryRootPath)/ext/Theorafile/csharp/Theorafile.cs">
-            <Link>Theorafile.cs</Link>
-        </Compile>
-    </ItemGroup>
-
     <!-- FAudio native library -->
     <ItemGroup>
         <Content Include="$(RepositoryRootPath)/lib/FAudio/win-x64/FAudio.dll">
