@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -33,8 +34,6 @@ namespace Ankura
         [SuppressMessage("ReSharper", "CommentTypo", Justification = "Flags.")]
         public static IntPtr LoadLibrary(string libraryFilePath)
         {
-            EnsureIs64BitArchitecture();
-
             return RuntimePlatform switch
             {
                 RuntimePlatform.Linux => libdl.dlopen(libraryFilePath, 0x101),
@@ -149,16 +148,17 @@ namespace Ankura
 
             var runtimeIdentifier = GetRuntimeIdentifier();
 
-            return _librarySearchDirectories = new[]
-            {
-                Environment.CurrentDirectory,
-                AppDomain.CurrentDomain.BaseDirectory!,
-                $"libs/{runtimeIdentifier}",
-                $"runtimes/{runtimeIdentifier}/native"
-            };
+            var librarySearchDirectories = new List<string>();
+
+            librarySearchDirectories.Add(Environment.CurrentDirectory);
+            librarySearchDirectories.Add(AppDomain.CurrentDomain.BaseDirectory);
+            librarySearchDirectories.Add($"libs/{runtimeIdentifier}");
+            librarySearchDirectories.Add($"runtimes/{runtimeIdentifier}/native");
+
+            return _librarySearchDirectories = librarySearchDirectories.ToArray();
         }
 
-        private static string GetLibraryPath(string libraryName)
+        private static bool TryGetLibraryPath(string libraryName, out string libraryFilePath)
         {
             var libraryPrefix = RuntimePlatform == RuntimePlatform.Windows ? string.Empty : "lib";
             var libraryFileExtension = GetLibraryFileExtension(RuntimePlatform);
@@ -167,13 +167,14 @@ namespace Ankura
             var directories = GetSearchDirectories();
             foreach (var directory in directories)
             {
-                if (TryFindLibraryPath(directory, libraryFileExtension, libraryFileName, out var result))
+                if (TryFindLibraryPath(directory, libraryFileExtension, libraryFileName, out libraryFilePath))
                 {
-                    return result;
+                    return true;
                 }
             }
 
-            throw new Exception($"Could not find the library path for {libraryName}.");
+            libraryFilePath = string.Empty;
+            return false;
         }
 
         private static bool TryFindLibraryPath(
@@ -206,19 +207,20 @@ namespace Ankura
 
         private static IntPtr Resolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
-            var libraryFilePath = GetLibraryPath(libraryName);
-            var libraryHandle = LoadLibrary(libraryFilePath);
-            return libraryHandle;
-        }
+            IntPtr libraryHandle;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void EnsureIs64BitArchitecture()
-        {
-            var runtimeArchitecture = RuntimeInformation.OSArchitecture;
-            if (runtimeArchitecture == Architecture.Arm || runtimeArchitecture == Architecture.X86)
+            if (TryGetLibraryPath(libraryName, out var libraryFilePath))
             {
-                throw new NotSupportedException("32-bit architecture is not supported.");
+                libraryHandle = LoadLibrary(libraryFilePath);
+                return libraryHandle;
             }
+
+            if (NativeLibrary.TryLoad(libraryName, assembly, searchPath, out libraryHandle))
+            {
+                return libraryHandle;
+            }
+
+            throw new Exception($"Could not find the native library: {libraryName}. Did you forget to place a native library in the correct file path?");
         }
     }
 }
