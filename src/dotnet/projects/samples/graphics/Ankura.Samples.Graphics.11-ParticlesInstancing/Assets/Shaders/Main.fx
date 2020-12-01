@@ -3,7 +3,7 @@ float4x4 WorldViewProjectionMatrix;
 struct VertexShaderInputVertex
 {
     float4 Position : POSITION0;
-	float4 Color : COLOR0;
+    float4 Color : COLOR0;
 };
 
 struct VertexShaderInputInstance
@@ -14,7 +14,7 @@ struct VertexShaderInputInstance
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
-	float4 Color : COLOR0;
+    float4 Color : COLOR0;
 };
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInputVertex inputVertex, VertexShaderInputInstance inputInstance)
@@ -36,7 +36,7 @@ technique Technique1
 {
     pass Pass1
     {
-		VertexShader = compile vs_3_0 VertexShaderFunction();
-		PixelShader = compile ps_3_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }
