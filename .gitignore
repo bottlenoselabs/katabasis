@@ -2,6 +2,9 @@
 bin/
 obj/
 
+# Local libraries on disk
+lib/
+
 # JetBrains
 .idea/
 
