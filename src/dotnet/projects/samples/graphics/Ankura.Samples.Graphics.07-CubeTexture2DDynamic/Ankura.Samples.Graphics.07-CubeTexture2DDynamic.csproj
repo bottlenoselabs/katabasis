@@ -8,7 +8,7 @@
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RootNamespace>Ankura.Samples</RootNamespace>
-        <AssemblyName>Ankura.Samples.Graphics.CubeTextured</AssemblyName>
+        <AssemblyName>Ankura.Samples.Graphics.CubeTexture2DDynamic</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->

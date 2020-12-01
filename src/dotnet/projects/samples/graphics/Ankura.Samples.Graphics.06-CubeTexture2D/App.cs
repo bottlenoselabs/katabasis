@@ -23,7 +23,7 @@ namespace Ankura.Samples
 
         public App()
         {
-            Window.Title = "Ankura Samples; Graphics: Cube Textured";
+            Window.Title = "Ankura Samples; Graphics: Cube Texture 2D";
         }
 
         protected override void LoadContent()

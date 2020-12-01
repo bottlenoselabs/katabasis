@@ -33,7 +33,7 @@ namespace Ankura.Samples
 
         public App()
         {
-            Window.Title = "Ankura Samples; Graphics: Cube Textured Dynamic";
+            Window.Title = "Ankura Samples; Graphics: Cube Texture 2D Dynamic";
         }
 
         protected override void LoadContent()
