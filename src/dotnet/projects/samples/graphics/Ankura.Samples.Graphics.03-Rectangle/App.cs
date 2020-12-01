@@ -1,11 +1,8 @@
 // Copyright (c) Craftwork Games. All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
-using System;
 using System.IO;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Ankura.Samples
 {
@@ -38,7 +35,7 @@ namespace Ankura.Samples
 
             // XNA crap: we bind our shader program by going through "techniques" and "passes"
             //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shader.Techniques[0].Passes[0].Apply();
+            _shader!.Techniques![0]!.Passes[0]!.Apply();
 
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
@@ -55,9 +52,9 @@ namespace Ankura.Samples
             return Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));
         }
 
-        private unsafe VertexBuffer CreateVertexBuffer()
+        private static VertexBuffer CreateVertexBuffer()
         {
-            var vertices = (Span<Vertex>)stackalloc Vertex[4];
+            var vertices = new Vertex[4];
 
             // vertices of quad in clip-space (after model-to-world x world-to-view x view-to-projection transform)
             vertices[0].Position = new Vector3(-0.5f, 0.5f, 0.5f);
@@ -70,27 +67,21 @@ namespace Ankura.Samples
             vertices[3].Color = Color.Yellow;
 
             var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(vertices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(vertices);
 
             return buffer;
         }
 
-        private unsafe IndexBuffer CreateIndexBuffer()
+        private static IndexBuffer CreateIndexBuffer()
         {
-            var indices = (Span<ushort>)stackalloc ushort[]
+            var indices = new ushort[]
             {
                 0, 1, 2, // triangle 1 indices
                 0, 2, 3 // triangle 2 indices
             };
 
             var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(indices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(indices);
             return buffer;
         }
     }

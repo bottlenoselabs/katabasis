@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.BufferOffsets
+namespace Ankura.Samples
 {
     internal struct Vertex : IVertexType
     {

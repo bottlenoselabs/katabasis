@@ -4,8 +4,6 @@
 using System;
 using System.IO;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Ankura.Samples
 {
@@ -18,7 +16,7 @@ namespace Ankura.Samples
 
         private Matrix4x4 _viewProjectionMatrix;
         private Matrix4x4 _worldViewProjectionMatrix;
-        private float _scale;
+        private float _textureCoordinatesScale;
         private float _rotationX;
         private float _rotationY;
 
@@ -53,7 +51,7 @@ namespace Ankura.Samples
             var shaderParameterWorldViewProjectionMatrix = _shader.Parameters!["WorldViewProjectionMatrix"];
             shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
             var shaderParameterScale = _shader.Parameters!["Scale"];
-            shaderParameterScale!.SetValue(_scale);
+            shaderParameterScale!.SetValue(_textureCoordinatesScale);
             // bind texture
             GraphicsDevice.Textures[0] = _texture;
 
@@ -74,9 +72,7 @@ namespace Ankura.Samples
         {
             CreateViewProjectionMatrix();
             RotateModel(gameTime);
-
-            var totalSeconds = gameTime.TotalGameTime.TotalSeconds;
-            _scale = (float)Math.Cos(totalSeconds);
+            CalculateTextureCoordinatesScale(gameTime);
         }
 
         private static Effect CreateShader()
@@ -84,9 +80,9 @@ namespace Ankura.Samples
             return Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));
         }
 
-        private static unsafe VertexBuffer CreateVertexBuffer()
+        private static VertexBuffer CreateVertexBuffer()
         {
-            var vertices = (Span<Vertex>)stackalloc Vertex[24];
+            var vertices = new Vertex[24];
 
             // model vertices of the cube using standard cartesian coordinate system:
             //    +Z is towards your eyes, -Z is towards the screen
@@ -132,18 +128,15 @@ namespace Ankura.Samples
             vertices[23].Position = new Vector3(rightX, topY, backZ);
 
             var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(vertices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(vertices);
 
             return buffer;
         }
 
-        private static unsafe IndexBuffer CreateIndexBuffer()
+        private static IndexBuffer CreateIndexBuffer()
         {
             // the indices of the cube, here we define the triangles using the vertices from zero-based index
-            var indices = (Span<ushort>)stackalloc ushort[]
+            var indices = new ushort[]
             {
                 0, 1, 2, 0, 2, 3, // rectangle 1 of cube, back, clockwise, base vertex: 0
                 6, 5, 4, 7, 6, 4, // rectangle 2 of cube, front, counter-clockwise, base vertex: 4
@@ -154,16 +147,13 @@ namespace Ankura.Samples
             };
 
             var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(indices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(indices);
             return buffer;
         }
 
         private static Texture3D CreateTexture()
         {
-            const int textureSize = 16;
+            const int textureSize = 32;
             var pixelData = new Color[(int)Math.Pow(textureSize, 3)];
             for (var x = 0; x < textureSize; x++)
             {
@@ -195,8 +185,7 @@ namespace Ankura.Samples
 
         private static uint XORShift32(ref uint state)
         {
-            // This is a fast but unsecure pseudo random number generator.
-            //     For more details see: https://en.wikipedia.org/wiki/Xorshift
+            // This is a fast but unsecure pseudo random number generator: https://en.wikipedia.org/wiki/Xorshift
             var x = state;
             x ^= x << 13;
             x ^= x >> 17;
@@ -238,6 +227,17 @@ namespace Ankura.Samples
             var modelToWorldMatrix = rotationMatrixX * rotationMatrixY;
 
             _worldViewProjectionMatrix = modelToWorldMatrix * _viewProjectionMatrix;
+        }
+
+        private void CalculateTextureCoordinatesScale(GameTime gameTime)
+        {
+            var totalSeconds = gameTime.TotalGameTime.TotalSeconds;
+            var radians = totalSeconds;
+            // [0, 1] sinusoid = (cos(x - Pi) + 1) * 0.5 from [0, 2c * Pi] where c is an integer
+            var scale = (float)((Math.Cos(radians - MathHelper.Pi) + 1.0) * 0.5);
+            // perform Hermite lerp to emphasis start and end positions: https://thebookofshaders.com/glossary/?search=smoothstep
+            var smoothScale = MathHelper.SmoothStep(0.02f, 1.0f, scale);
+            _textureCoordinatesScale = smoothScale;
         }
     }
 }

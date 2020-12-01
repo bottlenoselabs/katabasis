@@ -45,10 +45,10 @@ namespace Ankura.Samples
 
             // XNA crap: we bind our shader program by going through "techniques" and "passes"
             //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shader.Techniques[0].Passes[0].Apply();
+            _shader!.Techniques![0]!.Passes![0]!.Apply();
             // bind shader uniform
-            var shaderParameterWorldViewProjectionMatrix = _shader.Parameters["WorldViewProjectionMatrix"];
-            shaderParameterWorldViewProjectionMatrix.SetValue(_worldViewProjectionMatrix);
+            var shaderParameterWorldViewProjectionMatrix = _shader!.Parameters!["WorldViewProjectionMatrix"];
+            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
             // bind texture
             GraphicsDevice.Textures[0] = _texture;
 
@@ -214,9 +214,9 @@ namespace Ankura.Samples
             return buffer;
         }
 
-        private unsafe Texture2D CreateTexture()
+        private static Texture2D CreateTexture()
         {
-            var pixelData = (Span<Color>)stackalloc Color[]
+            var pixels = new[]
             {
                 Color.White, Color.Black, Color.White, Color.Black,
                 Color.Black, Color.White, Color.Black, Color.White,
@@ -225,10 +225,7 @@ namespace Ankura.Samples
             };
 
             var texture = new Texture2D(4, 4);
-            ref var dataReference = ref MemoryMarshal.GetReference(pixelData);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<Color>() * pixelData.Length;
-            texture.SetDataPointerEXT(0, null, dataPointer, dataSize);
+            texture.SetData(pixels);
             return texture;
         }
 
@@ -236,11 +233,11 @@ namespace Ankura.Samples
         {
             var viewport = GraphicsDevice.Viewport;
 
-            var fieldOfViewDegrees = 40.0f;
-            var fieldOfViewRadians = (float)(fieldOfViewDegrees * Math.PI / 180);
+            const float fieldOfViewDegrees = 40.0f;
+            const float fieldOfViewRadians = (float)(fieldOfViewDegrees * Math.PI / 180);
             var aspectRatio = (float)viewport.Width / viewport.Height;
-            var nearPlaneDistance = 0.01f;
-            var farPlaneDistance = 10.0f;
+            const float nearPlaneDistance = 0.01f;
+            const float farPlaneDistance = 10.0f;
             var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
 
             var cameraPosition = new Vector3(0.0f, 1.5f, 6.0f);

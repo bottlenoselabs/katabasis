@@ -4,8 +4,6 @@
 using System;
 using System.IO;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Ankura.Samples
 {
@@ -52,10 +50,10 @@ namespace Ankura.Samples
 
             // XNA crap: we bind our shader program by going through "techniques" and "passes"
             //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shaderVertexPositionColor.Techniques[0].Passes[0].Apply();
+            _shaderVertexPositionColor!.Techniques![0]!.Passes![0]!.Apply();
             // bind shader uniform
-            var shaderParameterWorldViewProjectionMatrix = _shaderVertexPositionColor.Parameters["WorldViewProjectionMatrix"];
-            shaderParameterWorldViewProjectionMatrix.SetValue(_worldViewProjectionMatrix);
+            var shaderParameterWorldViewProjectionMatrix = _shaderVertexPositionColor!.Parameters!["WorldViewProjectionMatrix"];
+            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
 
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
@@ -77,10 +75,10 @@ namespace Ankura.Samples
 
             // XNA crap: we bind our shader program by going through "techniques" and "passes"
             //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shaderVertexPositionTexture.Techniques[0].Passes[0].Apply();
+            _shaderVertexPositionTexture!.Techniques![0]!.Passes![0]!.Apply();
             // bind shader uniform
-            shaderParameterWorldViewProjectionMatrix = _shaderVertexPositionTexture.Parameters["WorldViewProjectionMatrix"];
-            shaderParameterWorldViewProjectionMatrix.SetValue(_worldViewProjectionMatrix);
+            shaderParameterWorldViewProjectionMatrix = _shaderVertexPositionTexture!.Parameters!["WorldViewProjectionMatrix"];
+            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
             // bind texture
             GraphicsDevice.Textures[0] = _renderTarget;
 
@@ -103,19 +101,19 @@ namespace Ankura.Samples
             RotateModel(gameTime);
         }
 
-        private Effect CreateShaderVertexPositionColor()
+        private static Effect CreateShaderVertexPositionColor()
         {
             return Effect.FromStream(File.OpenRead("Assets/Shaders/VertexPositionColor.fxb"));
         }
 
-        private Effect CreateShaderVertexPositionTexture()
+        private static Effect CreateShaderVertexPositionTexture()
         {
             return Effect.FromStream(File.OpenRead("Assets/Shaders/VertexPositionTexture.fxb"));
         }
 
-        private unsafe VertexBuffer CreateVertexBufferPositionColor()
+        private static VertexBuffer CreateVertexBufferPositionColor()
         {
-            var vertices = (Span<VertexPositionColor>)stackalloc VertexPositionColor[24];
+            var vertices = new VertexPositionColor[24];
 
             // model vertices of the cube using standard cartesian coordinate system:
             //    +Z is towards your eyes, -Z is towards the screen
@@ -191,17 +189,14 @@ namespace Ankura.Samples
             vertices[23].Color = color6;
 
             var buffer = new VertexBuffer(VertexPositionColor.Declaration, vertices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(vertices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<VertexPositionColor>() * vertices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(vertices);
 
             return buffer;
         }
 
-        private unsafe VertexBuffer CreateVertexBufferPositionTexture()
+        private static VertexBuffer CreateVertexBufferPositionTexture()
         {
-            var vertices = (Span<VertexPositionTexture>)stackalloc VertexPositionTexture[24];
+            var vertices = new VertexPositionTexture[24];
 
             // model vertices of the cube using standard cartesian coordinate system:
             //    +Z is towards your eyes, -Z is towards the screen
@@ -278,18 +273,15 @@ namespace Ankura.Samples
             vertices[23].TextureCoordinates = new Vector2(leftU, bottomV);
 
             var buffer = new VertexBuffer(VertexPositionTexture.Declaration, vertices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(vertices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<VertexPositionTexture>() * vertices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(vertices);
 
             return buffer;
         }
 
-        private unsafe IndexBuffer CreateIndexBuffer()
+        private static IndexBuffer CreateIndexBuffer()
         {
             // the indices of the cube, here we define the triangles using the vertices from zero-based index
-            var indices = (Span<ushort>)stackalloc ushort[]
+            var indices = new ushort[]
             {
                 0, 1, 2, 0, 2, 3, // rectangle 1 of cube, back, clockwise, base vertex: 0
                 6, 5, 4, 7, 6, 4, // rectangle 2 of cube, front, counter-clockwise, base vertex: 4
@@ -300,14 +292,11 @@ namespace Ankura.Samples
             };
 
             var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(indices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(indices);
             return buffer;
         }
 
-        private RenderTarget2D CreateRenderTarget()
+        private static RenderTarget2D CreateRenderTarget()
         {
             var renderTarget = new RenderTarget2D(512, 512);
             return renderTarget;
@@ -317,12 +306,13 @@ namespace Ankura.Samples
         {
             var viewport = GraphicsDevice.Viewport;
 
-            var fieldOfViewDegrees = 40.0f;
-            var fieldOfViewRadians = (float)(fieldOfViewDegrees * Math.PI / 180);
+            const float fieldOfViewDegrees = 40.0f;
+            const float fieldOfViewRadians = (float)(fieldOfViewDegrees * Math.PI / 180);
             var aspectRatio = (float)viewport.Width / viewport.Height;
-            var nearPlaneDistance = 0.01f;
-            var farPlaneDistance = 10.0f;
-            var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
+            const float nearPlaneDistance = 0.01f;
+            const float farPlaneDistance = 10.0f;
+            var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(
+                fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
 
             var cameraPosition = new Vector3(0.0f, 1.5f, 6.0f);
             var cameraTarget = Vector3.Zero;
