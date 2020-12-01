@@ -8,13 +8,13 @@ sampler2D TextureSampler = sampler_state
 struct VertexShaderInput
 {
     float4 Position : POSITION0;
-	float2 TextureCoordinates : TEXCOORD0;
+    float2 TextureCoordinates : TEXCOORD0;
 };
 
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
-	float2 TextureCoordinates : TEXCOORD0;
+    float2 TextureCoordinates : TEXCOORD0;
 };
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
@@ -36,7 +36,7 @@ technique Technique1
 {
     pass Pass1
     {
-		VertexShader = compile vs_3_0 VertexShaderFunction();
-		PixelShader = compile ps_3_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }

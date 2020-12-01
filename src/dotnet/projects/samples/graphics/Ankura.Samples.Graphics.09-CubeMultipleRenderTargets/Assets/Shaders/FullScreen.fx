@@ -35,6 +35,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
     VertexShaderOutput output;
 
+    // move from texture coordinates uv in [0, 1], to clip space positions xy in [-1, 1]
     output.Position = float4(input.TextureCoordinates * 2.0 - 1.0, 0.5, 1.0);
     output.TextureCoordinates0 = input.TextureCoordinates + float2(Offset.x, 0.0);
     output.TextureCoordinates1 = input.TextureCoordinates + float2(0.0, Offset.y);
@@ -57,7 +58,7 @@ technique Technique1
 {
     pass Pass1
     {
-		VertexShader = compile vs_3_0 VertexShaderFunction();
-		PixelShader = compile ps_3_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }
