@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankura.Samples.Graphics.09-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankura.Samples.Graphics.10-ParticlesInstancing", "projects\samples\graphics\Ankura.Samples.Graphics.10-ParticlesInstancing\Ankura.Samples.Graphics.10-ParticlesInstancing.csproj", "{D5EF0542-EA48-4B70-9F74-001AEF165F20}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Input", "Input", "{39F33FD1-0DEA-48D0-9415-C1932E2DEC43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankura.Samples.Input.01-Mouse", "projects\samples\input\Ankura.Samples.Input.01-Mouse\Ankura.Samples.Input.01-Mouse.csproj", "{CBFF83A4-7493-4D89-83C1-78D759EEDD94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -171,6 +175,18 @@ Global
 		{D5EF0542-EA48-4B70-9F74-001AEF165F20}.Debug|AnyCPU.Build.0 = Debug|Any CPU
 		{D5EF0542-EA48-4B70-9F74-001AEF165F20}.Release|AnyCPU.ActiveCfg = Release|Any CPU
 		{D5EF0542-EA48-4B70-9F74-001AEF165F20}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Debug|x86.Build.0 = Debug|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Release|x86.ActiveCfg = Release|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Release|x86.Build.0 = Release|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Debug|x64.Build.0 = Debug|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Release|x64.ActiveCfg = Release|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Release|x64.Build.0 = Release|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94}.Release|AnyCPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = FNA.csproj
@@ -188,5 +204,7 @@ Global
 		{C90A643E-AAE0-4637-93EF-15D550CE9227} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
 		{63BD819A-A61B-409E-92BC-B9E1A4C0A575} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
 		{D5EF0542-EA48-4B70-9F74-001AEF165F20} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
+		{39F33FD1-0DEA-48D0-9415-C1932E2DEC43} = {35910BEA-C89D-4FAD-985E-DCC6E35B63D7}
+		{CBFF83A4-7493-4D89-83C1-78D759EEDD94} = {39F33FD1-0DEA-48D0-9415-C1932E2DEC43}
 	EndGlobalSection
 EndGlobal
