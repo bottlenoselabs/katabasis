@@ -1,6 +1,6 @@
 # Ankura Mirgration Guide for FNA Developers
 
-> :notebook: The following guide is for the latest version of Ankura `0.1` and the latest version of FNA `20.11`.
+> :notebook: The following guide is for the latest version of Ankura and the latest version of FNA.
 
 Since Ankura is a fork of FNA, the differences between Ankura and FNA is just differences between the XNA API from the side of C#; all native libraries remain the same.
 
@@ -64,6 +64,7 @@ The following types have been deleted in comparision to the XNA API. If you need
 - `GameServiceContainer`
 - `IGraphicsDeviceManager`
 - `IGraphicsDeviceService`
+
 
 ### Removed math types: `Point`, `Plane`, `Ray`, `BoundingFrustum`, `BoundingBox`, `BoundingSphere`, `ContainmentType`, `PlaneIntersectionType`, `PlaneIntersectionType`, `Curve`, `CurveKey`, `CurveKeyCollection`, `CurveLoopType`, and `CurveTangent`
 
