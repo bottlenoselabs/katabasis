@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.Cube</RootNamespace>
-        <AssemblyName>Ankura.Samples.Cube</AssemblyName>
+        <RootNamespace>Ankura.Samples.ParticlesInstancing</RootNamespace>
+        <AssemblyName>Ankura.Samples.ParticlesInstancing</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->
@@ -19,7 +19,7 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
+        <ProjectReference Include="..\..\..\production\Ankura\Ankura.csproj" />
     </ItemGroup>
 
     <!-- Assets -->

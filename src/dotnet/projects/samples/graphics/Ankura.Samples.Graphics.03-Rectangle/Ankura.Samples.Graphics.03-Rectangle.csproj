@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.CubeTextured</RootNamespace>
-        <AssemblyName>Ankura.Samples.CubeTextured</AssemblyName>
+        <RootNamespace>Ankura.Samples.Rectangle</RootNamespace>
+        <AssemblyName>Ankura.Samples.Rectangle</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->
@@ -19,7 +19,7 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
+        <ProjectReference Include="..\..\..\production\Ankura\Ankura.csproj" />
     </ItemGroup>
 
     <!-- Assets -->

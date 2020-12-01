@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.Clear</RootNamespace>
-        <AssemblyName>Ankura.Samples.Clear</AssemblyName>
+        <RootNamespace>Ankura.Samples.Cube</RootNamespace>
+        <AssemblyName>Ankura.Samples.Cube</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->
@@ -19,7 +19,14 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
+        <ProjectReference Include="..\..\..\production\Ankura\Ankura.csproj" />
+    </ItemGroup>
+
+    <!-- Assets -->
+    <ItemGroup>
+        <None Update="Assets/Shaders/**/*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.BufferOffsets</RootNamespace>
-        <AssemblyName>Ankura.Samples.BufferOffsets</AssemblyName>
+        <RootNamespace>Ankura.Samples.CubeRenderTarget</RootNamespace>
+        <AssemblyName>Ankura.Samples.CubeRenderTarget</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->
@@ -19,7 +19,7 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
+        <ProjectReference Include="..\..\..\production\Ankura\Ankura.csproj" />
     </ItemGroup>
 
     <!-- Assets -->

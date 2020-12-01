@@ -30,7 +30,7 @@ namespace Ankura.Samples.ParticlesInstancing
 
         public App()
         {
-            Window.Title = "Ankura Samples: Particles Instancing";
+            Window.Title = "Ankura Samples; Graphics: Particles Instancing";
         }
 
         protected override void LoadContent()

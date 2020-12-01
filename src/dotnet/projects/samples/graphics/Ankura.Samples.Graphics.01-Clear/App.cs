@@ -11,7 +11,7 @@ namespace Ankura.Samples.Clear
 
         public App()
         {
-            Window.Title = "Ankura Samples: Clear";
+            Window.Title = "Ankura Samples; Graphics: Clear";
 
             _clearColor = Color.Red.ToVector4();
         }

@@ -17,7 +17,7 @@ namespace Ankura.Samples.BufferOffsets
 
         public App()
         {
-            Window.Title = "Ankura Samples: Buffer Offsets";
+            Window.Title = "Ankura Samples; Graphics: Buffer Offsets";
         }
 
         protected override void LoadContent()

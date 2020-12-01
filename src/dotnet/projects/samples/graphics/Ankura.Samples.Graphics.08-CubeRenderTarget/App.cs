@@ -25,7 +25,7 @@ namespace Ankura.Samples.CubeRenderTarget
 
         public App()
         {
-            Window.Title = "Ankura Samples: Cube Render Target (RT)";
+            Window.Title = "Ankura Samples; Graphics: Cube Render Target (RT)";
         }
 
         protected override void LoadContent()

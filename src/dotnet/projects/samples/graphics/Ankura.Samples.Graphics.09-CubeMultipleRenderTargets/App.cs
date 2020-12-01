@@ -28,7 +28,7 @@ namespace Ankura.Samples.CubeMultipleRenderTargets
 
         public App()
         {
-            Window.Title = "Ankura Samples: Cube Multiple Render Targets (MRT)";
+            Window.Title = "Ankura Samples; Graphics: Cube Multiple Render Targets (MRT)";
         }
 
         protected override void LoadContent()

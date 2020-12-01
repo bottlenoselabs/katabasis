@@ -21,9 +21,19 @@ namespace Ankura.Samples.CubeTextured
         private float _rotationX;
         private float _rotationY;
 
+        private int _updateCount;
+        private readonly Color _livingColor = Color.White;
+        private readonly Color _deadColor = Color.Black;
+
+        // width/height must be power of 2
+        private const int _textureWidth = 64;
+        private const int _textureHeight = 64;
+        private readonly Color[] _textureData = new Color[_textureWidth * _textureHeight];
+        private readonly Random _random = new Random();
+
         public App()
         {
-            Window.Title = "Ankura Samples: Cube Textured";
+            Window.Title = "Ankura Samples; Graphics: Cube Textured Dynamic";
         }
 
         protected override void LoadContent()
@@ -32,10 +42,15 @@ namespace Ankura.Samples.CubeTextured
             _vertexBuffer = CreateVertexBuffer();
             _indexBuffer = CreateIndexBuffer();
             _texture = CreateTexture();
+
+            ResetGameOfLife();
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            // we update the texture before drawing so we ensure we only upload once per frame
+            _texture.SetData(_textureData);
+
             GraphicsDevice.Clear(Color.Gray);
 
             // bind vertex buffer
@@ -69,6 +84,79 @@ namespace Ankura.Samples.CubeTextured
         {
             CreateViewProjectionMatrix();
             RotateModel(gameTime);
+            UpdateGameOfLife();
+        }
+
+        private void UpdateGameOfLife()
+        {
+            for (var y = 0; y < _textureHeight; y++)
+            {
+                for (var x = 0; x < _textureWidth; x++)
+                {
+                    var livingNeighboursCount = 0;
+                    for (var ny = -1; ny < 2; ny++)
+                    {
+                        for (var nx = -1; nx < 2; nx++)
+                        {
+                            if (nx == 0 && ny == 0)
+                            {
+                                continue;
+                            }
+
+                            var indexY = (y + ny) & (_textureWidth - 1);
+                            var indexX = (x + nx) & (_textureHeight - 1);
+                            if (_textureData[(indexY * _textureHeight) + indexX] == _livingColor)
+                            {
+                                livingNeighboursCount++;
+                            }
+                        }
+                    }
+
+                    // any live cell...
+                    var index = (y * _textureHeight) + x;
+                    ref var color = ref _textureData[index];
+                    if (color == _livingColor)
+                    {
+                        if (livingNeighboursCount < 2)
+                        {
+                            // ... with fewer than 2 living neighbours dies, as if caused by underpopulation
+                            color = _deadColor;
+                        }
+                        else if (livingNeighboursCount > 3)
+                        {
+                            // ... with more than 3 living neighbours dies, as if caused by overpopulation
+                            color = _deadColor;
+                        }
+                    }
+                    else if (livingNeighboursCount == 3)
+                    {
+                        // any dead cell with exactly 3 living neighbours becomes a live cell, as if by reproduction
+                        color = _livingColor;
+                    }
+                }
+            }
+
+            if (_updateCount++ <= 240)
+            {
+                return;
+            }
+
+            ResetGameOfLife();
+            _updateCount = 0;
+        }
+
+        private void ResetGameOfLife()
+        {
+            for (var y = 0; y < _textureHeight; y++)
+            {
+                for (var x = 0; x < _textureWidth; x++)
+                {
+                    var index = (y * _textureHeight) + x;
+                    ref var color = ref _textureData[index];
+
+                    color = _random.Next(0, 255 + 1) > 230 ? _livingColor : _deadColor;
+                }
+            }
         }
 
         private static Effect CreateShader()
@@ -214,21 +302,9 @@ namespace Ankura.Samples.CubeTextured
             return buffer;
         }
 
-        private unsafe Texture2D CreateTexture()
+        private Texture2D CreateTexture()
         {
-            var pixelData = (Span<Color>)stackalloc Color[]
-            {
-                Color.White, Color.Black, Color.White, Color.Black,
-                Color.Black, Color.White, Color.Black, Color.White,
-                Color.White, Color.Black, Color.White, Color.Black,
-                Color.Black, Color.White, Color.Black, Color.White
-            };
-
-            var texture = new Texture2D(4, 4);
-            ref var dataReference = ref MemoryMarshal.GetReference(pixelData);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<Color>() * pixelData.Length;
-            texture.SetDataPointerEXT(0, null, dataPointer, dataSize);
+            var texture = new Texture2D(_textureWidth, _textureHeight);
             return texture;
         }
 
@@ -255,8 +331,8 @@ namespace Ankura.Samples.CubeTextured
         {
             var deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            _rotationX += 1.0f * deltaSeconds;
-            _rotationY += 2.0f * deltaSeconds;
+            _rotationX += 0.5f * deltaSeconds;
+            _rotationY += 1.0f * deltaSeconds;
             var rotationMatrixX = Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, _rotationX);
             var rotationMatrixY = Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, _rotationY);
             var modelToWorldMatrix = rotationMatrixX * rotationMatrixY;

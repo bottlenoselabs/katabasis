@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.CubeRenderTarget</RootNamespace>
-        <AssemblyName>Ankura.Samples.CubeRenderTarget</AssemblyName>
+        <RootNamespace>Ankura.Samples.Triangle</RootNamespace>
+        <AssemblyName>Ankura.Samples.Triangle</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->
@@ -19,7 +19,7 @@
 
     <!-- Project references -->
     <ItemGroup>
-        <ProjectReference Include="..\..\production\Ankura\Ankura.csproj" />
+        <ProjectReference Include="..\..\..\production\Ankura\Ankura.csproj" />
     </ItemGroup>
 
     <!-- Assets -->
