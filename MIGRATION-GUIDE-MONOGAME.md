@@ -1,6 +1,6 @@
 # Ankura Mirgration Guide for MonoGame Developers
 
-> :notebook: The following guide is for the latest version of Ankura `0.1` and the latest version of MonoGame `3.8`.
+> :notebook: The following guide is for the latest version of Ankura [*released* version](https://github.com/craftworkgames/Ankura/tags) and the latest version of MonoGame.
 
 Since Ankura is a fork of FNA, the differences between Ankura and MonoGame are the same as the differences between MonoGame and FNA, and then FNA to Ankura. It's recommended you migrate to FNA as the first step and then follow the FNA migration guide: [MIGRATION-GUIDE-FNA.md](MIGRATION-GUIDE-FNA.md).
 

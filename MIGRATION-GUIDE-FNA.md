@@ -1,6 +1,6 @@
 # Ankura Mirgration Guide for FNA Developers
 
-> :notebook: The following guide is for the latest version of Ankura and the latest version of FNA.
+> :notebook: The following guide is for the latest [*released* version](https://github.com/craftworkgames/Ankura/tags) of Ankura and the latest version of FNA.
 
 Since Ankura is a fork of FNA, the differences between Ankura and FNA is just differences between the XNA API from the side of C#; all native libraries remain the same.
 
