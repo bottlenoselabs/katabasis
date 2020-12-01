@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.Clear
+namespace Ankura.Samples
 {
     public class App : Game
     {

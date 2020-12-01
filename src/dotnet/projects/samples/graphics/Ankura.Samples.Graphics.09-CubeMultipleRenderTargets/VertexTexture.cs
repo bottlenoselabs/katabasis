@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.CubeMultipleRenderTargets
+namespace Ankura.Samples
 {
     internal struct VertexTexture : IVertexType
     {

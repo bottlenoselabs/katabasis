@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.CubeTextured</RootNamespace>
-        <AssemblyName>Ankura.Samples.CubeTextured</AssemblyName>
+        <RootNamespace>Ankura.Samples</RootNamespace>
+        <AssemblyName>Ankura.Samples.Graphics.CubeTexturedDynamic</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->

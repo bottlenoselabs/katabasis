@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.Triangle
+namespace Ankura.Samples
 {
     internal struct Vertex : IVertexType
     {

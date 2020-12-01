@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.ParticlesInstancing</RootNamespace>
-        <AssemblyName>Ankura.Samples.ParticlesInstancing</AssemblyName>
+        <RootNamespace>Ankura.Samples</RootNamespace>
+        <AssemblyName>Ankura.Samples.Graphics.ParticlesInstancing</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->

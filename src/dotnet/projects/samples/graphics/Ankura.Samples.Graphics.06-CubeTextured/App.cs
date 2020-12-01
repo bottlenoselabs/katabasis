@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ankura.Samples.CubeTextured
+namespace Ankura.Samples
 {
     public class App : Game
     {

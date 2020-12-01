@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.Cube
+namespace Ankura.Samples
 {
     internal struct Vertex : IVertexType
     {

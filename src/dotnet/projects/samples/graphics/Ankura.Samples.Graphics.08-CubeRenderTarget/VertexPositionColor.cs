@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.CubeRenderTarget
+namespace Ankura.Samples
 {
     internal struct VertexPositionColor : IVertexType
     {

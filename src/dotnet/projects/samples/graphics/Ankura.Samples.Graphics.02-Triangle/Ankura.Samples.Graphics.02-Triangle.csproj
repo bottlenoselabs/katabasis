@@ -7,8 +7,8 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Ankura.Samples.Triangle</RootNamespace>
-        <AssemblyName>Ankura.Samples.Triangle</AssemblyName>
+        <RootNamespace>Ankura.Samples</RootNamespace>
+        <AssemblyName>Ankura.Samples.Graphics.Triangle</AssemblyName>
     </PropertyGroup>
 
     <!-- Custom project settings -->
