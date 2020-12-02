@@ -113,6 +113,7 @@ namespace Ankura
             TextureAddressMode addressW)
             : this()
         {
+            GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
             Name = name;
             Filter = filter;
             AddressU = addressU;
