@@ -76,9 +76,9 @@ namespace Ankura.Samples
             return Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));
         }
 
-        private unsafe VertexBuffer CreateVertexBuffer()
+        private static VertexBuffer CreateVertexBuffer()
         {
-            var vertices = (Span<Vertex>)stackalloc Vertex[24];
+            var vertices = new Vertex[24];
 
             // model vertices of the cube using standard cartesian coordinate system:
             //    +Z is towards your eyes, -Z is towards the screen
@@ -185,18 +185,15 @@ namespace Ankura.Samples
             vertices[23].TextureCoordinates = new Vector2(leftU, bottomV);
 
             var buffer = new VertexBuffer(Vertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(vertices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<Vertex>() * vertices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(vertices);
 
             return buffer;
         }
 
-        private unsafe IndexBuffer CreateIndexBuffer()
+        private static IndexBuffer CreateIndexBuffer()
         {
             // the indices of the cube, here we define the triangles using the vertices from zero-based index
-            var indices = (Span<ushort>)stackalloc ushort[]
+            var indices = new ushort[]
             {
                 0, 1, 2, 0, 2, 3, // rectangle 1 of cube, back, clockwise, base vertex: 0
                 6, 5, 4, 7, 6, 4, // rectangle 2 of cube, front, counter-clockwise, base vertex: 4
@@ -207,10 +204,7 @@ namespace Ankura.Samples
             };
 
             var buffer = new IndexBuffer(typeof(ushort), indices.Length, BufferUsage.WriteOnly);
-            ref var dataReference = ref MemoryMarshal.GetReference(indices);
-            var dataPointer = (IntPtr)Unsafe.AsPointer(ref dataReference);
-            var dataSize = Marshal.SizeOf<ushort>() * indices.Length;
-            buffer.SetDataPointerEXT(0, dataPointer, dataSize, SetDataOptions.None);
+            buffer.SetData(indices);
             return buffer;
         }
 
