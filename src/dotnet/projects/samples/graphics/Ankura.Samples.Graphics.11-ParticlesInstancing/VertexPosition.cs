@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Ankura.Samples.ParticlesInstancing
+namespace Ankura.Samples
 {
     internal struct VertexPosition : IVertexType
     {

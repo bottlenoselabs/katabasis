@@ -48,17 +48,20 @@ namespace Ankura.Samples
             // bind index buffer
             GraphicsDevice.Indices = _indexBuffer;
 
-            // XNA crap: we bind our shader program by going through "techniques" and "passes"
-            //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shaderVertexPositionColor!.Techniques![0]!.Passes![0]!.Apply();
-            // bind shader uniform
-            var shaderParameterWorldViewProjectionMatrix = _shaderVertexPositionColor!.Parameters!["WorldViewProjectionMatrix"];
-            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
-
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
+            // bind shader uniform
+            var shaderParameterWorldViewProjectionMatrix = _shaderVertexPositionColor!.Parameters!["WorldViewProjectionMatrix"];
+            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
+
+            // XNA crap: we bind our shader program by going through "techniques" and "passes",
+            //     please don't use these, you should only ever have use for one effect technique and one effect pass.
+            // NOTE: This applies any changes we have set for our render pipeline including:
+            //     vertex buffers, index buffers, textures, samplers, blend, rasterizer, depth stencil, etc.
+            _shaderVertexPositionColor!.Techniques![0]!.Passes![0]!.Apply();
 
             // XNA crap: also we say the topology type of the vertices in the render loop; rasterizer should know this
             //    plus, in XNA we have `DrawIndexedPrimitives` and `DrawPrimitives`; we really only need `DrawElements`

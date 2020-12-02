@@ -56,17 +56,20 @@ namespace Ankura.Samples
             // bind index buffer
             GraphicsDevice.Indices = _indexBuffer;
 
-            // XNA crap: we bind our shader program by going through "techniques" and "passes"
-            //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shaderOffScreen!.Techniques![0]!.Passes![0]!.Apply();
-            // bind shader uniform
-            var shaderParameterWorldViewProjectionMatrix = _shaderOffScreen!.Parameters!["WorldViewProjectionMatrix"];
-            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
-
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
+            // bind shader uniform
+            var shaderParameterWorldViewProjectionMatrix = _shaderOffScreen!.Parameters!["WorldViewProjectionMatrix"];
+            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
+
+            // XNA crap: we bind our shader program by going through "techniques" and "passes"
+            //     please don't use these, you should only ever have use for one effect technique and one effect pass
+            // NOTE: This applies any changes we have set for our render pipeline including:
+            //     vertex buffers, index buffers, textures, samplers, blend, rasterizer, depth stencil, etc.
+            _shaderOffScreen!.Techniques![0]!.Passes![0]!.Apply();
 
             // XNA crap: also we say the topology type of the vertices in the render loop; rasterizer should know this
             //    plus, in XNA we have `DrawIndexedPrimitives` and `DrawPrimitives`; we really only need `DrawElements`
@@ -83,14 +86,6 @@ namespace Ankura.Samples
             GraphicsDevice.Textures[1] = _renderTargets[1];
             GraphicsDevice.Textures[2] = _renderTargets[2];
 
-            // XNA crap: we bind our shader program by going through "techniques" and "passes"
-            //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shaderFullScreen!.Techniques![0]!.Passes![0]!.Apply();
-
-            // bind shader uniform
-            var shaderParameterOffset = _shaderFullScreen.Parameters!["Offset"];
-            shaderParameterOffset!.SetValue(_offset);
-
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
@@ -98,6 +93,16 @@ namespace Ankura.Samples
             // XNA crap: texture filtering set in the render loop
             //     PLUS it's "global state" as opposed to texture instance specific
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+
+            // bind shader uniform
+            var shaderParameterOffset = _shaderFullScreen.Parameters!["Offset"];
+            shaderParameterOffset!.SetValue(_offset);
+
+            // XNA crap: we bind our shader program by going through "techniques" and "passes"
+            //     please don't use these, you should only ever have use for one effect technique and one effect pass
+            // NOTE: This applies any changes we have set for our render pipeline including:
+            //     vertex buffers, index buffers, textures, samplers, blend, rasterizer, depth stencil, etc.
+            _shaderFullScreen!.Techniques![0]!.Passes![0]!.Apply();
 
             // XNA crap: also we say the topology type of the vertices in the render loop; rasterizer should know this
             //    plus, in XNA we have `DrawIndexedPrimitives` and `DrawPrimitives`; we really only need `DrawElements`
@@ -106,10 +111,6 @@ namespace Ankura.Samples
             // bind vertex buffer
             GraphicsDevice.SetVertexBuffer(_vertexBufferTexture);
 
-            // XNA crap: we bind our shader program by going through "techniques" and "passes"
-            //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shaderDebug!.Techniques![0]!.Passes![0]!.Apply();
-
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
@@ -117,6 +118,12 @@ namespace Ankura.Samples
             // XNA crap: texture filtering set in the render loop
             //     PLUS it's "global state" as opposed to texture instance specific
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+
+            // XNA crap: we bind our shader program by going through "techniques" and "passes"
+            //     please don't use these, you should only ever have use for one effect technique and one effect pass
+            // NOTE: This applies any changes we have set for our render pipeline including:
+            //     vertex buffers, index buffers, textures, samplers, blend, rasterizer, depth stencil, etc.
+            _shaderDebug!.Techniques![0]!.Passes![0]!.Apply();
 
             var originalViewport = GraphicsDevice.Viewport;
             for (var i = 0; i < 3; i++)

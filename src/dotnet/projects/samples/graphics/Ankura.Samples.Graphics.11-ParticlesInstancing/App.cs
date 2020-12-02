@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ankura.Samples.ParticlesInstancing
+namespace Ankura.Samples
 {
     public class App : Game
     {
@@ -55,21 +55,20 @@ namespace Ankura.Samples.ParticlesInstancing
             // bind index buffer
             GraphicsDevice.Indices = _bufferVertexIndices;
 
-            // XNA crap: we bind our shader program by going through "techniques" and "passes"
-            //     please don't use these, you should only ever have use for one effect technique and one effect pass
-            _shader.Techniques[0].Passes[0].Apply();
-            // bind shader uniform
-            var shaderParameterWorldViewProjectionMatrix = _shader.Parameters["WorldViewProjectionMatrix"];
-            shaderParameterWorldViewProjectionMatrix.SetValue(_worldViewProjectionMatrix);
-
             // XNA crap: we set our render pipeline state in the render loop before drawing
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             GraphicsDevice.DepthStencilState = DepthStencilState.None;
-            // XNA crap: texture filtering set in the render loop
-            //     PLUS it's "global state" as opposed to texture instance specific
-            //     in this cube example we don't use any textures however
-            // GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+
+            // bind shader uniform
+            var shaderParameterWorldViewProjectionMatrix = _shader!.Parameters!["WorldViewProjectionMatrix"];
+            shaderParameterWorldViewProjectionMatrix!.SetValue(_worldViewProjectionMatrix);
+
+            // XNA crap: we bind our shader program by going through "techniques" and "passes"
+            //     please don't use these, you should only ever have use for one effect technique and one effect pass
+            // NOTE: This applies any changes we have set for our render pipeline including:
+            //     vertex buffers, index buffers, textures, samplers, blend, rasterizer, depth stencil, etc.
+            _shader!.Techniques![0]!.Passes[0]!.Apply();
 
             // XNA crap: also we say the topology type of the vertices in the render loop; rasterizer should know this
             //    plus, in XNA we have `DrawIndexedPrimitives` and `DrawPrimitives`; we really only need `DrawElements`
@@ -123,12 +122,12 @@ namespace Ankura.Samples.ParticlesInstancing
             }
         }
 
-        private Effect CreateShader()
+        private static Effect CreateShader()
         {
             return Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));
         }
 
-        private unsafe VertexBuffer CreateBufferVertices()
+        private static unsafe VertexBuffer CreateBufferVertices()
         {
             var vertices = (Span<VertexPositionColor>)stackalloc VertexPositionColor[24];
 
@@ -156,7 +155,7 @@ namespace Ankura.Samples.ParticlesInstancing
             return buffer;
         }
 
-        private unsafe IndexBuffer CreateBufferVertexIndices()
+        private static unsafe IndexBuffer CreateBufferVertexIndices()
         {
             // the indices of the cube, here we define the triangles using the vertices from zero-based index
             var indices = (Span<ushort>)stackalloc ushort[]
@@ -175,7 +174,7 @@ namespace Ankura.Samples.ParticlesInstancing
             return buffer;
         }
 
-        private VertexBuffer CreateBufferInstanceData()
+        private static VertexBuffer CreateBufferInstanceData()
         {
             var buffer = new DynamicVertexBuffer(VertexPosition.Declaration, _maximumParticlesCount, BufferUsage.WriteOnly);
             return buffer;
@@ -185,12 +184,13 @@ namespace Ankura.Samples.ParticlesInstancing
         {
             var viewport = GraphicsDevice.Viewport;
 
-            var fieldOfViewDegrees = 40.0f;
-            var fieldOfViewRadians = (float)(fieldOfViewDegrees * Math.PI / 180);
+            const float fieldOfViewDegrees = 40.0f;
+            const float fieldOfViewRadians = (float)(fieldOfViewDegrees * Math.PI / 180);
             var aspectRatio = (float)viewport.Width / viewport.Height;
-            var nearPlaneDistance = 0.01f;
-            var farPlaneDistance = 50.0f;
-            var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
+            const float nearPlaneDistance = 0.01f;
+            const float farPlaneDistance = 50.0f;
+            var projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(
+                fieldOfViewRadians, aspectRatio, nearPlaneDistance, farPlaneDistance);
 
             var cameraPosition = new Vector3(0.0f, 1.5f, 6.0f);
             var cameraTarget = Vector3.Zero;
