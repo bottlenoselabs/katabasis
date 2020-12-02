@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankura.Samples.Input.01-Mou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankura.Samples.Graphics.10-CubeTexture3D", "projects\samples\graphics\Ankura.Samples.Graphics.10-CubeTexture3D\Ankura.Samples.Graphics.10-CubeTexture3D.csproj", "{D246FF73-7E9E-4E06-AA42-538D96C394A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ankura.Samples.Graphics.12-TextureCoordinates", "projects\samples\graphics\Ankura.Samples.Graphics.12-TextureCoordinates\Ankura.Samples.Graphics.12-TextureCoordinates.csproj", "{3C227360-D146-4011-AE7C-40AADD1EBD82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -201,6 +203,18 @@ Global
 		{D246FF73-7E9E-4E06-AA42-538D96C394A2}.Debug|AnyCPU.Build.0 = Debug|Any CPU
 		{D246FF73-7E9E-4E06-AA42-538D96C394A2}.Release|AnyCPU.ActiveCfg = Release|Any CPU
 		{D246FF73-7E9E-4E06-AA42-538D96C394A2}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Debug|x86.Build.0 = Debug|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Release|x86.Build.0 = Release|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Release|x64.Build.0 = Release|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{3C227360-D146-4011-AE7C-40AADD1EBD82}.Release|AnyCPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = FNA.csproj
@@ -221,5 +235,6 @@ Global
 		{39F33FD1-0DEA-48D0-9415-C1932E2DEC43} = {35910BEA-C89D-4FAD-985E-DCC6E35B63D7}
 		{CBFF83A4-7493-4D89-83C1-78D759EEDD94} = {39F33FD1-0DEA-48D0-9415-C1932E2DEC43}
 		{D246FF73-7E9E-4E06-AA42-538D96C394A2} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
+		{3C227360-D146-4011-AE7C-40AADD1EBD82} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
 	EndGlobalSection
 EndGlobal
