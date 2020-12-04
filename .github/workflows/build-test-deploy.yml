@@ -10,13 +10,10 @@ env:
 
 on:
   push:
-    branches: [master, develop]
+    branches: [develop]
     tags: [v*]
-  pull_request:
-    branches: [master, develop]
-  repository_dispatch:
-    #HACK: This allows to re-run the workflow from an external API call; useful for testing/debugging the workflow without having to commit a change in a branch
-    types: [run]
+  pull_request_target:
+    branches: [develop]
 
 jobs:
 
