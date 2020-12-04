@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the directory of this script
-MY_DIR=$(dirname "$BASH_SOURCE")
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 FNA_LIBS_DIR=$MY_DIR/fnalibs
 
  # Downloading
