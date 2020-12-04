@@ -1,57 +1,70 @@
 <p align="center">
-  <b>Ankura</b> - XNA re-imagined.</a>
+  <b>Katabasis</b> - <a href=https://en.wikipedia.org/wiki/Microsoft_XNA>XNA</a> re-imagined.</br>The software developer journeys to the underworld in search of augmented knowledge of game development.</a>
 </p>
 <p align="center">
-    <img src="https://github.com/craftworkgames/Ankura/workflows/CI/CD/badge.svg"/>
+    <img src="https://github.com/craftworkgames/Katabasis/workflows/Build%20test%20deploy/badge.svg"/>
 </p>
 
-## Background
+Katabasis is built for [programmers](https://en.wikipedia.org/wiki/Programmer) to make games using C#. It's not an engine, but rather some fundemental APIs glued together to form a *framework*. These include: playing audio, rendering of 3D and 2D graphics; and handling input such as mouse, keyboard, gamepads.
 
-While there is `MonoGame` and `FNA`, both are laying bricks ontop of the `XNA` API. The focus of `Ankura` is take the good things of `XNA` and dump the rest.
+## News
 
-## Developers: Building from Source
+To see what's new, check the development log! [docs/dev/LOG.md](docs/dev/LOG.md)  
+Last update: **2020-12-04**
 
-### Prerequisites
+## Background: Why?
 
-1. Download and install [.NET 5](https://dotnet.microsoft.com/download).
-2. If you are on Windows, [install Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-3. Optional: If you are on Windows, [install Windows terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started).
-4. Run `bash ./get-fna-libs.sh` in terminal / powershell / command prompt.
+### Problem
 
-### Visual Studio / Rider / MonoDevelop
+For creating games with C#, there are a [couple options](https://dotnet.microsoft.com/apps/games/engines). However, the majority are engines, which offer you pre-made wheels to build your car. To those who want to just create a game without focusing too much on programming, like designers or artists, this is desired. But, for those who want to take [an epic journey to hell and back for augmented knowledge](https://en.wikipedia.org/wiki/Katabasis#Trip_into_the_underworld) of programming, engines can be unsatisfactory. The options which are not engines are [MonoGame](https://github.com/MonoGame/MonoGame) and [FNA](https://github.com/FNA-XNA/FNA). However, both are laying bricks ontop of the [XNA](https://en.wikipedia.org/wiki/Microsoft_XNA) API. This heritage makes it more difficult than it needs to be for game developers. This is especially true considering the advancements in technology since [XNA](https://en.wikipedia.org/wiki/Microsoft_XNA) was in active development.
 
-Open `./src/dotnet/Ankura.sln`
+### Solution
 
-### Command Line Interface (CLI)
+Katabasis is a fork of [FNA](https://github.com/FNA-XNA/FNA) adapted to be more modern and simple. The idea is to take and improve upon the good things of the XNA API and dump the rest. Some inspiration is also borrowed from other frameworks such as [LÖVE](https://love2d.org) and [libGDX](https://libgdx.badlogicgames.com). The promise is that by using Katabasis to build your game you will: have fun programming, adopt a growth mindset, and enter the gateway to computer science.
 
-`dotnet build ./src/dotnet/Ankura.sln`
+## Developers: Documentation
 
-## Developers: NuGet Packages
+For documentation, see [docs/README.md](docs/README.md). This includes:
 
-Packages are uploaded to my personal feed: `https://www.myget.org/F/lithiumtoast/api/v3/index.json`. This includes rolling builds from pull-requests and tags (releases). No, I won't upload the packages to nuget.org; at this stage of development I want to control if I can delete packages if I wish to rename the project. I will consider uploading *tags* to nuget.org at later version; rolling builds will never be uploaded to nuget.org.
+### Architecture
 
-## Developers: Migration Guide from FNA/MonoGame
+Details about how C# is viable for game development, which graphics APIs are used, and which platforms are supported:   
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-A guide is available for migrating to Ankura from FNA/MonoGame. The guide includes outlining the differences between Ankura and FNA/MonoGame with examples of how to solve common problems.
+### Development Logs
 
-For FNA, see [MIGRATION-GUIDE-FNA.md](MIGRATION-GUIDE-FNA.md).  
-For MonoGame, see [MIGRATION-GUIDE-MONOGAME.md](MIGRATION-GUIDE-MONOGAME.md).
+Developer notes about the latest news and changes to Katabasis:  
+[docs/dev/LOG.md](docs/dev/LOG.md).
 
-## Versioning
+### Building from Source
 
-`Ankura` uses [calendar versioning](https://calver.org) and [semantic versioning](https://semver.org) (or combination thereof) where appropriate. For example, the version scheme used for some libraries is `YYYY.MM.DD` and for others its `MAJOR.MINOR.PATCH-TAG`.
+Building Katabasis from source code or adding the Katabasis to your project by including the source code:  
+[docs/BUILDING-FROM-SOURCE.md](docs/BUILDING-FROM-SOURCE.md).
 
-### Semantic Versioning
+### NuGet Packages
 
-`Ankura` uses [GitVersion](https://github.com/GitTools/GitVersion) to determine the exact semantic version for each build with [GitHub actions](https://docs.github.com/en/free-pro-team@latest/actions/guides/about-continuous-integration) (automated workflows). 
+Adding Katabasis to your project through NuGet packages:  
+[docs/NUGET-PACKAGES.md](docs/NUGET-PACKAGES.md).
 
-### Releases
+### Samples
 
-Git tags are releases; when a new tag is created, the version is automatically bumped automatically to the specified tag version.
-For a complete list of the release versions, see the [tags on this repository](https://github.com/craftworkgames/Ankura/tags).
+Samples that demonstrate how to use `Katabsis` for learning and testing purposes:  
+[docs/SAMPLES.md](docs/SAMPLES.md).  
+
+### Migration Guide
+
+Migration guide from FNA or MonoGame that outlines the differences between Katabasis and examples of how to solve common problems.
+
+- FNA: [docs/MIGRATION-GUIDE-FNA.md](docs/MIGRATION-GUIDE-FNA.md).
+- MonoGame: [docs/MIGRATION-GUIDE-MONOGAME.md](docs/MIGRATION-GUIDE-MONOGAME.md).
+
+### Versioning
+
+Details about how Katabasis is versioned for releases and pre-releases:  
+[docs/VERSIONING.md](docs/VERSIONING.md).  
 
 ## License
 
-`Ankura` is licensed under the Microsoft Public License (`MS-PL`). This is because a constraint of forking [FNA](https://github.com/FNA-XNA/FNA). There are a few exceptions to this detailed below in this wiki section. See the [LICENSE](LICENSE) file for details with this license and this main product.
+Katabasis is licensed under the Microsoft Public License (`MS-PL`). This is because a constraint of forking [FNA](https://github.com/FNA-XNA/FNA). There are a few exceptions to this detailed below in this wiki section. See the [LICENSE](LICENSE) file for details with this license and this main product.
 
-`Ankura` uses [FAudio](https://github.com/FNA-XNA/FAudio), [FNA3D](https://github.com/FNA-XNA/FNA3D), [SDL2-CS](https://github.com/flibitijibibo/SDL2-CS), and [Theorafile](https://github.com/FNA-XNA/Theorafile), all of which are released under the Zlib-Libpng License (`zlib`). This includes the following source code files: [`SDL2.cs`](https://github.com/craftworkgames/Ankura/blob/develop/src/dotnet/projects/production/Ankura/SDL2/SDL2.cs), [`SDL2_image.cs`](https://github.com/craftworkgames/Ankura/blob/develop/src/dotnet/projects/production/Ankura/SDL2/SDL2_image.cs), [`SDL_mixer.cs`](https://github.com/craftworkgames/Ankura/blob/develop/src/dotnet/projects/production/Ankura/SDL2/SDL2_mixer.cs), [`SDL2_ttf.cs`](https://github.com/craftworkgames/Ankura/blob/develop/src/dotnet/projects/production/Ankura/SDL2/SDL2_ttf.cs), [`FAudio.cs`](https://github.com/craftworkgames/Ankura/blob/develop/src/dotnet/projects/production/Ankura/FAudio.cs), [`Theorafile.cs`](https://github.com/craftworkgames/Ankura/blob/develop/src/dotnet/projects/production/Ankura/Theorafile.cs). (`FNA3D` C# code is licensed under `MS-PL` and is a part of `Ankura` while the external dynamic library file of `FNA3D` is licensed under `zlib`.) See the linked reposotories for details with the `zlib` license and these products.
+Katabasis uses [FAudio](https://github.com/FNA-XNA/FAudio), [FNA3D](https://github.com/FNA-XNA/FNA3D), [SDL2-CS](https://github.com/flibitijibibo/SDL2-CS), and [Theorafile](https://github.com/FNA-XNA/Theorafile), all of which are released under the Zlib-Libpng License (`zlib`). This includes the following source code files: [`SDL2.cs`](https://github.com/craftworkgames/Katabasis/blob/develop/src/dotnet/projects/production/Katabasis/SDL2/SDL2.cs), [`SDL2_image.cs`](https://github.com/craftworkgames/Katabasis/blob/develop/src/dotnet/projects/production/Katabasis/SDL2/SDL2_image.cs), [`SDL_mixer.cs`](https://github.com/craftworkgames/Katabasis/blob/develop/src/dotnet/projects/production/Katabasis/SDL2/SDL2_mixer.cs), [`SDL2_ttf.cs`](https://github.com/craftworkgames/Katabasis/blob/develop/src/dotnet/projects/production/Katabasis/SDL2/SDL2_ttf.cs), [`FAudio.cs`](https://github.com/craftworkgames/Katabasis/blob/develop/src/dotnet/projects/production/Katabasis/FAudio.cs), [`Theorafile.cs`](https://github.com/craftworkgames/Katabasis/blob/develop/src/dotnet/projects/production/Katabasis/Theorafile.cs). (`FNA3D` C# code is licensed under `MS-PL` and is a part of Katabasis while the external dynamic library file of `FNA3D` is licensed under `zlib`.) See the linked reposotories for details with the `zlib` license and these products.

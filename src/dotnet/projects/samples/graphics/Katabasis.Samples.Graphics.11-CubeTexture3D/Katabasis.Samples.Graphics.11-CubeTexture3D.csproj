@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- MSBuild project settings -->
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <PublishReadyToRun>false</PublishReadyToRun>
+        <TieredCompilation>false</TieredCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RootNamespace>Katabasis.Samples</RootNamespace>
+        <AssemblyName>Katabasis.Samples.Graphics.CubeTexture3D</AssemblyName>
+    </PropertyGroup>
+
+    <!-- Custom project settings -->
+    <PropertyGroup>
+        <EnableAnalyzers>true</EnableAnalyzers>
+        <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
+    </PropertyGroup>
+
+    <!-- Project references -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\production\Katabasis\Katabasis.csproj" />
+    </ItemGroup>
+
+    <!-- Assets -->
+    <ItemGroup>
+        <None Update="Assets/Shaders/**/*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
