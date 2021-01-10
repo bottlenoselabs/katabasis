@@ -2271,6 +2271,11 @@ namespace Katabasis
                 0,
                 0,
                 0) == 0;
+            var hasTriggerRumble = SDL_GameControllerRumbleTriggers(
+                _devices[which],
+                0,
+                0,
+                0) == 0;
 
             // An SDL_GameController _should_ always be complete...
             var caps = default(GamePadCapabilities);
@@ -2364,6 +2369,7 @@ namespace Katabasis
             caps.HasRightVibrationMotor = hasRumble;
             caps.HasVoiceSupport = false;
             caps.HasLightBarEXT = SDL_GameControllerHasLED(_devices[which]) == SDL_bool.SDL_TRUE;
+            caps.HasTriggerVibrationMotorsEXT = hasTriggerRumble;
             caps.HasMisc1EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
             caps.HasPaddle1EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
             caps.HasPaddle2EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;

@@ -59,6 +59,8 @@ namespace Katabasis
 
         public bool HasLightBarEXT { get; internal set; }
 
+        public bool HasTriggerVibrationMotorsEXT { get; internal set; }
+
         public bool HasMisc1EXT { get; internal set; }
 
         public bool HasPaddle1EXT { get; internal set; }
