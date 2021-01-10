@@ -1438,10 +1438,15 @@ namespace Katabasis
                 return false;
             }
 
+            if (SDL_GameControllerIsSensorEnabled(device, SDL_SensorType.SDL_SENSOR_GYRO) == SDL_bool.SDL_FALSE)
+            {
+                SDL_GameControllerSetSensorEnabled(device, SDL_SensorType.SDL_SENSOR_GYRO, SDL_bool.SDL_TRUE);
+            }
+
             unsafe
             {
                 var data = stackalloc float[3];
-                var result = (SDL_bool)SDL_GameControllerGetSensorData(
+                var result = SDL_GameControllerGetSensorData(
                     device,
                     SDL_SensorType.SDL_SENSOR_GYRO,
                     (IntPtr)data,
@@ -1449,7 +1454,7 @@ namespace Katabasis
                 gyro.X = data[0];
                 gyro.Y = data[1];
                 gyro.Z = data[2];
-                return result == SDL_bool.SDL_TRUE;
+                return result == 0;
             }
         }
 
@@ -1462,10 +1467,15 @@ namespace Katabasis
                 return false;
             }
 
+            if (SDL_GameControllerIsSensorEnabled(device, SDL_SensorType.SDL_SENSOR_ACCEL) == SDL_bool.SDL_FALSE)
+            {
+                SDL_GameControllerSetSensorEnabled(device, SDL_SensorType.SDL_SENSOR_ACCEL, SDL_bool.SDL_TRUE);
+            }
+
             unsafe
             {
                 var data = stackalloc float[3];
-                var result = (SDL_bool)SDL_GameControllerGetSensorData(
+                var result = SDL_GameControllerGetSensorData(
                     device,
                     SDL_SensorType.SDL_SENSOR_ACCEL,
                     (IntPtr)data,
@@ -1474,7 +1484,7 @@ namespace Katabasis
                 accel.X = data[0];
                 accel.Y = data[1];
                 accel.Z = data[2];
-                return result == SDL_bool.SDL_TRUE;
+                return result == 0;
             }
         }
 
