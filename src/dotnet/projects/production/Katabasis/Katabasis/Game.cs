@@ -164,8 +164,6 @@ namespace Katabasis
         {
             RunApplication = false;
             _suppressDraw = true;
-
-            OnExiting(this, EventArgs.Empty);
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
@@ -543,7 +541,7 @@ namespace Katabasis
                 Tick();
             }
 
-            Exit();
+            OnExiting(this, EventArgs.Empty);
         }
     }
 }
