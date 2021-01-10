@@ -1379,7 +1379,7 @@ namespace Katabasis
             return gc_builtState;
         }
 
-        public static bool SetGamePadVibration(int index, float leftMotor, float rightMotor)
+        public static bool SetGamePadVibration(int index, float leftTrigger, float rightTrigger)
         {
             var device = _devices[index];
             if (device == IntPtr.Zero)
@@ -1389,8 +1389,8 @@ namespace Katabasis
 
             return SDL_GameControllerRumble(
                 device,
-                (ushort)(MathHelper.Clamp(leftMotor, 0.0f, 1.0f) * 0xFFFF),
-                (ushort)(MathHelper.Clamp(rightMotor, 0.0f, 1.0f) * 0xFFFF),
+                (ushort)(MathHelper.Clamp(leftTrigger, 0.0f, 1.0f) * 0xFFFF),
+                (ushort)(MathHelper.Clamp(rightTrigger, 0.0f, 1.0f) * 0xFFFF),
                 0) == 0;
         }
 
