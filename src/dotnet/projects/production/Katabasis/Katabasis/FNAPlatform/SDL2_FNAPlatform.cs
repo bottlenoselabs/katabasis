@@ -51,9 +51,6 @@ namespace Katabasis
         */
         private static bool _micInit;
 
-        // Light bar information
-        private static readonly string[] _lightBars = GenStringArray();
-
         // Cached GamePadStates/Capabilities
         private static readonly GamePadState[] _states = new GamePadState[GamePad.GamePadCount];
 
@@ -1397,6 +1394,21 @@ namespace Katabasis
                 0) == 0;
         }
 
+        public static bool SetGamePadTriggerVibration(int index, float leftMotor, float rightMotor)
+        {
+            var device = _devices[index];
+            if (device == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            return SDL_GameControllerRumbleTriggers(
+                device,
+                (ushort)(MathHelper.Clamp(leftMotor, 0.0f, 1.0f) * 0xFFFF),
+                (ushort)(MathHelper.Clamp(rightMotor, 0.0f, 1.0f) * 0xFFFF),
+                0) == 0;
+        }
+
         public static string GetGamePadGUID(int index)
         {
             return _guids[index];
@@ -1404,22 +1416,65 @@ namespace Katabasis
 
         public static void SetGamePadLightBar(int index, Color color)
         {
-            if (string.IsNullOrEmpty(_lightBars[index]))
+            IntPtr device = _devices[index];
+            if (device == IntPtr.Zero)
             {
                 return;
             }
 
-            string baseDir = _lightBars[index];
-            try
+            SDL_GameControllerSetLED(
+                device,
+                color.R,
+                color.G,
+                color.B);
+        }
+
+        public static bool GetGamePadGyro(int index, out Vector3 gyro)
+        {
+            IntPtr device = _devices[index];
+            if (device == IntPtr.Zero)
             {
-                File.WriteAllText(baseDir + "red/brightness", color.R.ToString());
-                File.WriteAllText(baseDir + "green/brightness", color.G.ToString());
-                File.WriteAllText(baseDir + "blue/brightness", color.B.ToString());
+                gyro = Vector3.Zero;
+                return false;
             }
-            catch
+
+            unsafe
             {
-                // If something went wrong, assume the worst and just remove it.
-                _lightBars[index] = string.Empty;
+                var data = stackalloc float[3];
+                var result = (SDL_bool)SDL_GameControllerGetSensorData(
+                    device,
+                    SDL_SensorType.SDL_SENSOR_GYRO,
+                    (IntPtr)data,
+                    3);
+                gyro.X = data[0];
+                gyro.Y = data[1];
+                gyro.Z = data[2];
+                return result == SDL_bool.SDL_TRUE;
+            }
+        }
+
+        public static bool GetGamePadAccelerometer(int index, out Vector3 accel)
+        {
+            IntPtr device = _devices[index];
+            if (device == IntPtr.Zero)
+            {
+                accel = Vector3.Zero;
+                return false;
+            }
+
+            unsafe
+            {
+                var data = stackalloc float[3];
+                var result = (SDL_bool)SDL_GameControllerGetSensorData(
+                    device,
+                    SDL_SensorType.SDL_SENSOR_ACCEL,
+                    (IntPtr)data,
+                    3);
+
+                accel.X = data[0];
+                accel.Y = data[1];
+                accel.Z = data[2];
+                return result == SDL_bool.SDL_TRUE;
             }
         }
 
@@ -2255,6 +2310,15 @@ namespace Katabasis
             caps.HasLeftVibrationMotor = hasRumble;
             caps.HasRightVibrationMotor = hasRumble;
             caps.HasVoiceSupport = false;
+            caps.HasLightBarEXT = SDL_GameControllerHasLED(_devices[which]) == SDL_bool.SDL_TRUE;
+            caps.HasMisc1EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasPaddle1EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasPaddle2EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasPaddle3EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasPaddle4EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasTouchPadEXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasGyroEXT = SDL_GameControllerHasSensor(_devices[which], SDL_SensorType.SDL_SENSOR_GYRO) == SDL_bool.SDL_TRUE;
+            caps.HasAccelerometerEXT = SDL_GameControllerHasSensor(_devices[which], SDL_SensorType.SDL_SENSOR_ACCEL) == SDL_bool.SDL_TRUE;
             _capabilities[which] = caps;
 
             // ReSharper disable once CommentTypo
@@ -2270,43 +2334,6 @@ namespace Katabasis
             else
             {
                 _guids[which] = $"{vendor & 0xFF:x2}{vendor >> 8:x2}{product & 0xFF:x2}{product >> 8:x2}";
-            }
-
-            // Initialize light bar
-            if (!string.IsNullOrEmpty(_osVersion) &&
-                _osVersion.Equals("Linux") &&
-                (_guids[which].Equals("4c05c405") ||
-                 _guids[which].Equals("4c05cc09")))
-            {
-                // Get all of the individual PS4 LED instances
-                List<string> ledList = new List<string>();
-                string[] dirs = Directory.GetDirectories("/sys/class/leds/");
-                // ReSharper disable once LoopCanBeConvertedToQuery
-                foreach (string dir in dirs)
-                {
-                    if (dir.EndsWith("blue") &&
-                        (dir.Contains("054C:05C4") ||
-                         dir.Contains("054C:09CC")))
-                    {
-                        ledList.Add(dir.Substring(0, dir.LastIndexOf(':') + 1));
-                    }
-                }
-
-                // Find how many of these are already in use
-                var numLights = 0;
-                for (var i = 0; i < _lightBars.Length; i += 1)
-                {
-                    if (!string.IsNullOrEmpty(_lightBars[i]))
-                    {
-                        numLights += 1;
-                    }
-                }
-
-                // If all are not already in use, use the first unused light
-                if (numLights < ledList.Count)
-                {
-                    _lightBars[which] = ledList[numLights];
-                }
             }
 
             // Print controller information to stdout.

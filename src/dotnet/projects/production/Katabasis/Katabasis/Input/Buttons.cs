@@ -32,6 +32,14 @@ namespace Katabasis
         RightThumbstickLeft = 0x08000000,
         LeftThumbstickUp = 0x10000000,
         LeftThumbstickDown = 0x20000000,
-        LeftThumbstickRight = 0x40000000
+        LeftThumbstickRight = 0x40000000,
+
+        // Extensions
+        Misc1EXT = 0x00000400,
+        Paddle1EXT = 0x00010000,
+        Paddle2EXT = 0x00020000,
+        Paddle3EXT = 0x00040000,
+        Paddle4EXT = 0x00080000,
+        TouchPadEXT = 0x00100000
     }
 }

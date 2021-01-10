@@ -56,5 +56,23 @@ namespace Katabasis
         public bool HasVoiceSupport { get; internal set; }
 
         public GamePadType GamePadType { get; internal set; }
+
+        public bool HasLightBarEXT { get; internal set; }
+
+        public bool HasMisc1EXT { get; internal set; }
+
+        public bool HasPaddle1EXT { get; internal set; }
+
+        public bool HasPaddle2EXT { get; internal set; }
+
+        public bool HasPaddle3EXT { get; internal set; }
+
+        public bool HasPaddle4EXT { get; internal set; }
+
+        public bool HasTouchPadEXT { get; internal set; }
+
+        public bool HasGyroEXT { get; internal set; }
+
+        public bool HasAccelerometerEXT { get; internal set; }
     }
 }
