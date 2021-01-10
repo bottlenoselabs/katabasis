@@ -1431,7 +1431,7 @@ namespace Katabasis
 
         public static bool GetGamePadGyro(int index, out Vector3 gyro)
         {
-            IntPtr device = _devices[index];
+            var device = _devices[index];
             if (device == IntPtr.Zero)
             {
                 gyro = Vector3.Zero;
@@ -1451,6 +1451,12 @@ namespace Katabasis
                     SDL_SensorType.SDL_SENSOR_GYRO,
                     (IntPtr)data,
                     3);
+                if (result < 0)
+                {
+                    gyro = Vector3.Zero;
+                    return false;
+                }
+
                 gyro.X = data[0];
                 gyro.Y = data[1];
                 gyro.Z = data[2];
@@ -1480,6 +1486,12 @@ namespace Katabasis
                     SDL_SensorType.SDL_SENSOR_ACCEL,
                     (IntPtr)data,
                     3);
+
+                if (result < 0)
+                {
+                    accel = Vector3.Zero;
+                    return false;
+                }
 
                 accel.X = data[0];
                 accel.Y = data[1];
