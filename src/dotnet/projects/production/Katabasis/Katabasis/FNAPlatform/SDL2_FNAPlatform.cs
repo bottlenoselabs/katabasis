@@ -570,6 +570,11 @@ namespace Katabasis
                 Environment.SetEnvironmentVariable("SDL_OPENGL_ES_DRIVER", "1");
             }
 
+            if (args.TryGetValue("forcemailboxvsync", out arg) && arg == "1")
+            {
+                Environment.SetEnvironmentVariable("FNA3D_VULKAN_FORCE_MAILBOX_VSYNC", "1");
+            }
+
             // This _should_ be the first real SDL call we make...
             SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC);
 
