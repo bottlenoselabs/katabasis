@@ -1362,6 +1362,37 @@ namespace Katabasis
                 dpadRight = ButtonState.Pressed;
             }
 
+            // Extensions
+            if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1) != 0)
+            {
+                gc_buttonState |= Buttons.Misc1EXT;
+            }
+
+            if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1) != 0)
+            {
+                gc_buttonState |= Buttons.Paddle1EXT;
+            }
+
+            if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) != 0)
+            {
+                gc_buttonState |= Buttons.Paddle2EXT;
+            }
+
+            if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) != 0)
+            {
+                gc_buttonState |= Buttons.Paddle3EXT;
+            }
+
+            if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) != 0)
+            {
+                gc_buttonState |= Buttons.Paddle4EXT;
+            }
+
+            if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) != 0)
+            {
+                gc_buttonState |= Buttons.TouchPadEXT;
+            }
+
             // Build the GamePadState, increment PacketNumber if state changed.
             var gc_builtState = new GamePadState(
                 new GamePadThumbSticks(stickLeft, stickRight, deadZoneMode),
