@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<RootNamespace />
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Katabasis.Framework\Katabasis.Framework.csproj" />
+	</ItemGroup>
+
+</Project>
