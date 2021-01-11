@@ -1,6 +1,5 @@
-// Copyright (c) Craftwork Games. All rights reserved.
-// Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
-
+// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Licensed under the MS-PL license. See LICENSE file in the Git repository root directory (https://github.com/craftworkgames/Katabasis) for full license information.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -592,7 +591,11 @@ namespace Katabasis
 			// We want to initialize the controllers ASAP!
 			SDL_Event[] evt = new SDL_Event[1];
 			SDL_PumpEvents();
-			while (SDL_PeepEvents(evt, 1, SDL_eventaction.SDL_GETEVENT, SDL_EventType.SDL_CONTROLLERDEVICEADDED,
+			while (SDL_PeepEvents(
+				evt,
+				1,
+				SDL_eventaction.SDL_GETEVENT,
+				SDL_EventType.SDL_CONTROLLERDEVICEADDED,
 				SDL_EventType.SDL_CONTROLLERDEVICEADDED) == 1)
 			{
 				INTERNAL_AddInstance(evt[0].cdevice.which);
@@ -878,7 +881,8 @@ namespace Katabasis
 		}
 
 		public static bool SupportsOrientationChanges() =>
-			!string.IsNullOrEmpty(_osVersion) && (_osVersion.Equals("iOS", StringComparison.Ordinal) || _osVersion.Equals("Android", StringComparison.Ordinal));
+			!string.IsNullOrEmpty(_osVersion) &&
+			(_osVersion.Equals("iOS", StringComparison.Ordinal) || _osVersion.Equals("Android", StringComparison.Ordinal));
 
 		public static GraphicsAdapter RegisterGame(Game game)
 		{

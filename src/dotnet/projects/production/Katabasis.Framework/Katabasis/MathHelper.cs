@@ -1,6 +1,5 @@
-// Copyright (c) Craftwork Games. All rights reserved.
-// Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
-
+// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Licensed under the MS-PL license. See LICENSE file in the Git repository root directory (https://github.com/craftworkgames/Katabasis) for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -43,7 +42,8 @@ namespace Katabasis
 			{
 				machineEpsilon *= 0.5f;
 				comparison = 1.0f + machineEpsilon;
-			} while (comparison > 1.0f);
+			}
+			while (comparison > 1.0f);
 
 			return machineEpsilon;
 		}

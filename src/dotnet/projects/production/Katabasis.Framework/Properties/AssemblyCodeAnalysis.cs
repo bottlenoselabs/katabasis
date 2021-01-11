@@ -1,6 +1,5 @@
-// Copyright (c) Lucas Girouard-Stranks (https://github.com/lithiumtoast). All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the Git repository root directory (https://github.com/lithiumtoast/sokol-cs/) for full license information.
-
+// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Licensed under the MS-PL license. See LICENSE file in the Git repository root directory (https://github.com/craftworkgames/Katabasis) for full license information.
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage(
@@ -27,3 +26,10 @@ using System.Diagnostics.CodeAnalysis;
 	"Microsoft.Naming",
 	"CA1822:MarkMembersAsStatic",
 	Justification = "For game developers we really want EVERYTHING to be static, so if we don't want something to be static it's an API choice.")]
+
+[assembly: SuppressMessage(
+	"Microsoft.Naming",
+	"CA1051:DoNotDeclareVisibleInstanceFields",
+	Justification = "No Microsoft, 'fields should be as an implementation detail' is wrong; fields are data and game developers want to work with data not abstractions!")]
+
+[assembly: SuppressMessage("ReSharper", "InconsistentNaming", Justification = "FNA has some inconsistencies in naming conventions.")]

@@ -5,7 +5,7 @@ namespace VectorVenture
 {
 	public class Program
 	{
-		public static void Main(string args)
+		public static void Main(string[] args)
 		{
 			using var game = new VectorVentureGame();
 			game.Run();

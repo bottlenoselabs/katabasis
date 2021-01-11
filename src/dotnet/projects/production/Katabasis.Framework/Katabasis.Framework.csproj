@@ -3,7 +3,6 @@
 	<!-- MSBuild project settings -->
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-		<RootNamespace />
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
@@ -12,8 +11,8 @@
 		<EnableRootNamespace>false</EnableRootNamespace>
 		<EnableAnalyzers>true</EnableAnalyzers>
 		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
-		<StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)/../../StyleCop.json</StyleCopSettingsFilePath>
-		<CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)/../../CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
+		<CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)../../../CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
+		<StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)../../../StyleCop.json</StyleCopSettingsFilePath>
 	</PropertyGroup>
 
 	<!-- native-tools-cs -->
