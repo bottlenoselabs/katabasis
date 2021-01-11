@@ -1,6 +1,0 @@
-<RuleSet Name="Katabasis" Description="Code analysis rules for Katabasis C# projects." ToolsVersion="15.0">
-   
-   <!-- StyleCop -->
-   <Include Path="./StyleCop/StyleCop-NoDocumentation.ruleset" Action="Default" />
-
-</RuleSet>
