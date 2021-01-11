@@ -302,17 +302,17 @@ namespace Katabasis
 
         protected virtual void OnDeviceDisposing(object? sender, EventArgs args)
         {
-            DeviceDisposing?.Invoke(sender, args);
+            DeviceDisposing?.Invoke(this, args);
         }
 
         protected virtual void OnDeviceReset(object? sender, EventArgs args)
         {
-            DeviceReset?.Invoke(sender, args);
+            DeviceReset?.Invoke(this, args);
         }
 
         protected virtual void OnDeviceResetting(object? sender, EventArgs args)
         {
-            DeviceResetting?.Invoke(sender, args);
+            DeviceResetting?.Invoke(this, args);
         }
 
         protected virtual void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs args)
