@@ -1,20 +1,8 @@
 <Project>
 
-    <!-- MSBuild project settings -->
-    <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <!-- Custom project settings -->
-    <PropertyGroup>
-        <IncludeStyleCop>false</IncludeStyleCop>
-    </PropertyGroup>
+    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildProjectDirectory)', '.gitignore'))/ext/my-msbuild/My-MSBuild.props" />
 
     <!-- NuGet -->
-    <PropertyGroup>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)NuGet.config" Link="Properties/NuGet.config" />
     </ItemGroup>
