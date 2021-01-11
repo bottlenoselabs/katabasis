@@ -24,44 +24,7 @@ Katabasis is a fork of [FNA](https://github.com/FNA-XNA/FNA) adapted to be more 
 
 ## Developers: Documentation
 
-For documentation, see [docs/README.md](docs/README.md). This includes:
-
-### Architecture
-
-Details about how C# is viable for game development, which graphics APIs are used, and which platforms are supported:   
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-### Development Logs
-
-Developer notes about the latest news and changes to Katabasis:  
-[docs/dev/LOG.md](docs/dev/LOG.md).
-
-### Building from Source
-
-Building Katabasis from source code or adding the Katabasis to your project by including the source code:  
-[docs/BUILDING-FROM-SOURCE.md](docs/BUILDING-FROM-SOURCE.md).
-
-### NuGet Packages
-
-Adding Katabasis to your project through NuGet packages:  
-[docs/NUGET-PACKAGES.md](docs/NUGET-PACKAGES.md).
-
-### Samples
-
-Samples that demonstrate how to use `Katabsis` for learning and testing purposes:  
-[docs/SAMPLES.md](docs/SAMPLES.md).  
-
-### Migration Guide
-
-Migration guide from FNA or MonoGame that outlines the differences between Katabasis and examples of how to solve common problems.
-
-- FNA: [docs/MIGRATION-GUIDE-FNA.md](docs/MIGRATION-GUIDE-FNA.md).
-- MonoGame: [docs/MIGRATION-GUIDE-MONOGAME.md](docs/MIGRATION-GUIDE-MONOGAME.md).
-
-### Versioning
-
-Details about how Katabasis is versioned for releases and pre-releases:  
-[docs/VERSIONING.md](docs/VERSIONING.md).  
+For documentation, see [docs/README.md](docs/README.md). This includes architecture, development logs, how to build from source, NuGet packages, samples, migration guides from MonoGame/FNA, and versioning.
 
 ## License
 
