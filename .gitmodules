@@ -1,0 +1,3 @@
+[submodule "ext/native-tools-cs"]
+	path = ext/native-tools-cs
+	url = git@github.com:lithiumtoast/native-tools-cs.git
