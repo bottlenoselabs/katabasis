@@ -16,10 +16,10 @@
         <EnableAnalyzers>true</EnableAnalyzers>
         <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
     </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
+    </ItemGroup>
 
     <!-- Project references -->
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\production\Katabasis\Katabasis.csproj" />
-    </ItemGroup>
 
 </Project>

@@ -18,15 +18,15 @@
     </PropertyGroup>
 
     <!-- Project references -->
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\production\Katabasis\Katabasis.csproj" />
-    </ItemGroup>
 
     <!-- Assets -->
     <ItemGroup>
         <None Update="Assets/Shaders/**/*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
     </ItemGroup>
 
 </Project>

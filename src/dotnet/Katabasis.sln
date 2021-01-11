@@ -1,7 +1,7 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis", "projects\production\Katabasis\Katabasis.csproj", "{6CF9456D-300D-4EA7-99C9-B80776EFC790}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Framework", "projects\production\Katabasis.Framework\Katabasis.Framework.csproj", "{6CF9456D-300D-4EA7-99C9-B80776EFC790}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{35910BEA-C89D-4FAD-985E-DCC6E35B63D7}"
 EndProject
