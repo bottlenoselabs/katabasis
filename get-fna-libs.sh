@@ -6,7 +6,7 @@ FNA_LIBS_DIR=$MY_DIR/fnalibs
 
  # Downloading
 echo "Downloading latest FNA libraries ..."
-curl https://www.dropbox.com/s/mfsb9jc9zm2qzah/fnalibs_2020_12.tar.bz2?dl=0 > "$MY_DIR/fnalibs.tar.bz2"
+curl -L https://dl.dropbox.com/s/wucrnflprgv58j6/fnalibs_2020_12.zip > "$MY_DIR/fnalibs.zip"
 if [ $? -eq 0 ]; then
     echo "Finished downloading!"
 else
@@ -17,10 +17,10 @@ fi
 # Decompressing
 echo "Decompressing FNA libraries ..."
 mkdir -p $FNA_LIBS_DIR
-tar xjC $FNA_LIBS_DIR -f $MY_DIR/fnalibs.tar.bz2
+unzip $MY_DIR/fnalibs.zip -d $FNA_LIBS_DIR
 if [ $? -eq 0 ]; then
     echo "Finished decompressing!"
-    rm $MY_DIR/fnalibs.tar.bz2
+    rm $MY_DIR/fnalibs.zip
 else
     >&2 echo "ERROR: Unable to decompress successfully."
     exit 1
@@ -75,4 +75,4 @@ mv $FNA_LIBS_DIR/x86/libtheorafile.dll $THEORAFILE_LIB_DIR/win-x86/libtheorafile
 echo "Finished moving files!"
 
 ## Delete uncompressed folder
-rm -rf $FNA_LIBS_DIR
+ rm -rf $FNA_LIBS_DIR
