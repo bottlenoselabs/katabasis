@@ -2,10 +2,10 @@
     "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
     "settings": {
       "documentationRules": {
-        "companyName": "Craftwork Games",
-        "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the Git repository root directory for full license information.",
+        "companyName": "Craftworkgames (https://github.com/craftworkgames)",
+        "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the Git repository root directory (https://github.com/craftworkgames/Katabasis) for full license information.",
         "variables": {
-          "licenseName": "MS-PL",
+          "licenseName": "MIT",
           "licenseFile": "LICENSE"
         },
         "xmlHeader": false,
