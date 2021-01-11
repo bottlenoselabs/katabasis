@@ -1,7 +1,7 @@
 <Project>
 
     <PropertyGroup>
-        <MSBuildTargetsImported>true</TasksTargetsImpor‌​ted>
+        <MSBuildTargetsImported>true</MSBuildTargetsImported>
     </PropertyGroup>
 
     <Import Condition=" '$(MSBuildTargetsImported)' == '' " Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildProjectDirectory)', '.gitignore'))/ext/my-msbuild/My-MSBuild.props" />
