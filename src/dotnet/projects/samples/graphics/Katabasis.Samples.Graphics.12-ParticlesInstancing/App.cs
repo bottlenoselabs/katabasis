@@ -13,7 +13,7 @@ namespace Katabasis.Samples
 	{
 		private const int _maximumParticlesCount = 512 * 1024;
 		private const int _particlesCountEmittedPerFrame = 10;
-		private readonly Vector3[] _particlePositionOffsets = new Vector3[_maximumParticlesCount];
+		private readonly VertexPosition[] _particlePositionOffsets = new VertexPosition[_maximumParticlesCount];
 		private readonly Vector3[] _particleVelocities = new Vector3[_maximumParticlesCount];
 
 		private readonly Random _random = new();
@@ -87,13 +87,13 @@ namespace Katabasis.Samples
 			for (var i = 0; i < _currentParticleCount; i++)
 			{
 				_particleVelocities[i].Y -= 1.0f * elapsedSeconds;
-				_particlePositionOffsets[i].X += _particleVelocities[i].X * elapsedSeconds;
-				_particlePositionOffsets[i].Y += _particleVelocities[i].Y * elapsedSeconds;
-				_particlePositionOffsets[i].Z += _particleVelocities[i].Z * elapsedSeconds;
+				_particlePositionOffsets[i].Position.X += _particleVelocities[i].X * elapsedSeconds;
+				_particlePositionOffsets[i].Position.Y += _particleVelocities[i].Y * elapsedSeconds;
+				_particlePositionOffsets[i].Position.Z += _particleVelocities[i].Z * elapsedSeconds;
 				// ReSharper disable once InvertIf
-				if (_particlePositionOffsets[i].Y < -2.0f)
+				if (_particlePositionOffsets[i].Position.Y < -2.0f)
 				{
-					_particlePositionOffsets[i].Y = -1.8f;
+					_particlePositionOffsets[i].Position.Y = -1.8f;
 					_particleVelocities[i].Y = -_particleVelocities[i].Y;
 					_particleVelocities[i].X *= 0.8f;
 					_particleVelocities[i].Y *= 0.8f;
@@ -111,7 +111,7 @@ namespace Katabasis.Samples
 					break;
 				}
 
-				_particlePositionOffsets[_currentParticleCount] = Vector3.Zero;
+				_particlePositionOffsets[_currentParticleCount].Position = Vector3.Zero;
 				_particleVelocities[_currentParticleCount] = new Vector3(
 					((float)(_random.Next() & 0x7FFF) / 0x7FFF) - 0.5f,
 					((float)(_random.Next() & 0x7FFF) / 0x7FFF * 0.5f) + 2.0f,
