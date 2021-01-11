@@ -88,11 +88,8 @@ jobs:
     - name: "Downlaod FNA libraries"
       run: bash ./get-fna-libs.sh
 
-    - name: "Install dependencies"
-      run: dotnet restore '${{ env.SOLUTION_PATH }}' --verbosity quiet
-
     - name: "Build solution"
-      run: dotnet build '${{ env.SOLUTION_PATH }}' --nologo --verbosity minimal --configuration Release --no-restore /p:Version='${{ env.VERSION }}'
+      run: dotnet build '${{ env.SOLUTION_PATH }}' --nologo --verbosity minimal --configuration Release /p:Version='${{ env.VERSION }}'
 
     - name: "Test solution"
       run: dotnet test '${{ env.SOLUTION_PATH }}' --nologo --verbosity normal --configuration Release --no-build
