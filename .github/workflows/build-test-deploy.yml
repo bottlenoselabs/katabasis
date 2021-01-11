@@ -24,6 +24,8 @@ jobs:
     steps:
     - name: "Checkout Git repository"
       uses: actions/checkout@v2
+      with:
+        submodules: 'true'
 
     - name: "Fetch all history for all tags and branches"
       run: git fetch --prune --unshallow
