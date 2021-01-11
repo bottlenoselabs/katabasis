@@ -14,11 +14,18 @@ namespace Katabasis
         {
             _textures = new Texture[slots];
             _modifiedSamplers = modSamplers;
-            for (var i = 0; i < _textures.Length; i += 1)
+            if (!_ignoreTargets)
             {
-                _textures[i] = null;
+                for (var i = 0; i < _textures.Length; i += 1)
+                {
+                    _textures[i] = null;
+                }
             }
+
+            _ignoreTargets = false;
         }
+
+        internal bool _ignoreTargets;
 
         public Texture? this[int index]
         {

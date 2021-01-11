@@ -655,6 +655,7 @@ namespace Katabasis
             _oldBuffers = null;
 
             // Restore samplers
+            _currentDevice.Textures._ignoreTargets = true;
             for (var i = 0; i < 3; i += 1)
             {
                 /* The application may have set a texture ages
@@ -671,6 +672,8 @@ namespace Katabasis
                 _oldTextures[i] = null;
                 _oldSamplers[i] = null;
             }
+
+            _currentDevice.Textures._ignoreTargets = true;
         }
     }
 }
