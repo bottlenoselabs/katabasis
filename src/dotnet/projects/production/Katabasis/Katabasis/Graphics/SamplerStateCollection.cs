@@ -3,29 +3,29 @@
 
 namespace Katabasis
 {
-    public sealed class SamplerStateCollection
-    {
-        private readonly bool[] _modifiedSamplers;
-        private readonly SamplerState?[] _samplers;
+	public sealed class SamplerStateCollection
+	{
+		private readonly bool[] _modifiedSamplers;
+		private readonly SamplerState?[] _samplers;
 
-        internal SamplerStateCollection(int slots, bool[] modSamplers)
-        {
-            _samplers = new SamplerState[slots];
-            _modifiedSamplers = modSamplers;
-            for (var i = 0; i < _samplers.Length; i += 1)
-            {
-                _samplers[i] = SamplerState.LinearWrap;
-            }
-        }
+		internal SamplerStateCollection(int slots, bool[] modSamplers)
+		{
+			_samplers = new SamplerState[slots];
+			_modifiedSamplers = modSamplers;
+			for (var i = 0; i < _samplers.Length; i += 1)
+			{
+				_samplers[i] = SamplerState.LinearWrap;
+			}
+		}
 
-        public SamplerState? this[int index]
-        {
-            get => _samplers[index];
-            set
-            {
-                _samplers[index] = value;
-                _modifiedSamplers[index] = true;
-            }
-        }
-    }
+		public SamplerState? this[int index]
+		{
+			get => _samplers[index];
+			set
+			{
+				_samplers[index] = value;
+				_modifiedSamplers[index] = true;
+			}
+		}
+	}
 }

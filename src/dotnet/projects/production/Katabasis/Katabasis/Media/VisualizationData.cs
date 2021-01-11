@@ -6,22 +6,22 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
-    public class VisualizationData
-    {
-        internal const int Size = 256;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	public class VisualizationData
+	{
+		internal const int Size = 256;
 
-        internal float[] _frequencies;
-        internal float[] _samples;
+		internal float[] _frequencies;
+		internal float[] _samples;
 
-        public ReadOnlyCollection<float> Frequencies => new ReadOnlyCollection<float>(_frequencies);
+		public VisualizationData()
+		{
+			_frequencies = new float[Size];
+			_samples = new float[Size];
+		}
 
-        public ReadOnlyCollection<float> Samples => new ReadOnlyCollection<float>(_samples);
+		public ReadOnlyCollection<float> Frequencies => new(_frequencies);
 
-        public VisualizationData()
-        {
-            _frequencies = new float[Size];
-            _samples = new float[Size];
-        }
-    }
+		public ReadOnlyCollection<float> Samples => new(_samples);
+	}
 }

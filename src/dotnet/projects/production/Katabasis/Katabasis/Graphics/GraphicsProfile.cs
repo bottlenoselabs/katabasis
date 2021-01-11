@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum GraphicsProfile
-    {
-        Reach,
-        HiDef
-    }
+	public enum GraphicsProfile
+	{
+		Reach,
+		HiDef
+	}
 }

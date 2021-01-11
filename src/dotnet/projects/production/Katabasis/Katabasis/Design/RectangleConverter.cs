@@ -6,23 +6,19 @@ using System.ComponentModel;
 
 namespace Katabasis
 {
-    public class RectangleConverter : MathTypeConverter
-    {
-        public RectangleConverter()
-        {
-            // FIXME: Initialize propertyDescriptions... how? -flibit
-            _supportStringConvert = false;
-        }
+	public class RectangleConverter : MathTypeConverter
+	{
+		public RectangleConverter() =>
+			// FIXME: Initialize propertyDescriptions... how? -flibit
+			_supportStringConvert = false;
 
-        public override object CreateInstance(
-            ITypeDescriptorContext context,
-            IDictionary propertyValues)
-        {
-            return new Rectangle(
-                (int)(propertyValues["X"] ?? 0),
-                (int)(propertyValues["Y"] ?? 0),
-                (int)(propertyValues["Width"] ?? 0),
-                (int)(propertyValues["Height"] ?? 0));
-        }
-    }
+		public override object CreateInstance(
+			ITypeDescriptorContext context,
+			IDictionary propertyValues) =>
+			new Rectangle(
+				(int)(propertyValues["X"] ?? 0),
+				(int)(propertyValues["Y"] ?? 0),
+				(int)(propertyValues["Width"] ?? 0),
+				(int)(propertyValues["Height"] ?? 0));
+	}
 }

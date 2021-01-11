@@ -5,22 +5,23 @@ using System.Numerics;
 
 namespace Katabasis.Samples
 {
-    internal struct VertexTexture : IVertexType
-    {
-        public Vector2 TextureCoordinates;
+	internal struct VertexTexture : IVertexType
+	{
+		public Vector2 TextureCoordinates;
 
-        public static readonly VertexDeclaration Declaration;
+		public static readonly VertexDeclaration Declaration;
 
-        VertexDeclaration IVertexType.VertexDeclaration => Declaration;
+		VertexDeclaration IVertexType.VertexDeclaration => Declaration;
 
-        static VertexTexture()
-        {
-            var elements = new[]
-            {
-                new VertexElement(
-                    0, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
-            };
-            Declaration = new VertexDeclaration(elements);
-        }
-    }
+		static VertexTexture()
+		{
+			var elements = new[]
+			{
+				new VertexElement(
+					0, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)
+			};
+
+			Declaration = new VertexDeclaration(elements);
+		}
+	}
 }

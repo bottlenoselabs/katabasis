@@ -3,8 +3,8 @@
 
 namespace Katabasis
 {
-    public interface IVertexType
-    {
-        VertexDeclaration VertexDeclaration { get; }
-    }
+	public interface IVertexType
+	{
+		VertexDeclaration VertexDeclaration { get; }
+	}
 }

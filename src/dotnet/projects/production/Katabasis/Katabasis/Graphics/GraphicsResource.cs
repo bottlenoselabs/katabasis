@@ -6,105 +6,101 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
-    public abstract class GraphicsResource : IDisposable
-    {
-        private WeakReference? _selfReference;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	public abstract class GraphicsResource : IDisposable
+	{
+		private GraphicsDevice _graphicsDevice = null!;
+		private WeakReference? _selfReference;
 
-        private GraphicsDevice _graphicsDevice = null!;
+		internal GraphicsResource()
+		{
+		}
 
-        public bool IsDisposed { get; private set; }
+		public bool IsDisposed { get; private set; }
 
-        public string Name { get; set; } = string.Empty;
+		public string Name { get; set; } = string.Empty;
 
-        public object? Tag { get; set; }
+		public object? Tag { get; set; }
 
-        public event EventHandler<EventArgs>? Disposing;
+		public GraphicsDevice GraphicsDevice
+		{
+			get => _graphicsDevice;
+			internal set
+			{
+				if (_graphicsDevice == value)
+				{
+					return;
+				}
 
-        internal GraphicsResource()
-        {
-        }
+				/* VertexDeclaration objects can be bound to
+				 * multiple GraphicsDevice objects during their
+				 * lifetime. But only one GraphicsDevice should
+				 * retain ownership.
+				 */
+				if (_selfReference != null)
+				{
+					_graphicsDevice.RemoveResourceReference(_selfReference);
+					_selfReference = null;
+				}
 
-        public void Dispose()
-        {
-            // Dispose of unmanaged objects as well
-            Dispose(true);
+				_graphicsDevice = value;
 
-            // Since we have been manually disposed, do not call the finalizer on this object
-            GC.SuppressFinalize(this);
-        }
+				_selfReference = new WeakReference(this);
+				_graphicsDevice.AddResourceReference(_selfReference);
+			}
+		}
 
-        public override string? ToString()
-        {
-            return string.IsNullOrEmpty(Name) ? base.ToString() : Name;
-        }
+		public void Dispose()
+		{
+			// Dispose of unmanaged objects as well
+			Dispose(true);
 
-        /// <summary>
-        ///     Called before the device is reset. Allows graphics resources to
-        ///     invalidate their state so they can be recreated after the device reset.
-        ///     Warning: This may be called after a call to Dispose() up until
-        ///     the resource is garbage collected.
-        /// </summary>
-        protected internal virtual void GraphicsDeviceResetting()
-        {
-        }
+			// Since we have been manually disposed, do not call the finalizer on this object
+			GC.SuppressFinalize(this);
+		}
 
-        /// <summary>
-        ///     The method that derived classes should override to implement disposing of
-        ///     managed and native resources.
-        /// </summary>
-        /// <param name="disposing">True if managed objects should be disposed.</param>
-        /// <remarks>
-        ///     Native resources should always be released regardless of the value of the
-        ///     disposing parameter.
-        /// </remarks>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
-            {
-                // Do not trigger the event if called from the finalizer
-                if (disposing)
-                {
-                    Disposing?.Invoke(this, EventArgs.Empty);
-                }
+		public event EventHandler<EventArgs>? Disposing;
 
-                // Remove from the list of graphics resources
-                if (_selfReference != null)
-                {
-                    _graphicsDevice.RemoveResourceReference(_selfReference);
-                    _selfReference = null;
-                }
+		public override string? ToString() => string.IsNullOrEmpty(Name) ? base.ToString() : Name;
 
-                IsDisposed = true;
-            }
-        }
+		/// <summary>
+		///     Called before the device is reset. Allows graphics resources to
+		///     invalidate their state so they can be recreated after the device reset.
+		///     Warning: This may be called after a call to Dispose() up until
+		///     the resource is garbage collected.
+		/// </summary>
+		protected internal virtual void GraphicsDeviceResetting()
+		{
+		}
 
-        public GraphicsDevice GraphicsDevice
-        {
-            get => _graphicsDevice;
-            internal set
-            {
-                if (_graphicsDevice == value)
-                {
-                    return;
-                }
+		/// <summary>
+		///     The method that derived classes should override to implement disposing of
+		///     managed and native resources.
+		/// </summary>
+		/// <param name="disposing">True if managed objects should be disposed.</param>
+		/// <remarks>
+		///     Native resources should always be released regardless of the value of the
+		///     disposing parameter.
+		/// </remarks>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!IsDisposed)
+			{
+				// Do not trigger the event if called from the finalizer
+				if (disposing)
+				{
+					Disposing?.Invoke(this, EventArgs.Empty);
+				}
 
-                /* VertexDeclaration objects can be bound to
-                 * multiple GraphicsDevice objects during their
-                 * lifetime. But only one GraphicsDevice should
-                 * retain ownership.
-                 */
-                if (_selfReference != null)
-                {
-                    _graphicsDevice.RemoveResourceReference(_selfReference);
-                    _selfReference = null;
-                }
+				// Remove from the list of graphics resources
+				if (_selfReference != null)
+				{
+					_graphicsDevice.RemoveResourceReference(_selfReference);
+					_selfReference = null;
+				}
 
-                _graphicsDevice = value;
-
-                _selfReference = new WeakReference(this);
-                _graphicsDevice.AddResourceReference(_selfReference);
-            }
-        }
-    }
+				IsDisposed = true;
+			}
+		}
+	}
 }

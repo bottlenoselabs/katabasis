@@ -3,15 +3,15 @@
 
 namespace Katabasis
 {
-    public enum CompareFunction
-    {
-        Always,
-        Never,
-        Less,
-        LessEqual,
-        Equal,
-        GreaterEqual,
-        Greater,
-        NotEqual
-    }
+	public enum CompareFunction
+	{
+		Always,
+		Never,
+		Less,
+		LessEqual,
+		Equal,
+		GreaterEqual,
+		Greater,
+		NotEqual
+	}
 }

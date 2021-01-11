@@ -3,17 +3,17 @@
 
 namespace Katabasis
 {
-    public enum GamePadType
-    {
-        Unknown,
-        GamePad,
-        Wheel,
-        ArcadeStick,
-        FlightStick,
-        DancePad,
-        Guitar,
-        AlternateGuitar,
-        DrumKit,
-        BigButtonPad
-    }
+	public enum GamePadType
+	{
+		Unknown,
+		GamePad,
+		Wheel,
+		ArcadeStick,
+		FlightStick,
+		DancePad,
+		Guitar,
+		AlternateGuitar,
+		DrumKit,
+		BigButtonPad
+	}
 }

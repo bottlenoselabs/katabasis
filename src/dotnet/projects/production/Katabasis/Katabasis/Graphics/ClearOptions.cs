@@ -5,11 +5,11 @@ using System;
 
 namespace Katabasis
 {
-    [Flags]
-    public enum ClearOptions
-    {
-        Target = 1,
-        DepthBuffer = 2,
-        Stencil = 4
-    }
+	[Flags]
+	public enum ClearOptions
+	{
+		Target = 1,
+		DepthBuffer = 2,
+		Stencil = 4
+	}
 }

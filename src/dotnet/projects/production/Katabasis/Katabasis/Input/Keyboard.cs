@@ -5,23 +5,14 @@ using System.Collections.Generic;
 
 namespace Katabasis
 {
-    public static class Keyboard
-    {
-        internal static List<Keys> _keys = new List<Keys>();
+	public static class Keyboard
+	{
+		internal static List<Keys> _keys = new();
 
-        public static Keys GetKeyFromScancodeEXT(Keys scancode)
-        {
-            return FNAPlatform.GetKeyFromScancode(scancode);
-        }
+		public static Keys GetKeyFromScancodeEXT(Keys scancode) => FNAPlatform.GetKeyFromScancode(scancode);
 
-        public static KeyboardState GetState()
-        {
-            return new KeyboardState(_keys);
-        }
+		public static KeyboardState GetState() => new(_keys);
 
-        public static KeyboardState GetState(PlayerIndex playerIndex)
-        {
-            return new KeyboardState(_keys);
-        }
-    }
+		public static KeyboardState GetState(PlayerIndex playerIndex) => new(_keys);
+	}
 }

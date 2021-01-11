@@ -3,25 +3,30 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.noaudiohardwareexception.aspx
-    [Serializable]
-    public sealed class NoAudioHardwareException : ExternalException
-    {
-        public NoAudioHardwareException()
-        {
-        }
+	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.noaudiohardwareexception.aspx
+	[Serializable]
+	public sealed class NoAudioHardwareException : ExternalException
+	{
+		public NoAudioHardwareException()
+		{
+		}
 
-        public NoAudioHardwareException(string message)
-            : base(message)
-        {
-        }
+		private NoAudioHardwareException(SerializationInfo info, StreamingContext context)
+		{
+		}
 
-        public NoAudioHardwareException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-    }
+		public NoAudioHardwareException(string message)
+			: base(message)
+		{
+		}
+
+		public NoAudioHardwareException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+	}
 }

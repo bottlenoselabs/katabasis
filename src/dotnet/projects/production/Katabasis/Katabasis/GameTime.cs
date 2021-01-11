@@ -5,33 +5,33 @@ using System;
 
 namespace Katabasis
 {
-    public class GameTime
-    {
-        public TimeSpan TotalGameTime { get; internal set; }
+	public class GameTime
+	{
+		public GameTime()
+		{
+			TotalGameTime = TimeSpan.Zero;
+			ElapsedGameTime = TimeSpan.Zero;
+			IsRunningSlowly = false;
+		}
 
-        public TimeSpan ElapsedGameTime { get; internal set; }
+		public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime)
+		{
+			TotalGameTime = totalGameTime;
+			ElapsedGameTime = elapsedGameTime;
+			IsRunningSlowly = false;
+		}
 
-        public bool IsRunningSlowly { get; internal set; }
+		public GameTime(TimeSpan totalRealTime, TimeSpan elapsedRealTime, bool isRunningSlowly)
+		{
+			TotalGameTime = totalRealTime;
+			ElapsedGameTime = elapsedRealTime;
+			IsRunningSlowly = isRunningSlowly;
+		}
 
-        public GameTime()
-        {
-            TotalGameTime = TimeSpan.Zero;
-            ElapsedGameTime = TimeSpan.Zero;
-            IsRunningSlowly = false;
-        }
+		public TimeSpan TotalGameTime { get; internal set; }
 
-        public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime)
-        {
-            TotalGameTime = totalGameTime;
-            ElapsedGameTime = elapsedGameTime;
-            IsRunningSlowly = false;
-        }
+		public TimeSpan ElapsedGameTime { get; internal set; }
 
-        public GameTime(TimeSpan totalRealTime, TimeSpan elapsedRealTime, bool isRunningSlowly)
-        {
-            TotalGameTime = totalRealTime;
-            ElapsedGameTime = elapsedRealTime;
-            IsRunningSlowly = isRunningSlowly;
-        }
-    }
+		public bool IsRunningSlowly { get; internal set; }
+	}
 }

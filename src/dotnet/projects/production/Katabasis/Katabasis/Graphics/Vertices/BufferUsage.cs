@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum BufferUsage
-    {
-        None,
-        WriteOnly
-    }
+	public enum BufferUsage
+	{
+		None,
+		WriteOnly
+	}
 }

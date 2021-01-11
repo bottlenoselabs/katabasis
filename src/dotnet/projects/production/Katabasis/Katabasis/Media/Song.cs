@@ -8,101 +8,82 @@ using System.Runtime.CompilerServices;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
-    public sealed class Song : IEquatable<Song>, IDisposable
-    {
-        internal string _handle;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	public sealed class Song : IEquatable<Song>, IDisposable
+	{
+		internal string _handle;
 
-        public bool IsDisposed { get; private set; }
+		internal Song(string fileName, string? name = null)
+		{
+			if (!File.Exists(fileName))
+			{
+				throw new FileNotFoundException(fileName);
+			}
 
-        public static Song FromUri(string name, Uri uri)
-        {
-            string path;
-            if (uri.IsAbsoluteUri)
-            {
-                // If it's absolute, be sure we can actually get it...
-                if (!uri.IsFile)
-                {
-                    throw new InvalidOperationException("Only local file URIs are supported for now");
-                }
+			_handle = fileName;
+			Name = name ?? string.Empty;
+			IsDisposed = false;
+		}
 
-                path = uri.LocalPath;
-            }
-            else
-            {
-                path = Path.Combine(
-                    TitleLocation.Path,
-                    uri.ToString());
-            }
+		internal Song(string fileName, int durationMS)
+			: this(fileName) =>
+			Duration = TimeSpan.FromMilliseconds(durationMS);
 
-            return new Song(path, name);
-        }
+		public bool IsDisposed { get; private set; }
 
-        public string Name { get; }
+		public string Name { get; }
 
-        public TimeSpan Duration { get; internal set; }
+		public TimeSpan Duration { get; internal set; }
 
-        public bool IsProtected => false;
+		public bool IsProtected => false;
 
-        public bool IsRated => false;
+		public bool IsRated => false;
 
-        public int PlayCount { get; internal set; }
+		public int PlayCount { get; internal set; }
 
-        public int Rating => 0;
+		public int Rating => 0;
 
-        public int TrackNumber => 0;
+		public int TrackNumber => 0;
 
-        internal Song(string fileName, string? name = null)
-        {
-            if (!File.Exists(fileName))
-            {
-                throw new FileNotFoundException(fileName);
-            }
+		public void Dispose()
+		{
+			IsDisposed = true;
+			GC.SuppressFinalize(this);
+		}
 
-            _handle = fileName;
-            Name = name ?? string.Empty;
-            IsDisposed = false;
-        }
+		public bool Equals(Song? other) => !ReferenceEquals(other, null) && _handle == other._handle;
 
-        internal Song(string fileName, int durationMS)
-            : this(fileName)
-        {
-            Duration = TimeSpan.FromMilliseconds(durationMS);
-        }
+		public static Song FromUri(string name, Uri uri)
+		{
+			string path;
+			if (uri.IsAbsoluteUri)
+			{
+				// If it's absolute, be sure we can actually get it...
+				if (!uri.IsFile)
+				{
+					throw new InvalidOperationException("Only local file URIs are supported for now");
+				}
 
-        ~Song()
-        {
-            Dispose();
-        }
+				path = uri.LocalPath;
+			}
+			else
+			{
+				path = Path.Combine(
+					TitleLocation.Path,
+					uri.ToString());
+			}
 
-        public void Dispose()
-        {
-            IsDisposed = true;
-        }
+			return new Song(path, name);
+		}
 
-        public bool Equals(Song? song)
-        {
-            return !ReferenceEquals(song, null) && _handle == song._handle;
-        }
+		~Song() => Dispose();
 
-        public override bool Equals(object? obj)
-        {
-            return obj != null && Equals(obj as Song);
-        }
+		public override bool Equals(object? obj) => obj != null && Equals(obj as Song);
 
-        public static bool operator ==(Song? song1, Song? song2)
-        {
-            return song1?.Equals(song2) ?? ReferenceEquals(song2, null);
-        }
+		public static bool operator ==(Song? song1, Song? song2) => song1?.Equals(song2) ?? ReferenceEquals(song2, null);
 
-        public static bool operator !=(Song? song1, Song? song2)
-        {
-            return !(song1 == song2);
-        }
+		public static bool operator !=(Song? song1, Song? song2) => !(song1 == song2);
 
-        public override int GetHashCode()
-        {
-            return RuntimeHelpers.GetHashCode(this);
-        }
-    }
+		public override int GetHashCode() => RuntimeHelpers.GetHashCode(this);
+	}
 }

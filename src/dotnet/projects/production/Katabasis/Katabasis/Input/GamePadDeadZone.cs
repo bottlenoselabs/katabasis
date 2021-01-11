@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum GamePadDeadZone
-    {
-        None,
-        IndependentAxes,
-        Circular
-    }
+	public enum GamePadDeadZone
+	{
+		None,
+		IndependentAxes,
+		Circular
+	}
 }

@@ -3,13 +3,13 @@
 
 namespace Katabasis
 {
-    public enum CubeMapFace
-    {
-        PositiveX,
-        NegativeX,
-        PositiveY,
-        NegativeY,
-        PositiveZ,
-        NegativeZ
-    }
+	public enum CubeMapFace
+	{
+		PositiveX,
+		NegativeX,
+		PositiveY,
+		NegativeY,
+		PositiveZ,
+		NegativeZ
+	}
 }

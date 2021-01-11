@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum IndexElementSize
-    {
-        SixteenBits,
-        ThirtyTwoBits
-    }
+	public enum IndexElementSize
+	{
+		SixteenBits,
+		ThirtyTwoBits
+	}
 }

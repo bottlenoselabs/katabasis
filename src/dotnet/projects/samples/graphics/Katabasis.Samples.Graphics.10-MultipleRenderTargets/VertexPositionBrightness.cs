@@ -5,25 +5,26 @@ using System.Numerics;
 
 namespace Katabasis.Samples
 {
-    internal struct VertexPositionBrightness : IVertexType
-    {
-        public Vector3 Position;
-        public float Brightness;
+	internal struct VertexPositionBrightness : IVertexType
+	{
+		public Vector3 Position;
+		public float Brightness;
 
-        public static readonly VertexDeclaration Declaration;
+		public static readonly VertexDeclaration Declaration;
 
-        VertexDeclaration IVertexType.VertexDeclaration => Declaration;
+		VertexDeclaration IVertexType.VertexDeclaration => Declaration;
 
-        static VertexPositionBrightness()
-        {
-            var elements = new[]
-            {
-                new VertexElement(
-                    0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
-                new VertexElement(
-                    12, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 0)
-            };
-            Declaration = new VertexDeclaration(elements);
-        }
-    }
+		static VertexPositionBrightness()
+		{
+			var elements = new[]
+			{
+				new VertexElement(
+					0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+				new VertexElement(
+					12, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 0)
+			};
+
+			Declaration = new VertexDeclaration(elements);
+		}
+	}
 }

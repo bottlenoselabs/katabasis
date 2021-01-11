@@ -3,12 +3,12 @@
 
 namespace Katabasis
 {
-    public enum PrimitiveType
-    {
-        TriangleList,
-        TriangleStrip,
-        LineList,
-        LineStrip,
-        PointListEXT
-    }
+	public enum PrimitiveType
+	{
+		TriangleList,
+		TriangleStrip,
+		LineList,
+		LineStrip,
+		PointListEXT
+	}
 }

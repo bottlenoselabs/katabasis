@@ -5,55 +5,55 @@ using System.Collections.Generic;
 
 namespace Katabasis
 {
-    public static class FrameworkDispatcher
-    {
-        public static void Update()
-        {
-            /* Updates the status of various framework components
-             * (such as power state and media), and raises related events.
-             */
-            lock (Streams)
-            {
-                for (var i = 0; i < Streams.Count; i += 1)
-                {
-                    DynamicSoundEffectInstance soundEffect = Streams[i];
-                    soundEffect.Update();
-                    if (soundEffect.IsDisposed)
-                    {
-                        i -= 1;
-                    }
-                }
-            }
+	public static class FrameworkDispatcher
+	{
+		internal static bool ActiveSongChanged;
+		internal static bool MediaStateChanged;
+		internal static List<DynamicSoundEffectInstance> Streams = new();
 
-            if (Microphone.MicList != null)
-            {
-                for (var i = 0; i < Microphone.MicList.Count; i += 1)
-                {
-                    Microphone.MicList[i].CheckBuffer();
-                }
-            }
+		public static void Update()
+		{
+			/* Updates the status of various framework components
+			 * (such as power state and media), and raises related events.
+			 */
+			lock (Streams)
+			{
+				for (var i = 0; i < Streams.Count; i += 1)
+				{
+					DynamicSoundEffectInstance soundEffect = Streams[i];
+					soundEffect.Update();
+					if (soundEffect.IsDisposed)
+					{
+						i -= 1;
+					}
+				}
+			}
 
-            MediaPlayer.Update();
-            if (ActiveSongChanged)
-            {
-                MediaPlayer.OnActiveSongChanged();
-                ActiveSongChanged = false;
-            }
+			if (Microphone.MicList != null)
+			{
+				for (var i = 0; i < Microphone.MicList.Count; i += 1)
+				{
+					Microphone.MicList[i].CheckBuffer();
+				}
+			}
 
-            if (MediaStateChanged)
-            {
-                MediaPlayer.OnMediaStateChanged();
-                MediaStateChanged = false;
-            }
+			MediaPlayer.Update();
+			if (ActiveSongChanged)
+			{
+				MediaPlayer.OnActiveSongChanged();
+				ActiveSongChanged = false;
+			}
 
-            if (TouchPanel.TouchDeviceExists)
-            {
-                TouchPanel.Update();
-            }
-        }
+			if (MediaStateChanged)
+			{
+				MediaPlayer.OnMediaStateChanged();
+				MediaStateChanged = false;
+			}
 
-        internal static bool ActiveSongChanged;
-        internal static bool MediaStateChanged;
-        internal static List<DynamicSoundEffectInstance> Streams = new List<DynamicSoundEffectInstance>();
-    }
+			if (TouchPanel.TouchDeviceExists)
+			{
+				TouchPanel.Update();
+			}
+		}
+	}
 }

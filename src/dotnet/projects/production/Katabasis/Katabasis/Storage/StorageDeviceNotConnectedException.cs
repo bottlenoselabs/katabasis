@@ -7,21 +7,21 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
-    public class StorageDeviceNotConnectedException : ExternalException
-    {
-        public StorageDeviceNotConnectedException()
-        {
-        }
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	public class StorageDeviceNotConnectedException : ExternalException
+	{
+		public StorageDeviceNotConnectedException()
+		{
+		}
 
-        public StorageDeviceNotConnectedException(string message)
-            : base(message)
-        {
-        }
+		public StorageDeviceNotConnectedException(string message)
+			: base(message)
+		{
+		}
 
-        public StorageDeviceNotConnectedException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-    }
+		public StorageDeviceNotConnectedException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+	}
 }

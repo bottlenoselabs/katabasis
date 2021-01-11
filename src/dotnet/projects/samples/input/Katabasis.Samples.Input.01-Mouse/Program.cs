@@ -3,12 +3,12 @@
 
 namespace Katabasis.Samples.Clear
 {
-    internal static class Program
-    {
-        public static void Main()
-        {
-            using var app = new App();
-            app.Run();
-        }
-    }
+	internal static class Program
+	{
+		public static void Main()
+		{
+			using var app = new App();
+			app.Run();
+		}
+	}
 }

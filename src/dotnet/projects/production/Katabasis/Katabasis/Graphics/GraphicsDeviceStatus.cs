@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum GraphicsDeviceStatus
-    {
-        Normal,
-        Lost,
-        NotReset
-    }
+	public enum GraphicsDeviceStatus
+	{
+		Normal,
+		Lost,
+		NotReset
+	}
 }

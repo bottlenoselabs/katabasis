@@ -5,13 +5,10 @@ using System;
 
 namespace Katabasis
 {
-    public sealed class ResourceCreatedEventArgs : EventArgs
-    {
-        public object? Resource { get; }
+	public sealed class ResourceCreatedEventArgs : EventArgs
+	{
+		internal ResourceCreatedEventArgs(object? resource) => Resource = resource;
 
-        internal ResourceCreatedEventArgs(object? resource)
-        {
-            Resource = resource;
-        }
-    }
+		public object? Resource { get; }
+	}
 }

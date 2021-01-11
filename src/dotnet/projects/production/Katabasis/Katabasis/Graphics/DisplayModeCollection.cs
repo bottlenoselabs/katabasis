@@ -6,41 +6,32 @@ using System.Collections.Generic;
 
 namespace Katabasis
 {
-    public class DisplayModeCollection : IEnumerable<DisplayMode>, IEnumerable
-    {
-        private readonly List<DisplayMode> _modes;
+	public class DisplayModeCollection : IEnumerable<DisplayMode>, IEnumerable
+	{
+		private readonly List<DisplayMode> _modes;
 
-        internal DisplayModeCollection(List<DisplayMode> setModes)
-        {
-            _modes = setModes;
-        }
+		internal DisplayModeCollection(List<DisplayMode> setModes) => _modes = setModes;
 
-        public IEnumerable<DisplayMode> this[SurfaceFormat format]
-        {
-            get
-            {
-                var list = new List<DisplayMode>();
-                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                foreach (DisplayMode mode in _modes)
-                {
-                    if (mode.Format == format)
-                    {
-                        list.Add(mode);
-                    }
-                }
+		public IEnumerable<DisplayMode> this[SurfaceFormat format]
+		{
+			get
+			{
+				var list = new List<DisplayMode>();
+				// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+				foreach (DisplayMode mode in _modes)
+				{
+					if (mode.Format == format)
+					{
+						list.Add(mode);
+					}
+				}
 
-                return list;
-            }
-        }
+				return list;
+			}
+		}
 
-        public IEnumerator<DisplayMode> GetEnumerator()
-        {
-            return _modes.GetEnumerator();
-        }
+		public IEnumerator<DisplayMode> GetEnumerator() => _modes.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _modes.GetEnumerator();
-        }
-    }
+		IEnumerator IEnumerable.GetEnumerator() => _modes.GetEnumerator();
+	}
 }

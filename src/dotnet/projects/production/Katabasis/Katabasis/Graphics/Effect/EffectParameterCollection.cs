@@ -1,70 +1,59 @@
 // Copyright (c) Craftwork Games. All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Will gut Mojo shader soon.")]
-    public sealed class EffectParameterCollection : IEnumerable<EffectParameter>
-    {
-        private readonly List<EffectParameter> _elements;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Will gut Mojo shader soon.")]
+	public sealed class EffectParameterCollection : IEnumerable<EffectParameter>
+	{
+		private readonly List<EffectParameter> _elements;
 
-        public int Count => _elements.Count;
+		internal EffectParameterCollection(List<EffectParameter> value) => _elements = value;
 
-        public EffectParameter? this[int index] => _elements[index];
+		public int Count => _elements.Count;
 
-        public EffectParameter? this[string name]
-        {
-            get
-            {
-                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                foreach (EffectParameter elem in _elements)
-                {
-                    if (name.Equals(elem.Name))
-                    {
-                        return elem;
-                    }
-                }
+		public EffectParameter? this[int index] => _elements[index];
 
-                return null; // FIXME: ArrayIndexOutOfBounds? -flibit
-            }
-        }
+		public EffectParameter? this[string name]
+		{
+			get
+			{
+				// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+				foreach (EffectParameter elem in _elements)
+				{
+					if (name.Equals(elem.Name, StringComparison.Ordinal))
+					{
+						return elem;
+					}
+				}
 
-        internal EffectParameterCollection(List<EffectParameter> value)
-        {
-            _elements = value;
-        }
+				return null; // FIXME: ArrayIndexOutOfBounds? -flibit
+			}
+		}
 
-        public List<EffectParameter>.Enumerator GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
+		IEnumerator IEnumerable.GetEnumerator() => _elements.GetEnumerator();
 
-        public EffectParameter? GetParameterBySemantic(string semantic)
-        {
-            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-            foreach (EffectParameter elem in _elements)
-            {
-                if (semantic.Equals(elem.Semantic))
-                {
-                    return elem;
-                }
-            }
+		IEnumerator<EffectParameter> IEnumerable<EffectParameter>.GetEnumerator() => _elements.GetEnumerator();
 
-            return null;
-        }
+		public List<EffectParameter>.Enumerator GetEnumerator() => _elements.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
+		public EffectParameter? GetParameterBySemantic(string semantic)
+		{
+			// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+			foreach (EffectParameter elem in _elements)
+			{
+				if (semantic.Equals(elem.Semantic, StringComparison.Ordinal))
+				{
+					return elem;
+				}
+			}
 
-        IEnumerator<EffectParameter> IEnumerable<EffectParameter>.GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
-    }
+			return null;
+		}
+	}
 }

@@ -8,140 +8,102 @@ using System.Numerics;
 
 namespace Katabasis
 {
-    // https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchcollection.aspx
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
-    public readonly struct TouchCollection : IList<TouchLocation>
-    {
-        private readonly List<TouchLocation> _touches;
+	// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchcollection.aspx
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	public readonly struct TouchCollection : IList<TouchLocation>
+	{
+		private readonly List<TouchLocation> _touches;
 
-        public int Count => _touches.Count;
+		public int Count => _touches.Count;
 
-        public bool IsConnected => TouchPanel.TouchDeviceExists;
+		public bool IsConnected => TouchPanel.TouchDeviceExists;
 
-        public bool IsReadOnly => true;
+		public bool IsReadOnly => true;
 
-        public TouchLocation this[int index]
-        {
-            get => _touches[index];
-            set =>
-                // This will cause a runtime exception
-                _touches[index] = value;
-        }
+		public TouchLocation this[int index]
+		{
+			get => _touches[index];
+			set =>
+				// This will cause a runtime exception
+				_touches[index] = value;
+		}
 
-        public TouchCollection(TouchLocation[] touches)
-        {
-            _touches = new List<TouchLocation>(touches);
-        }
+		public TouchCollection(TouchLocation[] touches) => _touches = new List<TouchLocation>(touches);
 
-        /* Since the collection is always readonly, using any
-         * method that attempts to modify touches will result
-         * in a System.NotSupportedException at runtime.
-         */
+		/* Since the collection is always readonly, using any
+		 * method that attempts to modify touches will result
+		 * in a System.NotSupportedException at runtime.
+		 */
 
-        public void Add(TouchLocation item)
-        {
-            _touches.Add(item);
-        }
+		public void Add(TouchLocation item) => _touches.Add(item);
 
-        public void Clear()
-        {
-            _touches.Clear();
-        }
+		public void Clear() => _touches.Clear();
 
-        public bool Contains(TouchLocation item)
-        {
-            return _touches.Contains(item);
-        }
+		public bool Contains(TouchLocation item) => _touches.Contains(item);
 
-        public void CopyTo(TouchLocation[] array, int arrayIndex)
-        {
-            _touches.CopyTo(array, arrayIndex);
-        }
+		public void CopyTo(TouchLocation[] array, int arrayIndex) => _touches.CopyTo(array, arrayIndex);
 
-        public bool FindById(int id, out TouchLocation touchLocation)
-        {
-            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-            foreach (var touch in _touches)
-            {
-                if (touch.Id == id)
-                {
-                    touchLocation = touch;
-                    return true;
-                }
-            }
+		public bool FindById(int id, out TouchLocation touchLocation)
+		{
+			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+			foreach (var touch in _touches)
+			{
+				if (touch.Id == id)
+				{
+					touchLocation = touch;
+					return true;
+				}
+			}
 
-            touchLocation = new TouchLocation(
-                -1,
-                TouchLocationState.Invalid,
-                Vector2.Zero);
-            return false;
-        }
+			touchLocation = new TouchLocation(
+				-1,
+				TouchLocationState.Invalid,
+				Vector2.Zero);
 
-        public Enumerator GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+			return false;
+		}
 
-        public int IndexOf(TouchLocation item)
-        {
-            return _touches.IndexOf(item);
-        }
+		public Enumerator GetEnumerator() => new(this);
 
-        public void Insert(int index, TouchLocation item)
-        {
-            _touches.Insert(index, item);
-        }
+		public int IndexOf(TouchLocation item) => _touches.IndexOf(item);
 
-        public bool Remove(TouchLocation item)
-        {
-            return _touches.Remove(item);
-        }
+		public void Insert(int index, TouchLocation item) => _touches.Insert(index, item);
 
-        public void RemoveAt(int index)
-        {
-            _touches.RemoveAt(index);
-        }
+		public bool Remove(TouchLocation item) => _touches.Remove(item);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+		public void RemoveAt(int index) => _touches.RemoveAt(index);
 
-        IEnumerator<TouchLocation> IEnumerable<TouchLocation>.GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+		IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
-        // https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchcollection.enumerator.aspx
-        public struct Enumerator : IEnumerator<TouchLocation>
-        {
-            private readonly TouchCollection _collection;
-            private int _position;
+		IEnumerator<TouchLocation> IEnumerable<TouchLocation>.GetEnumerator() => new Enumerator(this);
 
-            internal Enumerator(TouchCollection collection)
-            {
-                _collection = collection;
-                _position = -1;
-            }
+		// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchcollection.enumerator.aspx
+		public struct Enumerator : IEnumerator<TouchLocation>
+		{
+			private readonly TouchCollection _collection;
+			private int _position;
 
-            public TouchLocation Current => _collection[_position];
+			internal Enumerator(TouchCollection collection)
+			{
+				_collection = collection;
+				_position = -1;
+			}
 
-            public bool MoveNext()
-            {
-                _position += 1;
-                return _position < _collection.Count;
-            }
+			public TouchLocation Current => _collection[_position];
 
-            public void Dispose()
-            {
-            }
+			public bool MoveNext()
+			{
+				_position += 1;
+				return _position < _collection.Count;
+			}
 
-            object IEnumerator.Current => _collection[_position];
+			public void Dispose()
+			{
+			}
 
-            void IEnumerator.Reset()
-            {
-                _position = -1;
-            }
-        }
-    }
+			object IEnumerator.Current => _collection[_position];
+
+			void IEnumerator.Reset() => _position = -1;
+		}
+	}
 }

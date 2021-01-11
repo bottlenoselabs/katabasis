@@ -7,118 +7,112 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public class VertexDeclaration : GraphicsResource
-    {
-        internal VertexElement[] _elements;
-        internal IntPtr _elementsPin;
-        private GCHandle _handle;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public class VertexDeclaration : GraphicsResource
+	{
+		internal VertexElement[] _elements;
+		internal IntPtr _elementsPin;
+		private GCHandle _handle;
 
-        public int VertexStride { get; }
+		public VertexDeclaration(params VertexElement[] elements)
+			: this(GetVertexStride(elements), elements)
+		{
+		}
 
-        ~VertexDeclaration()
-        {
-            _handle.Free();
-        }
+		public VertexDeclaration(
+			int vertexStride,
+			params VertexElement[] elements)
+		{
+			if (elements == null || elements.Length == 0)
+			{
+				throw new ArgumentNullException(nameof(elements), "Elements cannot be empty");
+			}
 
-        public VertexElement[] GetVertexElements()
-        {
-            return (VertexElement[])_elements.Clone();
-        }
+			_elements = (VertexElement[])elements.Clone();
+			_handle = GCHandle.Alloc(_elements, GCHandleType.Pinned);
+			_elementsPin = _handle.AddrOfPinnedObject();
+			VertexStride = vertexStride;
+		}
 
-        internal static VertexDeclaration FromType(Type vertexType)
-        {
-            if (vertexType == null)
-            {
-                throw new ArgumentNullException(nameof(vertexType), "Cannot be null");
-            }
+		public int VertexStride { get; }
 
-            if (!vertexType.IsValueType)
-            {
-                throw new ArgumentException("Must be value type", nameof(vertexType));
-            }
+		~VertexDeclaration() => _handle.Free();
 
-            if (!(Activator.CreateInstance(vertexType) is IVertexType type))
-            {
-                throw new ArgumentException("vertexData does not inherit IVertexType");
-            }
+		public VertexElement[] GetVertexElements() => (VertexElement[])_elements.Clone();
 
-            VertexDeclaration vertexDeclaration = type.VertexDeclaration;
-            if (vertexDeclaration == null)
-            {
-                throw new ArgumentException("vertexType's VertexDeclaration cannot be null");
-            }
+		internal static VertexDeclaration FromType(Type vertexType)
+		{
+			if (vertexType == null)
+			{
+				throw new ArgumentNullException(nameof(vertexType), "Cannot be null");
+			}
 
-            return vertexDeclaration;
-        }
+			if (!vertexType.IsValueType)
+			{
+				throw new ArgumentException("Must be value type", nameof(vertexType));
+			}
 
-        public VertexDeclaration(params VertexElement[] elements)
-            : this(GetVertexStride(elements), elements)
-        {
-        }
+			if (!(Activator.CreateInstance(vertexType) is IVertexType type))
+			{
+				throw new ArgumentException("vertexData does not inherit IVertexType");
+			}
 
-        public VertexDeclaration(
-            int vertexStride,
-            params VertexElement[] elements)
-        {
-            if (elements == null || elements.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(elements), "Elements cannot be empty");
-            }
+			VertexDeclaration vertexDeclaration = type.VertexDeclaration;
+			if (vertexDeclaration == null)
+			{
+				throw new ArgumentException("vertexType's VertexDeclaration cannot be null");
+			}
 
-            _elements = (VertexElement[])elements.Clone();
-            _handle = GCHandle.Alloc(_elements, GCHandleType.Pinned);
-            _elementsPin = _handle.AddrOfPinnedObject();
-            VertexStride = vertexStride;
-        }
+			return vertexDeclaration;
+		}
 
-        private static int GetVertexStride(VertexElement[] elements)
-        {
-            var max = 0;
+		private static int GetVertexStride(VertexElement[] elements)
+		{
+			var max = 0;
 
-            for (var i = 0; i < elements.Length; i += 1)
-            {
-                var start = elements[i].Offset + GetTypeSize(elements[i].VertexElementFormat);
-                if (max < start)
-                {
-                    max = start;
-                }
-            }
+			for (var i = 0; i < elements.Length; i += 1)
+			{
+				var start = elements[i].Offset + GetTypeSize(elements[i].VertexElementFormat);
+				if (max < start)
+				{
+					max = start;
+				}
+			}
 
-            return max;
-        }
+			return max;
+		}
 
-        private static int GetTypeSize(VertexElementFormat elementFormat)
-        {
-            switch (elementFormat)
-            {
-                case VertexElementFormat.Single:
-                    return 4;
-                case VertexElementFormat.Vector2:
-                    return 8;
-                case VertexElementFormat.Vector3:
-                    return 12;
-                case VertexElementFormat.Vector4:
-                    return 16;
-                case VertexElementFormat.Color:
-                    return 4;
-                case VertexElementFormat.Byte4:
-                    return 4;
-                case VertexElementFormat.Short2:
-                    return 4;
-                case VertexElementFormat.Short4:
-                    return 8;
-                case VertexElementFormat.NormalizedShort2:
-                    return 4;
-                case VertexElementFormat.NormalizedShort4:
-                    return 8;
-                case VertexElementFormat.HalfVector2:
-                    return 4;
-                case VertexElementFormat.HalfVector4:
-                    return 8;
-            }
+		private static int GetTypeSize(VertexElementFormat elementFormat)
+		{
+			switch (elementFormat)
+			{
+				case VertexElementFormat.Single:
+					return 4;
+				case VertexElementFormat.Vector2:
+					return 8;
+				case VertexElementFormat.Vector3:
+					return 12;
+				case VertexElementFormat.Vector4:
+					return 16;
+				case VertexElementFormat.Color:
+					return 4;
+				case VertexElementFormat.Byte4:
+					return 4;
+				case VertexElementFormat.Short2:
+					return 4;
+				case VertexElementFormat.Short4:
+					return 8;
+				case VertexElementFormat.NormalizedShort2:
+					return 4;
+				case VertexElementFormat.NormalizedShort4:
+					return 8;
+				case VertexElementFormat.HalfVector2:
+					return 4;
+				case VertexElementFormat.HalfVector4:
+					return 8;
+			}
 
-            return 0;
-        }
-    }
+			return 0;
+		}
+	}
 }

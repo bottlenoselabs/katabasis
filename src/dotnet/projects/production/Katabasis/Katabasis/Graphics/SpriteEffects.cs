@@ -6,12 +6,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [Flags]
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public enum SpriteEffects
-    {
-        None = 0,
-        FlipHorizontally = 1,
-        FlipVertically = 2
-    }
+	[Flags]
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public enum SpriteEffects
+	{
+		None = 0,
+		FlipHorizontally = 1,
+		FlipVertically = 2
+	}
 }

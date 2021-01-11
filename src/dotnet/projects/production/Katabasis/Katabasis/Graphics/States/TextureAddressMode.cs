@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum TextureAddressMode
-    {
-        Wrap,
-        Clamp,
-        Mirror
-    }
+	public enum TextureAddressMode
+	{
+		Wrap,
+		Clamp,
+		Mirror
+	}
 }

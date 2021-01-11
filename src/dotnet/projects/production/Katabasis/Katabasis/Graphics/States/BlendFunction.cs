@@ -3,12 +3,12 @@
 
 namespace Katabasis
 {
-    public enum BlendFunction
-    {
-        Add,
-        Subtract,
-        ReverseSubtract,
-        Max,
-        Min
-    }
+	public enum BlendFunction
+	{
+		Add,
+		Subtract,
+		ReverseSubtract,
+		Max,
+		Min
+	}
 }

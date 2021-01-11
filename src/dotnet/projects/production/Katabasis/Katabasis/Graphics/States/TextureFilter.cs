@@ -3,16 +3,16 @@
 
 namespace Katabasis
 {
-    public enum TextureFilter
-    {
-        Linear,
-        Point,
-        Anisotropic,
-        LinearMipPoint,
-        PointMipLinear,
-        MinLinearMagPointMipLinear,
-        MinLinearMagPointMipPoint,
-        MinPointMagLinearMipLinear,
-        MinPointMagLinearMipPoint
-    }
+	public enum TextureFilter
+	{
+		Linear,
+		Point,
+		Anisotropic,
+		LinearMipPoint,
+		PointMipLinear,
+		MinLinearMagPointMipLinear,
+		MinLinearMagPointMipPoint,
+		MinPointMagLinearMipLinear,
+		MinPointMagLinearMipPoint
+	}
 }

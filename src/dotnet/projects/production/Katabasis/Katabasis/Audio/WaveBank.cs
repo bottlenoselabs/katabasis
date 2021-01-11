@@ -8,172 +8,171 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.wavebank.aspx
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public class WaveBank : IDisposable
-    {
-        private IntPtr _handle;
+	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.wavebank.aspx
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public class WaveBank : IDisposable
+	{
+		private readonly AudioEngine _engine;
 
-        private readonly AudioEngine _engine;
-        private WeakReference? _selfReference;
+		// Non-streaming WaveBanks
+		private byte[]? _buffer;
+		private IntPtr _handle;
 
-        // Non-streaming WaveBanks
-        private byte[]? _buffer;
-        private GCHandle _pin;
+		// Streaming WaveBanks
+		private IntPtr _ioStream;
+		private GCHandle _pin;
+		private WeakReference? _selfReference;
 
-        // Streaming WaveBanks
-        private IntPtr _ioStream;
+		public WaveBank(AudioEngine audioEngine, string nonStreamingWaveBankFilename)
+		{
+			if (audioEngine == null)
+			{
+				throw new ArgumentNullException(nameof(audioEngine));
+			}
 
-        public event EventHandler<EventArgs>? Disposing;
+			if (string.IsNullOrEmpty(nonStreamingWaveBankFilename))
+			{
+				throw new ArgumentNullException(nameof(nonStreamingWaveBankFilename));
+			}
 
-        public bool IsDisposed { get; private set; }
+			_buffer = TitleContainer.ReadAllBytes(nonStreamingWaveBankFilename);
+			_pin = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
 
-        public bool IsPrepared
-        {
-            get
-            {
-                FAudio.FACTWaveBank_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_PREPARED) != 0;
-            }
-        }
+			FAudio.FACTAudioEngine_CreateInMemoryWaveBank(
+				audioEngine._handle,
+				_pin.AddrOfPinnedObject(),
+				(uint)_buffer.Length,
+				0,
+				0,
+				out _handle);
 
-        public bool IsInUse
-        {
-            get
-            {
-                FAudio.FACTWaveBank_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_INUSE) != 0;
-            }
-        }
+			_engine = audioEngine;
+			_selfReference = new WeakReference(this, true);
+			_engine.RegisterWaveBank(_handle, _selfReference);
+			IsDisposed = false;
+		}
 
-        public WaveBank(AudioEngine audioEngine, string nonStreamingWaveBankFilename)
-        {
-            if (audioEngine == null)
-            {
-                throw new ArgumentNullException(nameof(audioEngine));
-            }
+		[SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "TODO: Unused parameters?")]
+		public WaveBank(
+			AudioEngine audioEngine,
+			string streamingWaveBankFilename,
+			int offset,
+			short packetSize)
+		{
+			if (audioEngine == null)
+			{
+				throw new ArgumentNullException(nameof(audioEngine));
+			}
 
-            if (string.IsNullOrEmpty(nonStreamingWaveBankFilename))
-            {
-                throw new ArgumentNullException(nameof(nonStreamingWaveBankFilename));
-            }
+			if (string.IsNullOrEmpty(streamingWaveBankFilename))
+			{
+				throw new ArgumentNullException(nameof(streamingWaveBankFilename));
+			}
 
-            _buffer = TitleContainer.ReadAllBytes(nonStreamingWaveBankFilename);
-            _pin = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
+			var safeName = FileHelpers.NormalizeFilePathSeparators(streamingWaveBankFilename);
+			if (!Path.IsPathRooted(safeName))
+			{
+				safeName = Path.Combine(
+					TitleLocation.Path,
+					safeName);
+			}
 
-            FAudio.FACTAudioEngine_CreateInMemoryWaveBank(
-                audioEngine._handle,
-                _pin.AddrOfPinnedObject(),
-                (uint)_buffer.Length,
-                0,
-                0,
-                out _handle);
+			_ioStream = FAudio.FAudio_fopen(safeName);
 
-            _engine = audioEngine;
-            _selfReference = new WeakReference(this, true);
-            _engine.RegisterWaveBank(_handle, _selfReference);
-            IsDisposed = false;
-        }
+			var settings = default(FAudio.FACTStreamingParameters);
+			settings.file = _ioStream;
+			FAudio.FACTAudioEngine_CreateStreamingWaveBank(
+				audioEngine._handle,
+				ref settings,
+				out _handle);
 
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "TODO: Unused parameters?")]
-        public WaveBank(
-            AudioEngine audioEngine,
-            string streamingWaveBankFilename,
-            int offset,
-            short packetSize)
-        {
-            if (audioEngine == null)
-            {
-                throw new ArgumentNullException(nameof(audioEngine));
-            }
+			_engine = audioEngine;
+			_selfReference = new WeakReference(this, true);
+			_engine.RegisterWaveBank(_handle, _selfReference);
+			IsDisposed = false;
+		}
 
-            if (string.IsNullOrEmpty(streamingWaveBankFilename))
-            {
-                throw new ArgumentNullException(nameof(streamingWaveBankFilename));
-            }
+		public bool IsDisposed { get; private set; }
 
-            var safeName = FileHelpers.NormalizeFilePathSeparators(streamingWaveBankFilename);
-            if (!Path.IsPathRooted(safeName))
-            {
-                safeName = Path.Combine(
-                    TitleLocation.Path,
-                    safeName);
-            }
+		public bool IsPrepared
+		{
+			get
+			{
+				FAudio.FACTWaveBank_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_PREPARED) != 0;
+			}
+		}
 
-            _ioStream = FAudio.FAudio_fopen(safeName);
+		public bool IsInUse
+		{
+			get
+			{
+				FAudio.FACTWaveBank_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_INUSE) != 0;
+			}
+		}
 
-            var settings = default(FAudio.FACTStreamingParameters);
-            settings.file = _ioStream;
-            FAudio.FACTAudioEngine_CreateStreamingWaveBank(
-                audioEngine._handle,
-                ref settings,
-                out _handle);
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-            _engine = audioEngine;
-            _selfReference = new WeakReference(this, true);
-            _engine.RegisterWaveBank(_handle, _selfReference);
-            IsDisposed = false;
-        }
+		public event EventHandler<EventArgs>? Disposing;
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		~WaveBank()
+		{
+			if (AudioEngine.ProgramExiting)
+			{
+				return;
+			}
 
-        ~WaveBank()
-        {
-            if (AudioEngine.ProgramExiting)
-            {
-                return;
-            }
+			if (!IsDisposed && IsInUse)
+			{
+				// STOP LEAKING YOUR BANKS, ARGH
+				GC.ReRegisterForFinalize(this);
+				return;
+			}
 
-            if (!IsDisposed && IsInUse)
-            {
-                // STOP LEAKING YOUR BANKS, ARGH
-                GC.ReRegisterForFinalize(this);
-                return;
-            }
+			Dispose(false);
+		}
 
-            Dispose(false);
-        }
+		internal void OnWaveBankDestroyed()
+		{
+			IsDisposed = true;
+			if (_buffer != null)
+			{
+				_pin.Free();
+				_buffer = null;
+			}
+			else if (_ioStream != IntPtr.Zero)
+			{
+				FAudio.FAudio_close(_ioStream);
+				_ioStream = IntPtr.Zero;
+			}
 
-        internal void OnWaveBankDestroyed()
-        {
-            IsDisposed = true;
-            if (_buffer != null)
-            {
-                _pin.Free();
-                _buffer = null;
-            }
-            else if (_ioStream != IntPtr.Zero)
-            {
-                FAudio.FAudio_close(_ioStream);
-                _ioStream = IntPtr.Zero;
-            }
+			_handle = IntPtr.Zero;
+			_selfReference = null;
+		}
 
-            _handle = IntPtr.Zero;
-            _selfReference = null;
-        }
+		protected virtual void Dispose(bool disposing)
+		{
+			lock (_engine._gcSync)
+			{
+				if (!IsDisposed)
+				{
+					Disposing?.Invoke(this, EventArgs.Empty);
 
-        protected virtual void Dispose(bool disposing)
-        {
-            lock (_engine._gcSync)
-            {
-                if (!IsDisposed)
-                {
-                    Disposing?.Invoke(this, EventArgs.Empty);
+					// If this is disposed, stop leaking memory!
+					if (!_engine.IsDisposed)
+					{
+						_engine.UnregisterWaveBank(_handle);
+						FAudio.FACTWaveBank_Destroy(_handle);
+					}
 
-                    // If this is disposed, stop leaking memory!
-                    if (!_engine.IsDisposed)
-                    {
-                        _engine.UnregisterWaveBank(_handle);
-                        FAudio.FACTWaveBank_Destroy(_handle);
-                    }
-
-                    OnWaveBankDestroyed();
-                }
-            }
-        }
-    }
+					OnWaveBankDestroyed();
+				}
+			}
+		}
+	}
 }

@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum ButtonState
-    {
-        Released,
-        Pressed
-    }
+	public enum ButtonState
+	{
+		Released,
+		Pressed
+	}
 }

@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum RenderTargetUsage
-    {
-        DiscardContents,
-        PreserveContents,
-        PlatformContents
-    }
+	public enum RenderTargetUsage
+	{
+		DiscardContents,
+		PreserveContents,
+		PlatformContents
+	}
 }

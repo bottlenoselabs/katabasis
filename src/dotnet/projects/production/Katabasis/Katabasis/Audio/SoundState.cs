@@ -3,11 +3,11 @@
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.soundstate.aspx
-    public enum SoundState
-    {
-        Playing,
-        Paused,
-        Stopped
-    }
+	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.soundstate.aspx
+	public enum SoundState
+	{
+		Playing,
+		Paused,
+		Stopped
+	}
 }

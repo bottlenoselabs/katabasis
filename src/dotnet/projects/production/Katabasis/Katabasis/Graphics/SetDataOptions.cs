@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum SetDataOptions
-    {
-        None = 0,
-        Discard = 1,
-        NoOverwrite = 2
-    }
+	public enum SetDataOptions
+	{
+		None = 0,
+		Discard = 1,
+		NoOverwrite = 2
+	}
 }

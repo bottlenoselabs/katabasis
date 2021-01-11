@@ -3,15 +3,15 @@
 
 namespace Katabasis
 {
-    public enum StencilOperation
-    {
-        Keep,
-        Zero,
-        Replace,
-        Increment,
-        Decrement,
-        IncrementSaturation,
-        DecrementSaturation,
-        Invert
-    }
+	public enum StencilOperation
+	{
+		Keep,
+		Zero,
+		Replace,
+		Increment,
+		Decrement,
+		IncrementSaturation,
+		DecrementSaturation,
+		Invert
+	}
 }

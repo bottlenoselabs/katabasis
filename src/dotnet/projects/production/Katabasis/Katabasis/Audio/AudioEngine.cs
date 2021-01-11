@@ -10,364 +10,352 @@ using ObjCRuntime;
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/dd940262.aspx
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public class AudioEngine : IDisposable
-    {
-        public ReadOnlyCollection<RendererDetail> RendererDetails => new ReadOnlyCollection<RendererDetail>(_rendererDetails);
+	// http://msdn.microsoft.com/en-us/library/dd940262.aspx
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public class AudioEngine : IDisposable
+	{
+		public const int ContentVersion = 46;
 
-        public const int ContentVersion = 46;
+		// STOP LEAKING YOUR XACT DATA, GOOD GRIEF PEOPLE
+		internal static bool ProgramExiting;
 
-        internal readonly IntPtr _handle;
-        internal readonly byte[] _handle3D;
-        internal readonly ushort _channels;
+		private static readonly IntPtrComparer _comparer = new();
 
-        // STOP LEAKING YOUR XACT DATA, GOOD GRIEF PEOPLE
-        internal static bool ProgramExiting = false;
+		// If this isn't static, destructors gets confused like idiots
+		private static readonly Dictionary<IntPtr, WeakReference> _xactPointers = new(_comparer);
+		internal readonly ushort _channels;
 
-        internal readonly object _gcSync = new object();
+		internal readonly object _gcSync = new();
 
-        private GCHandle _pin;
+		internal readonly IntPtr _handle;
+		internal readonly byte[] _handle3D;
 
-        private readonly RendererDetail[] _rendererDetails;
+		private readonly RendererDetail[] _rendererDetails;
 
-        private FAudio.FACTNotificationDescription _notificationDesc;
+		private FAudio.FACTNotificationDescription _notificationDesc;
 
-        private static readonly IntPtrComparer _comparer = new IntPtrComparer();
+		private GCHandle _pin;
 
-        // If this isn't static, destructors gets confused like idiots
-        private static readonly Dictionary<IntPtr, WeakReference> _xactPointers = new Dictionary<IntPtr, WeakReference>(_comparer);
+		public AudioEngine(string settingsFile)
+			: this(
+				settingsFile,
+				new TimeSpan(0, 0, 0, 0, (int)FAudio.FACT_ENGINE_LOOKAHEAD_DEFAULT),
+				string.Empty)
+		{
+		}
 
-        public bool IsDisposed { get; private set; }
+		public AudioEngine(string settingsFile, TimeSpan lookAheadTime, string rendererId)
+		{
+			if (string.IsNullOrEmpty(settingsFile))
+			{
+				throw new ArgumentNullException(nameof(settingsFile));
+			}
 
-        public event EventHandler<EventArgs>? Disposing;
+			// Read entire file into memory, pin buffer
+			byte[] buffer = TitleContainer.ReadAllBytes(settingsFile);
+			_pin = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 
-        ~AudioEngine()
-        {
-            Dispose(false);
-        }
+			// Generate engine parameters
+			var settings = default(FAudio.FACTRuntimeParameters);
+			settings.pGlobalSettingsBuffer = _pin.AddrOfPinnedObject();
+			settings.globalSettingsBufferSize = (uint)buffer.Length;
+			FAudio.FACTNotificationCallback xactNotificationFunc = OnXACTNotification;
+			settings.fnNotificationCallback = Marshal.GetFunctionPointerForDelegate(xactNotificationFunc);
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+			// Special parameters from constructor
+			settings.lookAheadTime = (uint)lookAheadTime.Milliseconds;
+			if (!string.IsNullOrEmpty(rendererId))
+			{
+				// FIXME: wchar_t? -flibit
+				settings.pRendererID = Marshal.StringToHGlobalAuto(rendererId);
+			}
 
-        protected virtual void Dispose(bool disposing)
-        {
-            lock (_gcSync)
-            {
-                if (!IsDisposed)
-                {
-                    Disposing?.Invoke(this, EventArgs.Empty);
+			// Init engine, finally
+			FAudio.FACTCreateEngine(0, out _handle);
+			if (FAudio.FACTAudioEngine_Initialize(_handle, ref settings) != 0)
+			{
+				throw new InvalidOperationException("Engine initialization failed!");
+			}
 
-                    FAudio.FACTAudioEngine_ShutDown(_handle);
-                    _pin.Free();
-                    IsDisposed = true;
-                }
-            }
-        }
+			// Free the settings strings
+			if (settings.pRendererID != IntPtr.Zero)
+			{
+				Marshal.FreeHGlobal(settings.pRendererID);
+			}
 
-        [MonoPInvokeCallback(typeof(FAudio.FACTNotificationCallback))]
-        private static unsafe void OnXACTNotification(IntPtr notification)
-        {
-            WeakReference? reference;
-            var not = (FAudio.FACTNotification*)notification;
-            switch (not->type)
-            {
-                case FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED:
-                {
-                    var target = not->anon.waveBank.pWaveBank;
-                    lock (_xactPointers)
-                    {
-                        if (_xactPointers.TryGetValue(target, out reference))
-                        {
-                            if (reference.IsAlive)
-                            {
-                                (reference.Target as WaveBank)!.OnWaveBankDestroyed();
-                            }
-                        }
+			// Grab RendererDetails
+			FAudio.FACTAudioEngine_GetRendererCount(_handle, out var rendererCount);
+			if (rendererCount == 0)
+			{
+				Dispose();
+				throw new NoAudioHardwareException();
+			}
 
-                        _xactPointers.Remove(target);
-                    }
+			_rendererDetails = new RendererDetail[rendererCount];
+			char[] displayName = new char[0xFF];
+			char[] rendererID = new char[0xFF];
+			for (ushort i = 0; i < rendererCount; i += 1)
+			{
+				FAudio.FACTAudioEngine_GetRendererDetails(_handle, i, out var details);
+				unsafe
+				{
+					for (var j = 0; j < 0xFF; j += 1)
+					{
+						displayName[j] = (char)details.displayName[j];
+						rendererID[j] = (char)details.rendererID[j];
+					}
+				}
 
-                    break;
-                }
+				_rendererDetails[i] = new RendererDetail(new string(displayName), new string(rendererID));
+			}
 
-                case FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED:
-                {
-                    IntPtr target = not->anon.soundBank.pSoundBank;
-                    lock (_xactPointers)
-                    {
-                        if (_xactPointers.TryGetValue(target, out reference))
-                        {
-                            if (reference.IsAlive)
-                            {
-                                (reference.Target as SoundBank)!.OnSoundBankDestroyed();
-                            }
-                        }
+			// Init 3D audio
+			_handle3D = new byte[FAudio.F3DAUDIO_HANDLE_BYTESIZE];
+			FAudio.FACT3DInitialize(_handle, _handle3D);
 
-                        _xactPointers.Remove(target);
-                    }
+			// Grab channel count for DSP_SETTINGS
+			FAudio.FACTAudioEngine_GetFinalMixFormat(_handle, out var mixFormat);
+			_channels = mixFormat.Format.nChannels;
 
-                    break;
-                }
+			// All XACT references have to go through here...
+			_notificationDesc = default;
+		}
 
-                case FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED:
-                {
-                    var target = not->anon.cue.pCue;
-                    lock (_xactPointers)
-                    {
-                        if (_xactPointers.TryGetValue(target, out reference))
-                        {
-                            if (reference.IsAlive)
-                            {
-                                (reference.Target as Cue)!.OnCueDestroyed();
-                            }
-                        }
+		public ReadOnlyCollection<RendererDetail> RendererDetails => new(_rendererDetails);
 
-                        _xactPointers.Remove(target);
-                    }
+		public bool IsDisposed { get; private set; }
 
-                    break;
-                }
-            }
-        }
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-        private class IntPtrComparer : IEqualityComparer<IntPtr>
-        {
-            public bool Equals(IntPtr x, IntPtr y)
-            {
-                return x == y;
-            }
+		public event EventHandler<EventArgs>? Disposing;
 
-            public int GetHashCode(IntPtr obj)
-            {
-                return obj.GetHashCode();
-            }
-        }
+		~AudioEngine() => Dispose(false);
 
-        public AudioEngine(string settingsFile)
-            : this(
-                settingsFile,
-                new TimeSpan(0, 0, 0, 0, (int)FAudio.FACT_ENGINE_LOOKAHEAD_DEFAULT),
-                string.Empty)
-        {
-        }
+		protected virtual void Dispose(bool disposing)
+		{
+			lock (_gcSync)
+			{
+				if (!IsDisposed)
+				{
+					Disposing?.Invoke(this, EventArgs.Empty);
 
-        public AudioEngine(string settingsFile, TimeSpan lookAheadTime, string rendererId)
-        {
-            if (string.IsNullOrEmpty(settingsFile))
-            {
-                throw new ArgumentNullException(nameof(settingsFile));
-            }
+					FAudio.FACTAudioEngine_ShutDown(_handle);
+					_pin.Free();
+					IsDisposed = true;
+				}
+			}
+		}
 
-            // Read entire file into memory, pin buffer
-            byte[] buffer = TitleContainer.ReadAllBytes(settingsFile);
-            _pin = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+		[MonoPInvokeCallback(typeof(FAudio.FACTNotificationCallback))]
+		private static unsafe void OnXACTNotification(IntPtr notification)
+		{
+			WeakReference? reference;
+			var not = (FAudio.FACTNotification*)notification;
+			switch (not->type)
+			{
+				case FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED:
+				{
+					var target = not->anon.waveBank.pWaveBank;
+					lock (_xactPointers)
+					{
+						if (_xactPointers.TryGetValue(target, out reference))
+						{
+							if (reference.IsAlive)
+							{
+								(reference.Target as WaveBank)!.OnWaveBankDestroyed();
+							}
+						}
 
-            // Generate engine parameters
-            var settings = default(FAudio.FACTRuntimeParameters);
-            settings.pGlobalSettingsBuffer = _pin.AddrOfPinnedObject();
-            settings.globalSettingsBufferSize = (uint)buffer.Length;
-            FAudio.FACTNotificationCallback xactNotificationFunc = OnXACTNotification;
-            settings.fnNotificationCallback = Marshal.GetFunctionPointerForDelegate(xactNotificationFunc);
+						_xactPointers.Remove(target);
+					}
 
-            // Special parameters from constructor
-            settings.lookAheadTime = (uint)lookAheadTime.Milliseconds;
-            if (!string.IsNullOrEmpty(rendererId))
-            {
-                // FIXME: wchar_t? -flibit
-                settings.pRendererID = Marshal.StringToHGlobalAuto(rendererId);
-            }
+					break;
+				}
 
-            // Init engine, finally
-            FAudio.FACTCreateEngine(0, out _handle);
-            if (FAudio.FACTAudioEngine_Initialize(_handle, ref settings) != 0)
-            {
-                throw new InvalidOperationException("Engine initialization failed!");
-            }
+				case FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED:
+				{
+					var target = not->anon.soundBank.pSoundBank;
+					lock (_xactPointers)
+					{
+						if (_xactPointers.TryGetValue(target, out reference))
+						{
+							if (reference.IsAlive)
+							{
+								(reference.Target as SoundBank)!.OnSoundBankDestroyed();
+							}
+						}
 
-            // Free the settings strings
-            if (settings.pRendererID != IntPtr.Zero)
-            {
-                Marshal.FreeHGlobal(settings.pRendererID);
-            }
+						_xactPointers.Remove(target);
+					}
 
-            // Grab RendererDetails
-            FAudio.FACTAudioEngine_GetRendererCount(_handle, out var rendererCount);
-            if (rendererCount == 0)
-            {
-                Dispose();
-                throw new NoAudioHardwareException();
-            }
+					break;
+				}
 
-            _rendererDetails = new RendererDetail[rendererCount];
-            char[] displayName = new char[0xFF];
-            char[] rendererID = new char[0xFF];
-            for (ushort i = 0; i < rendererCount; i += 1)
-            {
-                FAudio.FACTAudioEngine_GetRendererDetails(_handle, i, out var details);
-                unsafe
-                {
-                    for (var j = 0; j < 0xFF; j += 1)
-                    {
-                        displayName[j] = (char)details.displayName[j];
-                        rendererID[j] = (char)details.rendererID[j];
-                    }
-                }
+				case FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED:
+				{
+					var target = not->anon.cue.pCue;
+					lock (_xactPointers)
+					{
+						if (_xactPointers.TryGetValue(target, out reference))
+						{
+							if (reference.IsAlive)
+							{
+								(reference.Target as Cue)!.OnCueDestroyed();
+							}
+						}
 
-                _rendererDetails[i] = new RendererDetail(new string(displayName), new string(rendererID));
-            }
+						_xactPointers.Remove(target);
+					}
 
-            // Init 3D audio
-            _handle3D = new byte[FAudio.F3DAUDIO_HANDLE_BYTESIZE];
-            FAudio.FACT3DInitialize(_handle, _handle3D);
+					break;
+				}
+			}
+		}
 
-            // Grab channel count for DSP_SETTINGS
-            FAudio.FACTAudioEngine_GetFinalMixFormat(_handle, out var mixFormat);
-            _channels = mixFormat.Format.nChannels;
+		public AudioCategory GetCategory(string name)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-            // All XACT references have to go through here...
-            _notificationDesc = default;
-        }
+			var category = FAudio.FACTAudioEngine_GetCategory(_handle, name);
 
-        public AudioCategory GetCategory(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+			if (category == FAudio.FACTCATEGORY_INVALID)
+			{
+				throw new InvalidOperationException("Invalid category name!");
+			}
 
-            var category = FAudio.FACTAudioEngine_GetCategory(_handle, name);
+			return new AudioCategory(this, category, name);
+		}
 
-            if (category == FAudio.FACTCATEGORY_INVALID)
-            {
-                throw new InvalidOperationException("Invalid category name!");
-            }
+		public float GetGlobalVariable(string name)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-            return new AudioCategory(this, category, name);
-        }
+			var variable = FAudio.FACTAudioEngine_GetGlobalVariableIndex(_handle, name);
 
-        public float GetGlobalVariable(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
+			{
+				throw new InvalidOperationException("Invalid variable name!");
+			}
 
-            var variable = FAudio.FACTAudioEngine_GetGlobalVariableIndex(_handle, name);
+			FAudio.FACTAudioEngine_GetGlobalVariable(_handle, variable, out var result);
+			return result;
+		}
 
-            if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
-            {
-                throw new InvalidOperationException("Invalid variable name!");
-            }
+		public void SetGlobalVariable(string name, float value)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-            FAudio.FACTAudioEngine_GetGlobalVariable(_handle, variable, out var result);
-            return result;
-        }
+			var variable = FAudio.FACTAudioEngine_GetGlobalVariableIndex(_handle, name);
 
-        public void SetGlobalVariable(string name, float value)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
+			{
+				throw new InvalidOperationException("Invalid variable name!");
+			}
 
-            var variable = FAudio.FACTAudioEngine_GetGlobalVariableIndex(_handle, name);
+			FAudio.FACTAudioEngine_SetGlobalVariable(_handle, variable, value);
+		}
 
-            if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
-            {
-                throw new InvalidOperationException("Invalid variable name!");
-            }
+		public void Update() => FAudio.FACTAudioEngine_DoWork(_handle);
 
-            FAudio.FACTAudioEngine_SetGlobalVariable(_handle, variable, value);
-        }
+		internal void RegisterWaveBank(IntPtr ptr, WeakReference reference)
+		{
+			_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
+			_notificationDesc.pWaveBank = ptr;
+			FAudio.FACTAudioEngine_RegisterNotification(_handle, ref _notificationDesc);
+			lock (_xactPointers)
+			{
+				_xactPointers.Add(ptr, reference);
+			}
+		}
 
-        public void Update()
-        {
-            FAudio.FACTAudioEngine_DoWork(_handle);
-        }
+		internal void RegisterSoundBank(IntPtr ptr, WeakReference reference)
+		{
+			_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
+			_notificationDesc.pSoundBank = ptr;
+			FAudio.FACTAudioEngine_RegisterNotification(_handle, ref _notificationDesc);
+			lock (_xactPointers)
+			{
+				_xactPointers.Add(ptr, reference);
+			}
+		}
 
-        internal void RegisterWaveBank(IntPtr ptr, WeakReference reference)
-        {
-            _notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
-            _notificationDesc.pWaveBank = ptr;
-            FAudio.FACTAudioEngine_RegisterNotification(_handle, ref _notificationDesc);
-            lock (_xactPointers)
-            {
-                _xactPointers.Add(ptr, reference);
-            }
-        }
+		internal void RegisterCue(IntPtr ptr, WeakReference reference)
+		{
+			_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
+			_notificationDesc.pCue = ptr;
+			FAudio.FACTAudioEngine_RegisterNotification(_handle, ref _notificationDesc);
+			lock (_xactPointers)
+			{
+				_xactPointers.Add(ptr, reference);
+			}
+		}
 
-        internal void RegisterSoundBank(IntPtr ptr, WeakReference reference)
-        {
-            _notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
-            _notificationDesc.pSoundBank = ptr;
-            FAudio.FACTAudioEngine_RegisterNotification(_handle, ref _notificationDesc);
-            lock (_xactPointers)
-            {
-                _xactPointers.Add(ptr, reference);
-            }
-        }
+		internal void UnregisterWaveBank(IntPtr ptr)
+		{
+			lock (_xactPointers)
+			{
+				if (!_xactPointers.ContainsKey(ptr))
+				{
+					return;
+				}
 
-        internal void RegisterCue(IntPtr ptr, WeakReference reference)
-        {
-            _notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
-            _notificationDesc.pCue = ptr;
-            FAudio.FACTAudioEngine_RegisterNotification(_handle, ref _notificationDesc);
-            lock (_xactPointers)
-            {
-                _xactPointers.Add(ptr, reference);
-            }
-        }
+				_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
+				_notificationDesc.pWaveBank = ptr;
+				FAudio.FACTAudioEngine_UnRegisterNotification(_handle, ref _notificationDesc);
+				_xactPointers.Remove(ptr);
+			}
+		}
 
-        internal void UnregisterWaveBank(IntPtr ptr)
-        {
-            lock (_xactPointers)
-            {
-                if (!_xactPointers.ContainsKey(ptr))
-                {
-                    return;
-                }
+		internal void UnregisterSoundBank(IntPtr ptr)
+		{
+			lock (_xactPointers)
+			{
+				if (!_xactPointers.ContainsKey(ptr))
+				{
+					return;
+				}
 
-                _notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
-                _notificationDesc.pWaveBank = ptr;
-                FAudio.FACTAudioEngine_UnRegisterNotification(_handle, ref _notificationDesc);
-                _xactPointers.Remove(ptr);
-            }
-        }
+				_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
+				_notificationDesc.pSoundBank = ptr;
+				FAudio.FACTAudioEngine_UnRegisterNotification(_handle, ref _notificationDesc);
+				_xactPointers.Remove(ptr);
+			}
+		}
 
-        internal void UnregisterSoundBank(IntPtr ptr)
-        {
-            lock (_xactPointers)
-            {
-                if (!_xactPointers.ContainsKey(ptr))
-                {
-                    return;
-                }
+		internal void UnregisterCue(IntPtr ptr)
+		{
+			lock (_xactPointers)
+			{
+				if (!_xactPointers.ContainsKey(ptr))
+				{
+					return;
+				}
 
-                _notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
-                _notificationDesc.pSoundBank = ptr;
-                FAudio.FACTAudioEngine_UnRegisterNotification(_handle, ref _notificationDesc);
-                _xactPointers.Remove(ptr);
-            }
-        }
+				_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
+				_notificationDesc.pCue = ptr;
+				FAudio.FACTAudioEngine_UnRegisterNotification(_handle, ref _notificationDesc);
+				_xactPointers.Remove(ptr);
+			}
+		}
 
-        internal void UnregisterCue(IntPtr ptr)
-        {
-            lock (_xactPointers)
-            {
-                if (!_xactPointers.ContainsKey(ptr))
-                {
-                    return;
-                }
+		private class IntPtrComparer : IEqualityComparer<IntPtr>
+		{
+			public bool Equals(IntPtr x, IntPtr y) => x == y;
 
-                _notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
-                _notificationDesc.pCue = ptr;
-                FAudio.FACTAudioEngine_UnRegisterNotification(_handle, ref _notificationDesc);
-                _xactPointers.Remove(ptr);
-            }
-        }
-    }
+			public int GetHashCode(IntPtr obj) => obj.GetHashCode();
+		}
+	}
 }

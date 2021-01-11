@@ -6,12 +6,12 @@ using System;
 // ReSharper disable once CheckNamespace
 namespace ObjCRuntime
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    internal class MonoPInvokeCallbackAttribute : Attribute
-    {
-        // ReSharper disable once UnusedParameter.Local
-        public MonoPInvokeCallbackAttribute(Type t)
-        {
-        }
-    }
+	[AttributeUsage(AttributeTargets.Method)]
+	internal class MonoPInvokeCallbackAttribute : Attribute
+	{
+		// ReSharper disable once UnusedParameter.Local
+		public MonoPInvokeCallbackAttribute(Type t)
+		{
+		}
+	}
 }

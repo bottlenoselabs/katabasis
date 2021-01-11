@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum MicrophoneState
-    {
-        Started,
-        Stopped
-    }
+	public enum MicrophoneState
+	{
+		Started,
+		Stopped
+	}
 }

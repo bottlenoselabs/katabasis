@@ -5,120 +5,120 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public class SamplerState : GraphicsResource
-    {
-        public static readonly SamplerState AnisotropicClamp = new SamplerState(
-            "SamplerState.AnisotropicClamp",
-            TextureFilter.Anisotropic,
-            TextureAddressMode.Clamp,
-            TextureAddressMode.Clamp,
-            TextureAddressMode.Clamp);
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public class SamplerState : GraphicsResource
+	{
+		public static readonly SamplerState AnisotropicClamp = new(
+			"SamplerState.AnisotropicClamp",
+			TextureFilter.Anisotropic,
+			TextureAddressMode.Clamp,
+			TextureAddressMode.Clamp,
+			TextureAddressMode.Clamp);
 
-        public static readonly SamplerState AnisotropicWrap = new SamplerState(
-            "SamplerState.AnisotropicWrap",
-            TextureFilter.Anisotropic,
-            TextureAddressMode.Wrap,
-            TextureAddressMode.Wrap,
-            TextureAddressMode.Wrap);
+		public static readonly SamplerState AnisotropicWrap = new(
+			"SamplerState.AnisotropicWrap",
+			TextureFilter.Anisotropic,
+			TextureAddressMode.Wrap,
+			TextureAddressMode.Wrap,
+			TextureAddressMode.Wrap);
 
-        public static readonly SamplerState LinearClamp = new SamplerState(
-            "SamplerState.LinearClamp",
-            TextureFilter.Linear,
-            TextureAddressMode.Clamp,
-            TextureAddressMode.Clamp,
-            TextureAddressMode.Clamp);
+		public static readonly SamplerState LinearClamp = new(
+			"SamplerState.LinearClamp",
+			TextureFilter.Linear,
+			TextureAddressMode.Clamp,
+			TextureAddressMode.Clamp,
+			TextureAddressMode.Clamp);
 
-        public static readonly SamplerState LinearWrap = new SamplerState(
-            "SamplerState.LinearWrap",
-            TextureFilter.Linear,
-            TextureAddressMode.Wrap,
-            TextureAddressMode.Wrap,
-            TextureAddressMode.Wrap);
+		public static readonly SamplerState LinearWrap = new(
+			"SamplerState.LinearWrap",
+			TextureFilter.Linear,
+			TextureAddressMode.Wrap,
+			TextureAddressMode.Wrap,
+			TextureAddressMode.Wrap);
 
-        public static readonly SamplerState PointClamp = new SamplerState(
-            "SamplerState.PointClamp",
-            TextureFilter.Point,
-            TextureAddressMode.Clamp,
-            TextureAddressMode.Clamp,
-            TextureAddressMode.Clamp);
+		public static readonly SamplerState PointClamp = new(
+			"SamplerState.PointClamp",
+			TextureFilter.Point,
+			TextureAddressMode.Clamp,
+			TextureAddressMode.Clamp,
+			TextureAddressMode.Clamp);
 
-        public static readonly SamplerState PointWrap = new SamplerState(
-            "SamplerState.PointWrap",
-            TextureFilter.Point,
-            TextureAddressMode.Wrap,
-            TextureAddressMode.Wrap,
-            TextureAddressMode.Wrap);
+		public static readonly SamplerState PointWrap = new(
+			"SamplerState.PointWrap",
+			TextureFilter.Point,
+			TextureAddressMode.Wrap,
+			TextureAddressMode.Wrap,
+			TextureAddressMode.Wrap);
 
-        internal FNA3D.FNA3D_SamplerState _state;
+		internal FNA3D.FNA3D_SamplerState _state;
 
-        public TextureAddressMode AddressU
-        {
-            get => _state.AddressU;
-            set => _state.AddressU = value;
-        }
+		public SamplerState()
+		{
+			Filter = TextureFilter.Linear;
+			AddressU = TextureAddressMode.Wrap;
+			AddressV = TextureAddressMode.Wrap;
+			AddressW = TextureAddressMode.Wrap;
+			MaxAnisotropy = 4;
+			MaxMipLevel = 0;
+			MipMapLevelOfDetailBias = 0.0f;
+		}
 
-        public TextureAddressMode AddressV
-        {
-            get => _state.AddressV;
-            set => _state.AddressV = value;
-        }
+		private SamplerState(
+			string name,
+			TextureFilter filter,
+			TextureAddressMode addressU,
+			TextureAddressMode addressV,
+			TextureAddressMode addressW)
+			: this()
+		{
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
+			Name = name;
+			Filter = filter;
+			AddressU = addressU;
+			AddressV = addressV;
+			AddressW = addressW;
+		}
 
-        public TextureAddressMode AddressW
-        {
-            get => _state.AddressW;
-            set => _state.AddressW = value;
-        }
+		public TextureAddressMode AddressU
+		{
+			get => _state.AddressU;
+			set => _state.AddressU = value;
+		}
 
-        public TextureFilter Filter
-        {
-            get => _state.Filter;
-            set => _state.Filter = value;
-        }
+		public TextureAddressMode AddressV
+		{
+			get => _state.AddressV;
+			set => _state.AddressV = value;
+		}
 
-        public int MaxAnisotropy
-        {
-            get => _state.MaxAnisotropy;
-            set => _state.MaxAnisotropy = value;
-        }
+		public TextureAddressMode AddressW
+		{
+			get => _state.AddressW;
+			set => _state.AddressW = value;
+		}
 
-        public int MaxMipLevel
-        {
-            get => _state.MaxMipLevel;
-            set => _state.MaxMipLevel = value;
-        }
+		public TextureFilter Filter
+		{
+			get => _state.Filter;
+			set => _state.Filter = value;
+		}
 
-        public float MipMapLevelOfDetailBias
-        {
-            get => _state.MipMapLevelOfDetailBias;
-            set => _state.MipMapLevelOfDetailBias = value;
-        }
+		public int MaxAnisotropy
+		{
+			get => _state.MaxAnisotropy;
+			set => _state.MaxAnisotropy = value;
+		}
 
-        public SamplerState()
-        {
-            Filter = TextureFilter.Linear;
-            AddressU = TextureAddressMode.Wrap;
-            AddressV = TextureAddressMode.Wrap;
-            AddressW = TextureAddressMode.Wrap;
-            MaxAnisotropy = 4;
-            MaxMipLevel = 0;
-            MipMapLevelOfDetailBias = 0.0f;
-        }
+		public int MaxMipLevel
+		{
+			get => _state.MaxMipLevel;
+			set => _state.MaxMipLevel = value;
+		}
 
-        private SamplerState(
-            string name,
-            TextureFilter filter,
-            TextureAddressMode addressU,
-            TextureAddressMode addressV,
-            TextureAddressMode addressW)
-            : this()
-        {
-            GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
-            Name = name;
-            Filter = filter;
-            AddressU = addressU;
-            AddressV = addressV;
-            AddressW = addressW;
-        }
-    }
+		public float MipMapLevelOfDetailBias
+		{
+			get => _state.MipMapLevelOfDetailBias;
+			set => _state.MipMapLevelOfDetailBias = value;
+		}
+	}
 }

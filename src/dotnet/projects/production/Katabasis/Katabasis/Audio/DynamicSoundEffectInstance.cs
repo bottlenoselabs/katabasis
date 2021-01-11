@@ -8,217 +8,205 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.dynamicsoundeffectinstance.aspx
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
-    public sealed class DynamicSoundEffectInstance : SoundEffectInstance
-    {
-        internal FAudio.FAudioWaveFormatEx _format;
+	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.dynamicsoundeffectinstance.aspx
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
+	public sealed class DynamicSoundEffectInstance : SoundEffectInstance
+	{
+		private const int MinimumBufferCheck = 3;
+		private readonly AudioChannels _channels;
 
-        private readonly int _sampleRate;
-        private readonly AudioChannels _channels;
+		private readonly List<IntPtr> _queuedBuffers;
+		private readonly List<uint> _queuedSizes;
 
-        private readonly List<IntPtr> _queuedBuffers;
-        private readonly List<uint> _queuedSizes;
+		private readonly int _sampleRate;
+		internal FAudio.FAudioWaveFormatEx _format;
 
-        private const int MinimumBufferCheck = 3;
+		public DynamicSoundEffectInstance(int sampleRate, AudioChannels channels)
+		{
+			_sampleRate = sampleRate;
+			_channels = channels;
+			_isDynamic = true;
 
-        public event EventHandler<EventArgs>? BufferNeeded;
+			_format = default;
+			_format.wFormatTag = 1;
+			_format.nChannels = (ushort)channels;
+			_format.nSamplesPerSec = (uint)sampleRate;
+			_format.wBitsPerSample = 16;
+			_format.nBlockAlign = (ushort)(2 * _format.nChannels);
+			_format.nAvgBytesPerSec = _format.nBlockAlign * _format.nSamplesPerSec;
+			_format.cbSize = 0;
 
-        public DynamicSoundEffectInstance(int sampleRate, AudioChannels channels)
-        {
-            _sampleRate = sampleRate;
-            _channels = channels;
-            _isDynamic = true;
+			_queuedBuffers = new List<IntPtr>();
+			_queuedSizes = new List<uint>();
 
-            _format = default;
-            _format.wFormatTag = 1;
-            _format.nChannels = (ushort)channels;
-            _format.nSamplesPerSec = (uint)sampleRate;
-            _format.wBitsPerSample = 16;
-            _format.nBlockAlign = (ushort)(2 * _format.nChannels);
-            _format.nAvgBytesPerSec = _format.nBlockAlign * _format.nSamplesPerSec;
-            _format.cbSize = 0;
+			InitDSPSettings(_format.nChannels);
+		}
 
-            _queuedBuffers = new List<IntPtr>();
-            _queuedSizes = new List<uint>();
+		// ReSharper disable once InconsistentlySynchronizedField
+		public int PendingBufferCount => _queuedBuffers.Count;
 
-            InitDSPSettings(_format.nChannels);
-        }
+		public override bool IsLooped
+		{
+			get => false;
+			set
+			{
+				// No-op, DynamicSoundEffectInstance cannot be looped!
+			}
+		}
 
-        ~DynamicSoundEffectInstance()
-        {
-            // FIXME: ReRegisterForFinalize? -flibit
-            Dispose();
-        }
+		public event EventHandler<EventArgs>? BufferNeeded;
 
-        // ReSharper disable once InconsistentlySynchronizedField
-        public int PendingBufferCount => _queuedBuffers.Count;
+		~DynamicSoundEffectInstance() =>
+			// FIXME: ReRegisterForFinalize? -flibit
+			Dispose();
 
-        public override bool IsLooped
-        {
-            get => false;
-            set
-            {
-                // No-op, DynamicSoundEffectInstance cannot be looped!
-            }
-        }
+		public TimeSpan GetSampleDuration(int sizeInBytes) => SoundEffect.GetSampleDuration(sizeInBytes, _sampleRate, _channels);
 
-        public TimeSpan GetSampleDuration(int sizeInBytes)
-        {
-            return SoundEffect.GetSampleDuration(sizeInBytes, _sampleRate, _channels);
-        }
+		public int GetSampleSizeInBytes(TimeSpan duration) => SoundEffect.GetSampleSizeInBytes(duration, _sampleRate, _channels);
 
-        public int GetSampleSizeInBytes(TimeSpan duration)
-        {
-            return SoundEffect.GetSampleSizeInBytes(duration, _sampleRate, _channels);
-        }
+		public override void Play()
+		{
+			// Wait! What if we need more buffers?
+			Update();
 
-        public override void Play()
-        {
-            // Wait! What if we need more buffers?
-            Update();
+			// Okay we're good
+			base.Play();
+			lock (FrameworkDispatcher.Streams)
+			{
+				FrameworkDispatcher.Streams.Add(this);
+			}
+		}
 
-            // Okay we're good
-            base.Play();
-            lock (FrameworkDispatcher.Streams)
-            {
-                FrameworkDispatcher.Streams.Add(this);
-            }
-        }
+		public void SubmitBuffer(byte[] buffer) => SubmitBuffer(buffer, 0, buffer.Length);
 
-        public void SubmitBuffer(byte[] buffer)
-        {
-            SubmitBuffer(buffer, 0, buffer.Length);
-        }
+		public void SubmitBuffer(byte[] buffer, int offset, int count)
+		{
+			var next = Marshal.AllocHGlobal(count);
+			Marshal.Copy(buffer, offset, next, count);
+			lock (_queuedBuffers)
+			{
+				_queuedBuffers.Add(next);
+				if (State != SoundState.Stopped)
+				{
+					var buf = default(FAudio.FAudioBuffer);
+					buf.AudioBytes = (uint)count;
+					buf.pAudioData = next;
+					buf.PlayLength = buf.AudioBytes /
+					                 (uint)_channels /
+					                 (uint)(_format.wBitsPerSample / 8);
 
-        public void SubmitBuffer(byte[] buffer, int offset, int count)
-        {
-            IntPtr next = Marshal.AllocHGlobal(count);
-            Marshal.Copy(buffer, offset, next, count);
-            lock (_queuedBuffers)
-            {
-                _queuedBuffers.Add(next);
-                if (State != SoundState.Stopped)
-                {
-                    var buf = default(FAudio.FAudioBuffer);
-                    buf.AudioBytes = (uint)count;
-                    buf.pAudioData = next;
-                    buf.PlayLength = buf.AudioBytes /
-                                     (uint)_channels /
-                                     (uint)(_format.wBitsPerSample / 8);
-                    FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buf, IntPtr.Zero);
-                }
-                else
-                {
-                    _queuedSizes.Add((uint)count);
-                }
-            }
-        }
+					FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buf, IntPtr.Zero);
+				}
+				else
+				{
+					_queuedSizes.Add((uint)count);
+				}
+			}
+		}
 
-        public void SubmitFloatBufferEXT(float[] buffer)
-        {
-            SubmitFloatBufferEXT(buffer, 0, buffer.Length);
-        }
+		public void SubmitFloatBufferEXT(float[] buffer) => SubmitFloatBufferEXT(buffer, 0, buffer.Length);
 
-        public void SubmitFloatBufferEXT(float[] buffer, int offset, int count)
-        {
-            /* Float samples are the typical format received from decoders.
-             * We currently use this for the VideoPlayer.
-             * -flibit
-             */
-            if (State != SoundState.Stopped && _format.wFormatTag == 1)
-            {
-                throw new InvalidOperationException("Submit a float buffer before Playing!");
-            }
+		public void SubmitFloatBufferEXT(float[] buffer, int offset, int count)
+		{
+			/* Float samples are the typical format received from decoders.
+			 * We currently use this for the VideoPlayer.
+			 * -flibit
+			 */
+			if (State != SoundState.Stopped && _format.wFormatTag == 1)
+			{
+				throw new InvalidOperationException("Submit a float buffer before Playing!");
+			}
 
-            _format.wFormatTag = 3;
-            _format.wBitsPerSample = 32;
-            _format.nBlockAlign = (ushort)(4 * _format.nChannels);
-            _format.nAvgBytesPerSec = _format.nBlockAlign * _format.nSamplesPerSec;
+			_format.wFormatTag = 3;
+			_format.wBitsPerSample = 32;
+			_format.nBlockAlign = (ushort)(4 * _format.nChannels);
+			_format.nAvgBytesPerSec = _format.nBlockAlign * _format.nSamplesPerSec;
 
-            IntPtr next = Marshal.AllocHGlobal(count * sizeof(float));
-            Marshal.Copy(buffer, offset, next, count);
-            lock (_queuedBuffers)
-            {
-                _queuedBuffers.Add(next);
-                if (State != SoundState.Stopped)
-                {
-                    var buf = default(FAudio.FAudioBuffer);
-                    buf.AudioBytes = (uint)count * sizeof(float);
-                    buf.pAudioData = next;
-                    buf.PlayLength = buf.AudioBytes /
-                                     (uint)_channels /
-                                     (uint)(_format.wBitsPerSample / 8);
-                    FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buf, IntPtr.Zero);
-                }
-                else
-                {
-                    _queuedSizes.Add((uint)count * sizeof(float));
-                }
-            }
-        }
+			var next = Marshal.AllocHGlobal(count * sizeof(float));
+			Marshal.Copy(buffer, offset, next, count);
+			lock (_queuedBuffers)
+			{
+				_queuedBuffers.Add(next);
+				if (State != SoundState.Stopped)
+				{
+					var buf = default(FAudio.FAudioBuffer);
+					buf.AudioBytes = (uint)count * sizeof(float);
+					buf.pAudioData = next;
+					buf.PlayLength = buf.AudioBytes /
+					                 (uint)_channels /
+					                 (uint)(_format.wBitsPerSample / 8);
 
-        internal void QueueInitialBuffers()
-        {
-            var buffer = default(FAudio.FAudioBuffer);
-            lock (_queuedBuffers)
-            {
-                for (var i = 0; i < _queuedBuffers.Count; i += 1)
-                {
-                    buffer.AudioBytes = _queuedSizes[i];
-                    buffer.pAudioData = _queuedBuffers[i];
-                    buffer.PlayLength = buffer.AudioBytes /
-                                        (uint)_channels /
-                                        (uint)(_format.wBitsPerSample / 8);
-                    FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buffer, IntPtr.Zero);
-                }
+					FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buf, IntPtr.Zero);
+				}
+				else
+				{
+					_queuedSizes.Add((uint)count * sizeof(float));
+				}
+			}
+		}
 
-                _queuedSizes.Clear();
-            }
-        }
+		internal void QueueInitialBuffers()
+		{
+			var buffer = default(FAudio.FAudioBuffer);
+			lock (_queuedBuffers)
+			{
+				for (var i = 0; i < _queuedBuffers.Count; i += 1)
+				{
+					buffer.AudioBytes = _queuedSizes[i];
+					buffer.pAudioData = _queuedBuffers[i];
+					buffer.PlayLength = buffer.AudioBytes /
+					                    (uint)_channels /
+					                    (uint)(_format.wBitsPerSample / 8);
 
-        internal void ClearBuffers()
-        {
-            lock (_queuedBuffers)
-            {
-                foreach (var buf in _queuedBuffers)
-                {
-                    Marshal.FreeHGlobal(buf);
-                }
+					FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buffer, IntPtr.Zero);
+				}
 
-                _queuedBuffers.Clear();
-                _queuedSizes.Clear();
-            }
-        }
+				_queuedSizes.Clear();
+			}
+		}
 
-        internal void Update()
-        {
-            if (State != SoundState.Playing)
-            {
-                // Shh, we don't need you right now...
-                return;
-            }
+		internal void ClearBuffers()
+		{
+			lock (_queuedBuffers)
+			{
+				foreach (var buf in _queuedBuffers)
+				{
+					Marshal.FreeHGlobal(buf);
+				}
 
-            if (_handle != IntPtr.Zero)
-            {
-                FAudio.FAudioSourceVoice_GetState(_handle, out var state, FAudio.FAUDIO_VOICE_NOSAMPLESPLAYED);
-                while (PendingBufferCount > state.BuffersQueued)
-                {
-                    lock (_queuedBuffers)
-                    {
-                        Marshal.FreeHGlobal(_queuedBuffers[0]);
-                        _queuedBuffers.RemoveAt(0);
-                    }
-                }
-            }
+				_queuedBuffers.Clear();
+				_queuedSizes.Clear();
+			}
+		}
 
-            // Do we need even more buffers?
-            for (var i = MinimumBufferCheck - PendingBufferCount;
-                i > 0 && BufferNeeded != null;
-                i -= 1)
-            {
-                BufferNeeded(this, EventArgs.Empty);
-            }
-        }
-    }
+		internal void Update()
+		{
+			if (State != SoundState.Playing)
+			{
+				// Shh, we don't need you right now...
+				return;
+			}
+
+			if (_handle != IntPtr.Zero)
+			{
+				FAudio.FAudioSourceVoice_GetState(_handle, out var state, FAudio.FAUDIO_VOICE_NOSAMPLESPLAYED);
+				while (PendingBufferCount > state.BuffersQueued)
+				{
+					lock (_queuedBuffers)
+					{
+						Marshal.FreeHGlobal(_queuedBuffers[0]);
+						_queuedBuffers.RemoveAt(0);
+					}
+				}
+			}
+
+			// Do we need even more buffers?
+			for (var i = MinimumBufferCheck - PendingBufferCount;
+				i > 0 && BufferNeeded != null;
+				i -= 1)
+			{
+				BufferNeeded(this, EventArgs.Empty);
+			}
+		}
+	}
 }

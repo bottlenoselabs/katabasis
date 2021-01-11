@@ -5,22 +5,22 @@ using System;
 
 namespace Katabasis
 {
-    internal interface IRenderTarget
-    {
-        int Width { get; }
+	internal interface IRenderTarget
+	{
+		int Width { get; }
 
-        int Height { get; }
+		int Height { get; }
 
-        int LevelCount { get; }
+		int LevelCount { get; }
 
-        RenderTargetUsage RenderTargetUsage { get; }
+		RenderTargetUsage RenderTargetUsage { get; }
 
-        DepthFormat DepthStencilFormat { get; }
+		DepthFormat DepthStencilFormat { get; }
 
-        IntPtr DepthStencilBuffer { get; }
+		IntPtr DepthStencilBuffer { get; }
 
-        IntPtr ColorBuffer { get; }
+		IntPtr ColorBuffer { get; }
 
-        int MultiSampleCount { get; }
-    }
+		int MultiSampleCount { get; }
+	}
 }

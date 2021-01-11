@@ -7,36 +7,30 @@ using System.Collections.Generic;
 
 namespace Katabasis
 {
-    public sealed class SongCollection : IEnumerable<Song>, IDisposable
-    {
-        private readonly List<Song> _list;
+	public sealed class SongCollection : IEnumerable<Song>, IDisposable
+	{
+		private readonly List<Song> _list;
 
-        public Song this[int index] => _list[index];
+		internal SongCollection(List<Song> songs)
+		{
+			_list = songs;
+			IsDisposed = false;
+		}
 
-        public int Count => _list.Count;
+		public Song this[int index] => _list[index];
 
-        public bool IsDisposed { get; private set; }
+		public int Count => _list.Count;
 
-        public IEnumerator<Song> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+		public bool IsDisposed { get; private set; }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+		public void Dispose()
+		{
+			_list.Clear();
+			IsDisposed = true;
+		}
 
-        internal SongCollection(List<Song> songs)
-        {
-            _list = songs;
-            IsDisposed = false;
-        }
+		public IEnumerator<Song> GetEnumerator() => _list.GetEnumerator();
 
-        public void Dispose()
-        {
-            _list.Clear();
-            IsDisposed = true;
-        }
-    }
+		IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
+	}
 }

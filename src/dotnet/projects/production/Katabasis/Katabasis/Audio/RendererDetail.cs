@@ -6,44 +6,29 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [Serializable]
-    public struct RendererDetail
-    {
-        public string FriendlyName { get; private set; }
+	[Serializable]
+	public struct RendererDetail
+	{
+		public string FriendlyName { get; private set; }
 
-        public string RendererId { get; private set; }
+		public string RendererId { get; private set; }
 
-        internal RendererDetail(string name, string id)
-            : this()
-        {
-            FriendlyName = name;
-            RendererId = id;
-        }
+		internal RendererDetail(string name, string id)
+			: this()
+		{
+			FriendlyName = name;
+			RendererId = id;
+		}
 
-        public override bool Equals(object? obj)
-        {
-            return obj is RendererDetail detail && RendererId.Equals(detail.RendererId);
-        }
+		public override bool Equals(object? obj) => obj is RendererDetail detail && RendererId.Equals(detail.RendererId, StringComparison.Ordinal);
 
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "Mutable value type.")]
-        public override int GetHashCode()
-        {
-            return RendererId.GetHashCode();
-        }
+		[SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "Mutable value type.")]
+		public override int GetHashCode() => RendererId.GetHashCode();
 
-        public override string ToString()
-        {
-            return FriendlyName;
-        }
+		public override string ToString() => FriendlyName;
 
-        public static bool operator ==(RendererDetail left, RendererDetail right)
-        {
-            return left.RendererId.Equals(right.RendererId);
-        }
+		public static bool operator ==(RendererDetail left, RendererDetail right) => left.RendererId.Equals(right.RendererId, StringComparison.Ordinal);
 
-        public static bool operator !=(RendererDetail left, RendererDetail right)
-        {
-            return !left.RendererId.Equals(right.RendererId);
-        }
-    }
+		public static bool operator !=(RendererDetail left, RendererDetail right) => !left.RendererId.Equals(right.RendererId, StringComparison.Ordinal);
+	}
 }

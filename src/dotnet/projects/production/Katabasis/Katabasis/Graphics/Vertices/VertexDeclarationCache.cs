@@ -5,12 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    internal static class VertexDeclarationCache<T>
-        where T : struct, IVertexType
-    {
-        [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "Cache for the generic type.")]
-        private static VertexDeclaration? _cached;
+	internal static class VertexDeclarationCache<T>
+		where T : struct, IVertexType
+	{
+		[SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "Cache for the generic type.")]
+		private static VertexDeclaration? _cached;
 
-        public static VertexDeclaration VertexDeclaration => _cached ??= VertexDeclaration.FromType(typeof(T));
-    }
+		public static VertexDeclaration VertexDeclaration => _cached ??= VertexDeclaration.FromType(typeof(T));
+	}
 }

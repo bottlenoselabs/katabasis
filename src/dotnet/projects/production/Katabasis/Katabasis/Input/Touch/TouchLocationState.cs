@@ -3,12 +3,12 @@
 
 namespace Katabasis
 {
-    // https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchlocationstate.aspx
-    public enum TouchLocationState
-    {
-        Invalid,
-        Released,
-        Pressed,
-        Moved
-    }
+	// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchlocationstate.aspx
+	public enum TouchLocationState
+	{
+		Invalid,
+		Released,
+		Pressed,
+		Moved
+	}
 }

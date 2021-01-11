@@ -3,20 +3,20 @@
 
 namespace Katabasis
 {
-    // https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchpanelcapabilities.aspx
-    public readonly struct TouchPanelCapabilities
-    {
-        public bool IsConnected { get; }
+	// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchpanelcapabilities.aspx
+	public readonly struct TouchPanelCapabilities
+	{
+		public bool IsConnected { get; }
 
-        public int MaximumTouchCount { get; }
+		public int MaximumTouchCount { get; }
 
-        internal TouchPanelCapabilities(
-            bool isConnected,
-            int maximumTouchCount)
-            : this()
-        {
-            IsConnected = isConnected;
-            MaximumTouchCount = maximumTouchCount;
-        }
-    }
+		internal TouchPanelCapabilities(
+			bool isConnected,
+			int maximumTouchCount)
+			: this()
+		{
+			IsConnected = isConnected;
+			MaximumTouchCount = maximumTouchCount;
+		}
+	}
 }

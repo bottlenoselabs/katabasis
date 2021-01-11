@@ -5,42 +5,33 @@ using System.Collections.Generic;
 
 namespace Katabasis
 {
-    public sealed class MediaQueue
-    {
-        private readonly List<Song> _songs = new List<Song>();
+	public sealed class MediaQueue
+	{
+		private readonly List<Song> _songs = new();
 
-        public Song? ActiveSong
-        {
-            get
-            {
-                if (_songs.Count == 0 || ActiveSongIndex < 0)
-                {
-                    return null;
-                }
+		internal MediaQueue() => ActiveSongIndex = -1;
 
-                return _songs[ActiveSongIndex];
-            }
-        }
+		public Song? ActiveSong
+		{
+			get
+			{
+				if (_songs.Count == 0 || ActiveSongIndex < 0)
+				{
+					return null;
+				}
 
-        public int ActiveSongIndex { get; set; }
+				return _songs[ActiveSongIndex];
+			}
+		}
 
-        public int Count => _songs.Count;
+		public int ActiveSongIndex { get; set; }
 
-        public Song this[int index] => _songs[index];
+		public int Count => _songs.Count;
 
-        internal MediaQueue()
-        {
-            ActiveSongIndex = -1;
-        }
+		public Song this[int index] => _songs[index];
 
-        internal void Add(Song song)
-        {
-            _songs.Add(song);
-        }
+		internal void Add(Song song) => _songs.Add(song);
 
-        internal void Clear()
-        {
-            _songs.Clear();
-        }
-    }
+		internal void Clear() => _songs.Clear();
+	}
 }

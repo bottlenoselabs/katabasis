@@ -6,213 +6,203 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.cue.aspx
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public sealed class Cue : IDisposable
-    {
-        private IntPtr _handle;
-        private readonly SoundBank _bank;
-        private WeakReference? _selfReference;
+	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.cue.aspx
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public sealed class Cue : IDisposable
+	{
+		private readonly SoundBank _bank;
+		private IntPtr _handle;
+		private WeakReference? _selfReference;
 
-        public bool IsCreated
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_CREATED) != 0;
-            }
-        }
+		internal Cue(IntPtr cue, string name, SoundBank soundBank)
+		{
+			_handle = cue;
+			Name = name;
+			_bank = soundBank;
 
-        public bool IsDisposed { get; private set; }
+			_selfReference = new WeakReference(this, true);
+			_bank._engine.RegisterCue(_handle, _selfReference);
+		}
 
-        public bool IsPaused
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_PAUSED) != 0;
-            }
-        }
+		public bool IsCreated
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_CREATED) != 0;
+			}
+		}
 
-        public bool IsPlaying
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_PLAYING) != 0;
-            }
-        }
+		public bool IsDisposed { get; private set; }
 
-        public bool IsPrepared
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_PREPARED) != 0;
-            }
-        }
+		public bool IsPaused
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_PAUSED) != 0;
+			}
+		}
 
-        public bool IsPreparing
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_PREPARING) != 0;
-            }
-        }
+		public bool IsPlaying
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_PLAYING) != 0;
+			}
+		}
 
-        public bool IsStopped
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_STOPPED) != 0;
-            }
-        }
+		public bool IsPrepared
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_PREPARED) != 0;
+			}
+		}
 
-        public bool IsStopping
-        {
-            get
-            {
-                FAudio.FACTCue_GetState(_handle, out var state);
-                return (state & FAudio.FACT_STATE_STOPPING) != 0;
-            }
-        }
+		public bool IsPreparing
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_PREPARING) != 0;
+			}
+		}
 
-        public string Name { get; }
+		public bool IsStopped
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_STOPPED) != 0;
+			}
+		}
 
-        public event EventHandler<EventArgs>? Disposing;
+		public bool IsStopping
+		{
+			get
+			{
+				FAudio.FACTCue_GetState(_handle, out var state);
+				return (state & FAudio.FACT_STATE_STOPPING) != 0;
+			}
+		}
 
-        internal Cue(IntPtr cue, string name, SoundBank soundBank)
-        {
-            _handle = cue;
-            Name = name;
-            _bank = soundBank;
+		public string Name { get; }
 
-            _selfReference = new WeakReference(this, true);
-            _bank._engine.RegisterCue(_handle, _selfReference);
-        }
+		public void Dispose()
+		{
+			ReleaseUnmanagedResources();
+			GC.SuppressFinalize(this);
+		}
 
-        ~Cue()
-        {
-            if (AudioEngine.ProgramExiting)
-            {
-                return;
-            }
+		public event EventHandler<EventArgs>? Disposing;
 
-            if (!IsDisposed && IsPlaying)
-            {
-                // STOP LEAKING YOUR CUES, ARGH
-                GC.ReRegisterForFinalize(this);
-                return;
-            }
+		~Cue()
+		{
+			if (AudioEngine.ProgramExiting)
+			{
+				return;
+			}
 
-            ReleaseUnmanagedResources();
-        }
+			if (!IsDisposed && IsPlaying)
+			{
+				// STOP LEAKING YOUR CUES, ARGH
+				GC.ReRegisterForFinalize(this);
+				return;
+			}
 
-        public void Dispose()
-        {
-            ReleaseUnmanagedResources();
-            GC.SuppressFinalize(this);
-        }
+			ReleaseUnmanagedResources();
+		}
 
-        public void Apply3D(AudioListener listener, AudioEmitter emitter)
-        {
-            emitter._emitterData.ChannelCount = _bank._dspSettings.SrcChannelCount;
-            emitter._emitterData.CurveDistanceScaler = float.MaxValue;
-            FAudio.FACT3DCalculate(
-                _bank._engine._handle3D,
-                ref listener._listenerData,
-                ref emitter._emitterData,
-                ref _bank._dspSettings);
-            FAudio.FACT3DApply(ref _bank._dspSettings, _handle);
-        }
+		public void Apply3D(AudioListener listener, AudioEmitter emitter)
+		{
+			emitter._emitterData.ChannelCount = _bank._dspSettings.SrcChannelCount;
+			emitter._emitterData.CurveDistanceScaler = float.MaxValue;
+			FAudio.FACT3DCalculate(
+				_bank._engine._handle3D,
+				ref listener._listenerData,
+				ref emitter._emitterData,
+				ref _bank._dspSettings);
 
-        public float GetVariable(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+			FAudio.FACT3DApply(ref _bank._dspSettings, _handle);
+		}
 
-            var variable = FAudio.FACTCue_GetVariableIndex(_handle, name);
+		public float GetVariable(string name)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-            if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
-            {
-                throw new InvalidOperationException("Invalid variable name!");
-            }
+			var variable = FAudio.FACTCue_GetVariableIndex(_handle, name);
 
-            FAudio.FACTCue_GetVariable(_handle, variable, out var result);
-            return result;
-        }
+			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
+			{
+				throw new InvalidOperationException("Invalid variable name!");
+			}
 
-        public void Pause()
-        {
-            FAudio.FACTCue_Pause(_handle, 1);
-        }
+			FAudio.FACTCue_GetVariable(_handle, variable, out var result);
+			return result;
+		}
 
-        public void Play()
-        {
-            FAudio.FACTCue_Play(_handle);
-        }
+		public void Pause() => FAudio.FACTCue_Pause(_handle, 1);
 
-        public void Resume()
-        {
-            FAudio.FACTCue_Pause(_handle, 0);
-        }
+		public void Play() => FAudio.FACTCue_Play(_handle);
 
-        public void SetVariable(string name, float value)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+		public void Resume() => FAudio.FACTCue_Pause(_handle, 0);
 
-            var variable = FAudio.FACTCue_GetVariableIndex(_handle, name);
+		public void SetVariable(string name, float value)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-            if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
-            {
-                throw new InvalidOperationException("Invalid variable name!");
-            }
+			var variable = FAudio.FACTCue_GetVariableIndex(_handle, name);
 
-            FAudio.FACTCue_SetVariable(
-                _handle,
-                variable,
-                value);
-        }
+			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
+			{
+				throw new InvalidOperationException("Invalid variable name!");
+			}
 
-        public void Stop(AudioStopOptions options)
-        {
-            FAudio.FACTCue_Stop(
-                _handle,
-                options == AudioStopOptions.Immediate ? FAudio.FACT_FLAG_STOP_IMMEDIATE : FAudio.FACT_FLAG_STOP_RELEASE);
-        }
+			FAudio.FACTCue_SetVariable(
+				_handle,
+				variable,
+				value);
+		}
 
-        internal void OnCueDestroyed()
-        {
-            IsDisposed = true;
-            _handle = IntPtr.Zero;
-            _selfReference = null;
-        }
+		public void Stop(AudioStopOptions options) =>
+			FAudio.FACTCue_Stop(
+				_handle,
+				options == AudioStopOptions.Immediate ? FAudio.FACT_FLAG_STOP_IMMEDIATE : FAudio.FACT_FLAG_STOP_RELEASE);
 
-        private void ReleaseUnmanagedResources()
-        {
-            lock (_bank._engine._gcSync)
-            {
-                if (!IsDisposed)
-                {
-                    Disposing?.Invoke(this, EventArgs.Empty);
+		internal void OnCueDestroyed()
+		{
+			IsDisposed = true;
+			_handle = IntPtr.Zero;
+			_selfReference = null;
+		}
 
-                    // If this is Disposed, stop leaking memory!
-                    if (!_bank._engine.IsDisposed)
-                    {
-                        _bank._engine.UnregisterCue(_handle);
-                        FAudio.FACTCue_Destroy(_handle);
-                    }
+		private void ReleaseUnmanagedResources()
+		{
+			lock (_bank._engine._gcSync)
+			{
+				if (!IsDisposed)
+				{
+					Disposing?.Invoke(this, EventArgs.Empty);
 
-                    OnCueDestroyed();
-                }
-            }
-        }
-    }
+					// If this is Disposed, stop leaking memory!
+					if (!_bank._engine.IsDisposed)
+					{
+						_bank._engine.UnregisterCue(_handle);
+						FAudio.FACTCue_Destroy(_handle);
+					}
+
+					OnCueDestroyed();
+				}
+			}
+		}
+	}
 }

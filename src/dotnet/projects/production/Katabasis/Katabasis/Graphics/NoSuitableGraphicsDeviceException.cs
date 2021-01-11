@@ -2,24 +2,29 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
+using System.Runtime.Serialization;
 
 namespace Katabasis
 {
-    [Serializable]
-    public sealed class NoSuitableGraphicsDeviceException : Exception
-    {
-        public NoSuitableGraphicsDeviceException()
-        {
-        }
+	[Serializable]
+	public sealed class NoSuitableGraphicsDeviceException : Exception
+	{
+		public NoSuitableGraphicsDeviceException()
+		{
+		}
 
-        public NoSuitableGraphicsDeviceException(string message)
-            : base(message)
-        {
-        }
+		private NoSuitableGraphicsDeviceException(SerializationInfo info, StreamingContext context)
+		{
+		}
 
-        public NoSuitableGraphicsDeviceException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
-    }
+		public NoSuitableGraphicsDeviceException(string message)
+			: base(message)
+		{
+		}
+
+		public NoSuitableGraphicsDeviceException(string message, Exception inner)
+			: base(message, inner)
+		{
+		}
+	}
 }

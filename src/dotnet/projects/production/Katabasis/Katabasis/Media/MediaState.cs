@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum MediaState
-    {
-        Stopped,
-        Playing,
-        Paused
-    }
+	public enum MediaState
+	{
+		Stopped,
+		Playing,
+		Paused
+	}
 }

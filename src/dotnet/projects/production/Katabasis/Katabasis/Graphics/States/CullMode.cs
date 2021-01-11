@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum CullMode
-    {
-        None,
-        CullClockwiseFace,
-        CullCounterClockwiseFace
-    }
+	public enum CullMode
+	{
+		None,
+		CullClockwiseFace,
+		CullCounterClockwiseFace
+	}
 }

@@ -5,26 +5,26 @@ using System;
 
 namespace Katabasis
 {
-    public sealed class EffectTechnique
-    {
-        public string Name { get; }
+	public sealed class EffectTechnique
+	{
+		internal EffectTechnique(
+			string? name,
+			IntPtr pointer,
+			EffectPassCollection passes,
+			EffectAnnotationCollection annotations)
+		{
+			Name = name ?? string.Empty;
+			Passes = passes;
+			Annotations = annotations;
+			TechniquePointer = pointer;
+		}
 
-        public EffectPassCollection Passes { get; }
+		public string Name { get; }
 
-        public EffectAnnotationCollection Annotations { get; }
+		public EffectPassCollection Passes { get; }
 
-        internal IntPtr TechniquePointer { get; }
+		public EffectAnnotationCollection Annotations { get; }
 
-        internal EffectTechnique(
-            string? name,
-            IntPtr pointer,
-            EffectPassCollection passes,
-            EffectAnnotationCollection annotations)
-        {
-            Name = name ?? string.Empty;
-            Passes = passes;
-            Annotations = annotations;
-            TechniquePointer = pointer;
-        }
-    }
+		internal IntPtr TechniquePointer { get; }
+	}
 }

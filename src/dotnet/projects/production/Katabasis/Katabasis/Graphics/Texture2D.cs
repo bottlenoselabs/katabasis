@@ -8,424 +8,421 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
-    public class Texture2D : Texture
-    {
-        public int Width { get; }
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
+	public class Texture2D : Texture
+	{
+		public Texture2D(
+			int width,
+			int height)
+			: this(
+				width,
+				height,
+				false,
+				SurfaceFormat.Color)
+		{
+		}
 
-        public int Height { get; }
+		public Texture2D(
+			int width,
+			int height,
+			bool mipMap,
+			SurfaceFormat format)
+		{
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
+			Width = width;
+			Height = height;
+			LevelCount = mipMap ? CalculateMipLevels(width, height) : 1;
 
-        public Rectangle Bounds => new Rectangle(0, 0, Width, Height);
+			// TODO: Use QueryRenderTargetFormat!
+			if (this is IRenderTarget &&
+			    format != SurfaceFormat.Color &&
+			    format != SurfaceFormat.Rgba1010102 &&
+			    format != SurfaceFormat.Rg32 &&
+			    format != SurfaceFormat.Rgba64 &&
+			    format != SurfaceFormat.Single &&
+			    format != SurfaceFormat.Vector2 &&
+			    format != SurfaceFormat.Vector4 &&
+			    format != SurfaceFormat.HalfSingle &&
+			    format != SurfaceFormat.HalfVector2 &&
+			    format != SurfaceFormat.HalfVector4 &&
+			    format != SurfaceFormat.HdrBlendable)
+			{
+				Format = SurfaceFormat.Color;
+			}
+			else
+			{
+				Format = format;
+			}
 
-        public Texture2D(
-            int width,
-            int height)
-            : this(
-                width,
-                height,
-                false,
-                SurfaceFormat.Color)
-        {
-        }
+			_texture = FNA3D.FNA3D_CreateTexture2D(
+				GraphicsDevice.GLDevice,
+				Format,
+				Width,
+				Height,
+				LevelCount,
+				this is IRenderTarget ? 1 : 0);
+		}
 
-        public Texture2D(
-            int width,
-            int height,
-            bool mipMap,
-            SurfaceFormat format)
-        {
-            GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
-            Width = width;
-            Height = height;
-            LevelCount = mipMap ? CalculateMipLevels(width, height) : 1;
+		public int Width { get; }
 
-            // TODO: Use QueryRenderTargetFormat!
-            if (this is IRenderTarget &&
-                format != SurfaceFormat.Color &&
-                format != SurfaceFormat.Rgba1010102 &&
-                format != SurfaceFormat.Rg32 &&
-                format != SurfaceFormat.Rgba64 &&
-                format != SurfaceFormat.Single &&
-                format != SurfaceFormat.Vector2 &&
-                format != SurfaceFormat.Vector4 &&
-                format != SurfaceFormat.HalfSingle &&
-                format != SurfaceFormat.HalfVector2 &&
-                format != SurfaceFormat.HalfVector4 &&
-                format != SurfaceFormat.HdrBlendable)
-            {
-                Format = SurfaceFormat.Color;
-            }
-            else
-            {
-                Format = format;
-            }
+		public int Height { get; }
 
-            _texture = FNA3D.FNA3D_CreateTexture2D(
-                GraphicsDevice.GLDevice,
-                Format,
-                Width,
-                Height,
-                LevelCount,
-                (byte)(this is IRenderTarget ? 1 : 0));
-        }
+		public Rectangle Bounds => new(0, 0, Width, Height);
 
-        public void SetData<T>(T[] data)
-            where T : struct
-        {
-            SetData(0, null, data, 0, data.Length);
-        }
+		public void SetData<T>(T[] data)
+			where T : struct =>
+			SetData(0, null, data, 0, data.Length);
 
-        public void SetData<T>(
-            T[] data,
-            int startIndex,
-            int elementCount)
-            where T : struct
-        {
-            SetData(0, null, data, startIndex, elementCount);
-        }
+		public void SetData<T>(
+			T[] data,
+			int startIndex,
+			int elementCount)
+			where T : struct =>
+			SetData(0, null, data, startIndex, elementCount);
 
-        public void SetData<T>(
-            int level,
-            Rectangle? rect,
-            T[] data,
-            int startIndex,
-            int elementCount)
-            where T : struct
-        {
-            int x, y, w, h;
-            if (rect.HasValue)
-            {
-                x = rect.Value.X;
-                y = rect.Value.Y;
-                w = rect.Value.Width;
-                h = rect.Value.Height;
-            }
-            else
-            {
-                x = 0;
-                y = 0;
-                w = Math.Max(Width >> level, 1);
-                h = Math.Max(Height >> level, 1);
-            }
+		public void SetData<T>(
+			int level,
+			Rectangle? rect,
+			T[] data,
+			int startIndex,
+			int elementCount)
+			where T : struct
+		{
+			int x, y, w, h;
+			if (rect.HasValue)
+			{
+				x = rect.Value.X;
+				y = rect.Value.Y;
+				w = rect.Value.Width;
+				h = rect.Value.Height;
+			}
+			else
+			{
+				x = 0;
+				y = 0;
+				w = Math.Max(Width >> level, 1);
+				h = Math.Max(Height >> level, 1);
+			}
 
-            var elementSize = Marshal.SizeOf(typeof(T));
-            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            FNA3D.FNA3D_SetTextureData2D(
-                GraphicsDevice.GLDevice,
-                _texture,
-                x,
-                y,
-                w,
-                h,
-                level,
-                handle.AddrOfPinnedObject() + (startIndex * elementSize),
-                elementCount * elementSize);
-            handle.Free();
-        }
+			var elementSize = Marshal.SizeOf(typeof(T));
+			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			FNA3D.FNA3D_SetTextureData2D(
+				GraphicsDevice.GLDevice,
+				_texture,
+				x,
+				y,
+				w,
+				h,
+				level,
+				handle.AddrOfPinnedObject() + (startIndex * elementSize),
+				elementCount * elementSize);
 
-        public void SetDataPointerEXT(
-            int level,
-            Rectangle? rect,
-            IntPtr data,
-            int dataLength)
-        {
-            if (data == IntPtr.Zero)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+			handle.Free();
+		}
 
-            int x, y, w, h;
-            if (rect.HasValue)
-            {
-                x = rect.Value.X;
-                y = rect.Value.Y;
-                w = rect.Value.Width;
-                h = rect.Value.Height;
-            }
-            else
-            {
-                x = 0;
-                y = 0;
-                w = Math.Max(Width >> level, 1);
-                h = Math.Max(Height >> level, 1);
-            }
+		public void SetDataPointerEXT(
+			int level,
+			Rectangle? rect,
+			IntPtr data,
+			int dataLength)
+		{
+			if (data == IntPtr.Zero)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
 
-            FNA3D.FNA3D_SetTextureData2D(
-                GraphicsDevice.GLDevice,
-                _texture,
-                x,
-                y,
-                w,
-                h,
-                level,
-                data,
-                dataLength);
-        }
+			int x, y, w, h;
+			if (rect.HasValue)
+			{
+				x = rect.Value.X;
+				y = rect.Value.Y;
+				w = rect.Value.Width;
+				h = rect.Value.Height;
+			}
+			else
+			{
+				x = 0;
+				y = 0;
+				w = Math.Max(Width >> level, 1);
+				h = Math.Max(Height >> level, 1);
+			}
 
-        public void GetData<T>(T[] data)
-            where T : struct
-        {
-            GetData(0, null, data, 0, data.Length);
-        }
+			FNA3D.FNA3D_SetTextureData2D(
+				GraphicsDevice.GLDevice,
+				_texture,
+				x,
+				y,
+				w,
+				h,
+				level,
+				data,
+				dataLength);
+		}
 
-        public void GetData<T>(
-            T[] data,
-            int startIndex,
-            int elementCount)
-            where T : struct
-        {
-            GetData(0, null, data, startIndex, elementCount);
-        }
+		public void GetData<T>(T[] data)
+			where T : struct =>
+			GetData(0, null, data, 0, data.Length);
 
-        public void GetData<T>(
-            int level,
-            Rectangle? rect,
-            T[] data,
-            int startIndex,
-            int elementCount)
-            where T : struct
-        {
-            if (data.Length == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(data));
-            }
+		public void GetData<T>(
+			T[] data,
+			int startIndex,
+			int elementCount)
+			where T : struct =>
+			GetData(0, null, data, startIndex, elementCount);
 
-            if (data.Length < startIndex + elementCount)
-            {
-                throw new ArgumentException(
-                    $"The data passed has a length of {data.Length} but {elementCount} pixels have been requested.");
-            }
+		public void GetData<T>(
+			int level,
+			Rectangle? rect,
+			T[] data,
+			int startIndex,
+			int elementCount)
+			where T : struct
+		{
+			if (data.Length == 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(data));
+			}
 
-            int subX, subY, subW, subH;
-            if (rect == null)
-            {
-                subX = 0;
-                subY = 0;
-                subW = Width >> level;
-                subH = Height >> level;
-            }
-            else
-            {
-                subX = rect.Value.X;
-                subY = rect.Value.Y;
-                subW = rect.Value.Width;
-                subH = rect.Value.Height;
-            }
+			if (data.Length < startIndex + elementCount)
+			{
+				throw new ArgumentException(
+					$"The data passed has a length of {data.Length} but {elementCount} pixels have been requested.");
+			}
 
-            var elementSizeInBytes = Marshal.SizeOf(typeof(T));
-            ValidateGetDataFormat(Format, elementSizeInBytes);
+			int subX, subY, subW, subH;
+			if (rect == null)
+			{
+				subX = 0;
+				subY = 0;
+				subW = Width >> level;
+				subH = Height >> level;
+			}
+			else
+			{
+				subX = rect.Value.X;
+				subY = rect.Value.Y;
+				subW = rect.Value.Width;
+				subH = rect.Value.Height;
+			}
 
-            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            FNA3D.FNA3D_GetTextureData2D(
-                GraphicsDevice.GLDevice,
-                _texture,
-                subX,
-                subY,
-                subW,
-                subH,
-                level,
-                handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
-                elementCount * elementSizeInBytes);
-            handle.Free();
-        }
+			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+			ValidateGetDataFormat(Format, elementSizeInBytes);
 
-        public void SaveAsJpeg(Stream stream, int width, int height)
-        {
-            var len = Width * Height * GetFormatSize(Format);
-            var data = Marshal.AllocHGlobal(len);
-            FNA3D.FNA3D_GetTextureData2D(
-                GraphicsDevice.GLDevice,
-                _texture,
-                0,
-                0,
-                Width,
-                height,
-                0,
-                data,
-                len);
+			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			FNA3D.FNA3D_GetTextureData2D(
+				GraphicsDevice.GLDevice,
+				_texture,
+				subX,
+				subY,
+				subW,
+				subH,
+				level,
+				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				elementCount * elementSizeInBytes);
 
-            FNA3D.WriteJPGStream(
-                stream,
-                Width,
-                Height,
-                width,
-                height,
-                data,
-                100);
+			handle.Free();
+		}
 
-            Marshal.FreeHGlobal(data);
-        }
+		public void SaveAsJpeg(Stream stream, int width, int height)
+		{
+			var len = Width * Height * GetFormatSize(Format);
+			var data = Marshal.AllocHGlobal(len);
+			FNA3D.FNA3D_GetTextureData2D(
+				GraphicsDevice.GLDevice,
+				_texture,
+				0,
+				0,
+				Width,
+				height,
+				0,
+				data,
+				len);
 
-        public void SaveAsPng(Stream stream, int width, int height)
-        {
-            var len = Width * Height * GetFormatSize(Format);
-            var data = Marshal.AllocHGlobal(len);
-            FNA3D.FNA3D_GetTextureData2D(
-                GraphicsDevice.GLDevice,
-                _texture,
-                0,
-                0,
-                Width,
-                height,
-                0,
-                data,
-                len);
+			FNA3D.WriteJPGStream(
+				stream,
+				Width,
+				Height,
+				width,
+				height,
+				data,
+				100);
 
-            FNA3D.WritePNGStream(
-                stream,
-                Width,
-                Height,
-                width,
-                height,
-                data);
+			Marshal.FreeHGlobal(data);
+		}
 
-            Marshal.FreeHGlobal(data);
-        }
+		public void SaveAsPng(Stream stream, int width, int height)
+		{
+			var len = Width * Height * GetFormatSize(Format);
+			var data = Marshal.AllocHGlobal(len);
+			FNA3D.FNA3D_GetTextureData2D(
+				GraphicsDevice.GLDevice,
+				_texture,
+				0,
+				0,
+				Width,
+				height,
+				0,
+				data,
+				len);
 
-        public static Texture2D FromStream(Stream stream)
-        {
-            if (stream.CanSeek && stream.Position == stream.Length)
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-            }
+			FNA3D.WritePNGStream(
+				stream,
+				Width,
+				Height,
+				width,
+				height,
+				data);
 
-            var pixels = FNA3D.ReadImageStream(
-                stream,
-                out var width,
-                out var height,
-                out var len);
+			Marshal.FreeHGlobal(data);
+		}
 
-            var result = new Texture2D(width, height);
-            result.SetDataPointerEXT(
-                0,
-                null,
-                pixels,
-                len);
+		public static Texture2D FromStream(Stream stream)
+		{
+			if (stream.CanSeek && stream.Position == stream.Length)
+			{
+				stream.Seek(0, SeekOrigin.Begin);
+			}
 
-            FNA3D.FNA3D_Image_Free(pixels);
-            return result;
-        }
+			var pixels = FNA3D.ReadImageStream(
+				stream,
+				out var width,
+				out var height,
+				out var len);
 
-        public static Texture2D FromStream(
-            GraphicsDevice graphicsDevice,
-            Stream stream,
-            int width,
-            int height,
-            bool zoom)
-        {
-            if (stream.CanSeek && stream.Position == stream.Length)
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-            }
+			var result = new Texture2D(width, height);
+			result.SetDataPointerEXT(
+				0,
+				null,
+				pixels,
+				len);
 
-            var pixels = FNA3D.ReadImageStream(
-                stream,
-                out var realWidth,
-                out var realHeight,
-                out var len,
-                width,
-                height,
-                zoom);
+			FNA3D.FNA3D_Image_Free(pixels);
+			return result;
+		}
 
-            Texture2D result = new Texture2D(realWidth, realHeight);
-            result.SetDataPointerEXT(
-                0,
-                null,
-                pixels,
-                len);
+		public static Texture2D FromStream(
+			GraphicsDevice graphicsDevice,
+			Stream stream,
+			int width,
+			int height,
+			bool zoom)
+		{
+			if (stream.CanSeek && stream.Position == stream.Length)
+			{
+				stream.Seek(0, SeekOrigin.Begin);
+			}
 
-            FNA3D.FNA3D_Image_Free(pixels);
-            return result;
-        }
+			var pixels = FNA3D.ReadImageStream(
+				stream,
+				out var realWidth,
+				out var realHeight,
+				out var len,
+				width,
+				height,
+				zoom);
 
-        public static void TextureDataFromStreamEXT(
-            Stream stream,
-            out int width,
-            out int height,
-            out byte[] pixels,
-            int requestedWidth = -1,
-            int requestedHeight = -1,
-            bool zoom = false)
-        {
-            if (stream.CanSeek && stream.Position == stream.Length)
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-            }
+			Texture2D result = new(realWidth, realHeight);
+			result.SetDataPointerEXT(
+				0,
+				null,
+				pixels,
+				len);
 
-            var pixPtr = FNA3D.ReadImageStream(
-                stream,
-                out width,
-                out height,
-                out var len,
-                requestedWidth,
-                requestedHeight,
-                zoom);
+			FNA3D.FNA3D_Image_Free(pixels);
+			return result;
+		}
 
-            pixels = new byte[len];
-            Marshal.Copy(pixPtr, pixels, 0, len);
+		public static void TextureDataFromStreamEXT(
+			Stream stream,
+			out int width,
+			out int height,
+			out byte[] pixels,
+			int requestedWidth = -1,
+			int requestedHeight = -1,
+			bool zoom = false)
+		{
+			if (stream.CanSeek && stream.Position == stream.Length)
+			{
+				stream.Seek(0, SeekOrigin.Begin);
+			}
 
-            FNA3D.FNA3D_Image_Free(pixPtr);
-        }
+			var pixPtr = FNA3D.ReadImageStream(
+				stream,
+				out width,
+				out height,
+				out var len,
+				requestedWidth,
+				requestedHeight,
+				zoom);
 
-        public static Texture2D DDSFromStreamEXT(Stream stream)
-        {
-            // Begin BinaryReader, ignoring a tab!
-            using BinaryReader reader = new BinaryReader(stream);
+			pixels = new byte[len];
+			Marshal.Copy(pixPtr, pixels, 0, len);
 
-            ParseDDS(
-                reader,
-                out var format,
-                out var width,
-                out var height,
-                out var levels,
-                out var levelSize,
-                out var blockSize);
+			FNA3D.FNA3D_Image_Free(pixPtr);
+		}
 
-            // Allocate/Load texture
-            var result = new Texture2D(
-                width,
-                height,
-                levels > 1,
-                format);
+		public static Texture2D DDSFromStreamEXT(Stream stream)
+		{
+			// Begin BinaryReader, ignoring a tab!
+			using BinaryReader reader = new(stream);
 
-            if (stream is MemoryStream memoryStream &&
-                memoryStream.TryGetBuffer(out byte[] tex))
-            {
-                for (var i = 0; i < levels; i += 1)
-                {
-                    result.SetData(
-                        i,
-                        null,
-                        tex,
-                        (int)memoryStream.Seek(0, SeekOrigin.Current),
-                        levelSize);
-                    memoryStream.Seek(
-                        levelSize,
-                        SeekOrigin.Current);
-                    levelSize = Math.Max(
-                        levelSize >> 2,
-                        blockSize);
-                }
-            }
-            else
-            {
-                for (var i = 0; i < levels; i += 1)
-                {
-                    tex = reader.ReadBytes(levelSize);
-                    result.SetData(
-                        i,
-                        null,
-                        tex,
-                        0,
-                        tex.Length);
-                    levelSize = Math.Max(levelSize >> 2, blockSize);
-                }
-            }
+			ParseDDS(
+				reader,
+				out var format,
+				out var width,
+				out var height,
+				out var levels,
+				out var levelSize,
+				out var blockSize);
 
-            // End BinaryReader
+			// Allocate/Load texture
+			var result = new Texture2D(
+				width,
+				height,
+				levels > 1,
+				format);
 
-            // Finally.
-            return result;
-        }
-    }
+			if (stream is MemoryStream memoryStream &&
+			    memoryStream.TryGetBuffer(out byte[] tex))
+			{
+				for (var i = 0; i < levels; i += 1)
+				{
+					result.SetData(
+						i,
+						null,
+						tex,
+						(int)memoryStream.Seek(0, SeekOrigin.Current),
+						levelSize);
+
+					memoryStream.Seek(
+						levelSize,
+						SeekOrigin.Current);
+
+					levelSize = Math.Max(
+						levelSize >> 2,
+						blockSize);
+				}
+			}
+			else
+			{
+				for (var i = 0; i < levels; i += 1)
+				{
+					tex = reader.ReadBytes(levelSize);
+					result.SetData(
+						i,
+						null,
+						tex,
+						0,
+						tex.Length);
+
+					levelSize = Math.Max(levelSize >> 2, blockSize);
+				}
+			}
+
+			// End BinaryReader
+
+			// Finally.
+			return result;
+		}
+	}
 }

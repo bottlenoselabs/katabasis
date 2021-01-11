@@ -1,54 +1,43 @@
 // Copyright (c) Craftwork Games. All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Katabasis
 {
-    public sealed class EffectPassCollection : IEnumerable<EffectPass>
-    {
-        private readonly List<EffectPass> _elements;
+	public sealed class EffectPassCollection : IEnumerable<EffectPass>
+	{
+		private readonly List<EffectPass> _elements;
 
-        public int Count => _elements.Count;
+		internal EffectPassCollection(List<EffectPass> value) => _elements = value;
 
-        public EffectPass? this[int index] => _elements[index];
+		public int Count => _elements.Count;
 
-        public EffectPass? this[string name]
-        {
-            get
-            {
-                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                foreach (EffectPass elem in _elements)
-                {
-                    if (name.Equals(elem.Name))
-                    {
-                        return elem;
-                    }
-                }
+		public EffectPass? this[int index] => _elements[index];
 
-                return null; // FIXME: ArrayIndexOutOfBounds? -flibit
-            }
-        }
+		public EffectPass? this[string name]
+		{
+			get
+			{
+				// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+				foreach (EffectPass elem in _elements)
+				{
+					if (name.Equals(elem.Name, StringComparison.Ordinal))
+					{
+						return elem;
+					}
+				}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
+				return null; // FIXME: ArrayIndexOutOfBounds? -flibit
+			}
+		}
 
-        IEnumerator<EffectPass> IEnumerable<EffectPass>.GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
+		IEnumerator IEnumerable.GetEnumerator() => _elements.GetEnumerator();
 
-        internal EffectPassCollection(List<EffectPass> value)
-        {
-            _elements = value;
-        }
+		IEnumerator<EffectPass> IEnumerable<EffectPass>.GetEnumerator() => _elements.GetEnumerator();
 
-        public List<EffectPass>.Enumerator GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
-    }
+		public List<EffectPass>.Enumerator GetEnumerator() => _elements.GetEnumerator();
+	}
 }

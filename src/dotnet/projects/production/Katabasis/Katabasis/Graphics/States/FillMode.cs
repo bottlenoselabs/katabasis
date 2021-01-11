@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum FillMode
-    {
-        Solid,
-        WireFrame
-    }
+	public enum FillMode
+	{
+		Solid,
+		WireFrame
+	}
 }

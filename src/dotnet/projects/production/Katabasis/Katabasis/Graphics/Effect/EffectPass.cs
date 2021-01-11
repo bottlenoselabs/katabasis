@@ -5,39 +5,39 @@ using System;
 
 namespace Katabasis
 {
-    public sealed class EffectPass
-    {
-        private readonly Effect _parentEffect;
-        private readonly IntPtr _parentTechnique;
-        private readonly uint _pass;
+	public sealed class EffectPass
+	{
+		private readonly Effect _parentEffect;
+		private readonly IntPtr _parentTechnique;
+		private readonly uint _pass;
 
-        public string Name { get; }
+		internal EffectPass(
+			string? name,
+			EffectAnnotationCollection annotations,
+			Effect parent,
+			IntPtr technique,
+			uint passIndex)
+		{
+			Name = name ?? string.Empty;
+			Annotations = annotations;
+			_parentEffect = parent;
+			_parentTechnique = technique;
+			_pass = passIndex;
+		}
 
-        public EffectAnnotationCollection Annotations { get; }
+		public string Name { get; }
 
-        internal EffectPass(
-            string? name,
-            EffectAnnotationCollection annotations,
-            Effect parent,
-            IntPtr technique,
-            uint passIndex)
-        {
-            Name = name ?? string.Empty;
-            Annotations = annotations;
-            _parentEffect = parent;
-            _parentTechnique = technique;
-            _pass = passIndex;
-        }
+		public EffectAnnotationCollection Annotations { get; }
 
-        public void Apply()
-        {
-            if (_parentTechnique != _parentEffect.CurrentTechnique!.TechniquePointer)
-            {
-                throw new InvalidOperationException("Applied a pass not in the current technique!");
-            }
+		public void Apply()
+		{
+			if (_parentTechnique != _parentEffect.CurrentTechnique!.TechniquePointer)
+			{
+				throw new InvalidOperationException("Applied a pass not in the current technique!");
+			}
 
-            _parentEffect.OnApply();
-            _parentEffect.INTERNAL_applyEffect(_pass);
-        }
-    }
+			_parentEffect.OnApply();
+			_parentEffect.INTERNAL_applyEffect(_pass);
+		}
+	}
 }

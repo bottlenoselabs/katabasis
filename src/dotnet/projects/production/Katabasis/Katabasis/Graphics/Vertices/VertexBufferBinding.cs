@@ -3,40 +3,37 @@
 
 namespace Katabasis
 {
-    public readonly struct VertexBufferBinding
-    {
-        public int InstanceFrequency { get; }
+	public readonly struct VertexBufferBinding
+	{
+		public int InstanceFrequency { get; }
 
-        public VertexBuffer? VertexBuffer { get; }
+		public VertexBuffer? VertexBuffer { get; }
 
-        public int VertexOffset { get; }
+		public int VertexOffset { get; }
 
-        internal static readonly VertexBufferBinding None = new VertexBufferBinding(null);
+		internal static readonly VertexBufferBinding None = new(null);
 
-        public VertexBufferBinding(VertexBuffer? vertexBuffer)
-        {
-            VertexBuffer = vertexBuffer;
-            VertexOffset = 0;
-            InstanceFrequency = 0;
-        }
+		public VertexBufferBinding(VertexBuffer? vertexBuffer)
+		{
+			VertexBuffer = vertexBuffer;
+			VertexOffset = 0;
+			InstanceFrequency = 0;
+		}
 
-        public VertexBufferBinding(VertexBuffer vertexBuffer, int vertexOffset)
-        {
-            VertexBuffer = vertexBuffer;
-            VertexOffset = vertexOffset;
-            InstanceFrequency = 0;
-        }
+		public VertexBufferBinding(VertexBuffer vertexBuffer, int vertexOffset)
+		{
+			VertexBuffer = vertexBuffer;
+			VertexOffset = vertexOffset;
+			InstanceFrequency = 0;
+		}
 
-        public VertexBufferBinding(VertexBuffer vertexBuffer, int vertexOffset, int instanceFrequency)
-        {
-            VertexBuffer = vertexBuffer;
-            VertexOffset = vertexOffset;
-            InstanceFrequency = instanceFrequency;
-        }
+		public VertexBufferBinding(VertexBuffer vertexBuffer, int vertexOffset, int instanceFrequency)
+		{
+			VertexBuffer = vertexBuffer;
+			VertexOffset = vertexOffset;
+			InstanceFrequency = instanceFrequency;
+		}
 
-        public static implicit operator VertexBufferBinding(VertexBuffer buffer)
-        {
-            return new VertexBufferBinding(buffer);
-        }
-    }
+		public static implicit operator VertexBufferBinding(VertexBuffer buffer) => new(buffer);
+	}
 }

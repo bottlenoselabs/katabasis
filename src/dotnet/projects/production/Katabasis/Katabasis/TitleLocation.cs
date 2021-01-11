@@ -3,8 +3,8 @@
 
 namespace Katabasis
 {
-    internal static class TitleLocation
-    {
-        public static string Path => FNAPlatform.TitleLocation;
-    }
+	internal static class TitleLocation
+	{
+		public static string Path => FNAPlatform.TitleLocation;
+	}
 }

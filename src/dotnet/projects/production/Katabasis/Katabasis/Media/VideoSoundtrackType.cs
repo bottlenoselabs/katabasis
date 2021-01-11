@@ -3,10 +3,10 @@
 
 namespace Katabasis
 {
-    public enum VideoSoundtrackType
-    {
-        Music,
-        Dialog,
-        MusicAndDialog
-    }
+	public enum VideoSoundtrackType
+	{
+		Music,
+		Dialog,
+		MusicAndDialog
+	}
 }

@@ -3,9 +3,9 @@
 
 namespace Katabasis
 {
-    public enum KeyState
-    {
-        Up,
-        Down
-    }
+	public enum KeyState
+	{
+		Up,
+		Down
+	}
 }

@@ -3,11 +3,11 @@
 
 namespace Katabasis
 {
-    public enum DepthFormat
-    {
-        None,
-        Depth16,
-        Depth24,
-        Depth24Stencil8
-    }
+	public enum DepthFormat
+	{
+		None,
+		Depth16,
+		Depth24,
+		Depth24Stencil8
+	}
 }

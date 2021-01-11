@@ -6,65 +6,57 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-    [Serializable]
-    public class DisplayMode
-    {
-        public float AspectRatio => Width / (float)Height;
+	[Serializable]
+	public class DisplayMode
+	{
+		internal DisplayMode(int width, int height, SurfaceFormat format)
+		{
+			Width = width;
+			Height = height;
+			Format = format;
+		}
 
-        public SurfaceFormat Format { get; private set; }
+		public float AspectRatio => Width / (float)Height;
 
-        public int Height { get; private set; }
+		public SurfaceFormat Format { get; private set; }
 
-        public int Width { get; private set; }
+		public int Height { get; private set; }
 
-        public Rectangle TitleSafeArea => new Rectangle(0, 0, Width, Height);
+		public int Width { get; private set; }
 
-        internal DisplayMode(int width, int height, SurfaceFormat format)
-        {
-            Width = width;
-            Height = height;
-            Format = format;
-        }
+		public Rectangle TitleSafeArea => new(0, 0, Width, Height);
 
-        public static bool operator !=(DisplayMode left, DisplayMode right)
-        {
-            return !(left == right);
-        }
+		public static bool operator !=(DisplayMode left, DisplayMode right) => !(left == right);
 
-        public static bool operator ==(DisplayMode left, DisplayMode right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
+		public static bool operator ==(DisplayMode left, DisplayMode right)
+		{
+			if (ReferenceEquals(left, right))
+			{
+				return true;
+			}
 
-            return left.Format == right.Format &&
-                   left.Height == right.Height &&
-                   left.Width == right.Width;
-        }
+			return left.Format == right.Format &&
+			       left.Height == right.Height &&
+			       left.Width == right.Width;
+		}
 
-        public override bool Equals(object? obj)
-        {
-            if (!(obj is DisplayMode displayMode))
-            {
-                return false;
-            }
+		public override bool Equals(object? obj)
+		{
+			if (!(obj is DisplayMode displayMode))
+			{
+				return false;
+			}
 
-            return displayMode == this;
-        }
+			return displayMode == this;
+		}
 
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "Mutable value type.")]
-        public override int GetHashCode()
-        {
-            return Width.GetHashCode() ^ Height.GetHashCode() ^ Format.GetHashCode();
-        }
+		[SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "Mutable value type.")]
+		public override int GetHashCode() => Width.GetHashCode() ^ Height.GetHashCode() ^ Format.GetHashCode();
 
-        public override string ToString()
-        {
-            return "{{Width:" + Width +
-                   " Height:" + Height +
-                   " Format:" + Format +
-                   "}}";
-        }
-    }
+		public override string ToString() =>
+			"{{Width:" + Width +
+			" Height:" + Height +
+			" Format:" + Format +
+			"}}";
+	}
 }

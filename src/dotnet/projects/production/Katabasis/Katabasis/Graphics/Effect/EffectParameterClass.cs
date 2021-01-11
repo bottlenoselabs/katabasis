@@ -3,12 +3,12 @@
 
 namespace Katabasis
 {
-    public enum EffectParameterClass
-    {
-        Scalar,
-        Vector,
-        Matrix,
-        Object,
-        Struct
-    }
+	public enum EffectParameterClass
+	{
+		Scalar,
+		Vector,
+		Matrix,
+		Object,
+		Struct
+	}
 }

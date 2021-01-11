@@ -8,267 +8,259 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-    public class VertexBuffer : GraphicsResource
-    {
-        internal IntPtr _buffer;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	public class VertexBuffer : GraphicsResource
+	{
+		internal IntPtr _buffer;
 
-        public BufferUsage BufferUsage { get; }
+		public VertexBuffer(
+			VertexDeclaration vertexDeclaration,
+			int vertexCount,
+			BufferUsage bufferUsage)
+			: this(
+				vertexDeclaration,
+				vertexCount,
+				bufferUsage,
+				false)
+		{
+		}
 
-        public int VertexCount { get; }
+		public VertexBuffer(
+			Type type,
+			int vertexCount,
+			BufferUsage bufferUsage)
+			: this(
+				VertexDeclaration.FromType(type),
+				vertexCount,
+				bufferUsage,
+				false)
+		{
+		}
 
-        public VertexDeclaration VertexDeclaration { get; }
+		protected VertexBuffer(
+			VertexDeclaration vertexDeclaration,
+			int vertexCount,
+			BufferUsage bufferUsage,
+			bool dynamic)
+		{
+			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
+			VertexDeclaration = vertexDeclaration;
+			VertexCount = vertexCount;
+			BufferUsage = bufferUsage;
 
-        public VertexBuffer(
-            VertexDeclaration vertexDeclaration,
-            int vertexCount,
-            BufferUsage bufferUsage)
-            : this(
-                vertexDeclaration,
-                vertexCount,
-                bufferUsage,
-                false)
-        {
-        }
+			// Make sure the graphics device is assigned in the vertex declaration.
+			if (vertexDeclaration.GraphicsDevice != GraphicsDevice)
+			{
+				vertexDeclaration.GraphicsDevice = GraphicsDevice;
+			}
 
-        public VertexBuffer(
-            Type type,
-            int vertexCount,
-            BufferUsage bufferUsage)
-            : this(
-                VertexDeclaration.FromType(type),
-                vertexCount,
-                bufferUsage,
-                false)
-        {
-        }
+			_buffer = FNA3D.FNA3D_GenVertexBuffer(
+				GraphicsDevice.GLDevice,
+				dynamic ? 1 : 0,
+				bufferUsage,
+				VertexCount * VertexDeclaration.VertexStride);
+		}
 
-        public void GetData<T>(T[] data)
-            where T : struct
-        {
-            GetData(
-                0,
-                data,
-                0,
-                data.Length,
-                Marshal.SizeOf(typeof(T)));
-        }
+		public BufferUsage BufferUsage { get; }
 
-        protected VertexBuffer(
-            VertexDeclaration vertexDeclaration,
-            int vertexCount,
-            BufferUsage bufferUsage,
-            bool dynamic)
-        {
-            GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
-            VertexDeclaration = vertexDeclaration;
-            VertexCount = vertexCount;
-            BufferUsage = bufferUsage;
+		public int VertexCount { get; }
 
-            // Make sure the graphics device is assigned in the vertex declaration.
-            if (vertexDeclaration.GraphicsDevice != GraphicsDevice)
-            {
-                vertexDeclaration.GraphicsDevice = GraphicsDevice;
-            }
+		public VertexDeclaration VertexDeclaration { get; }
 
-            _buffer = FNA3D.FNA3D_GenVertexBuffer(
-                GraphicsDevice.GLDevice,
-                (byte)(dynamic ? 1 : 0),
-                bufferUsage,
-                VertexCount * VertexDeclaration.VertexStride);
-        }
+		public void GetData<T>(T[] data)
+			where T : struct =>
+			GetData(
+				0,
+				data,
+				0,
+				data.Length,
+				Marshal.SizeOf(typeof(T)));
 
-        public void GetData<T>(
-            T[] data,
-            int startIndex,
-            int elementCount)
-            where T : struct
-        {
-            GetData(
-                0,
-                data,
-                startIndex,
-                elementCount,
-                Marshal.SizeOf(typeof(T)));
-        }
+		public void GetData<T>(
+			T[] data,
+			int startIndex,
+			int elementCount)
+			where T : struct =>
+			GetData(
+				0,
+				data,
+				startIndex,
+				elementCount,
+				Marshal.SizeOf(typeof(T)));
 
-        public void GetData<T>(
-            int offsetInBytes,
-            T[] data,
-            int startIndex,
-            int elementCount,
-            int vertexStride)
-            where T : struct
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+		public void GetData<T>(
+			int offsetInBytes,
+			T[] data,
+			int startIndex,
+			int elementCount,
+			int vertexStride)
+			where T : struct
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
 
-            if (data.Length < startIndex + elementCount)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(elementCount),
-                    "This parameter must be a valid index within the array.");
-            }
+			if (data.Length < startIndex + elementCount)
+			{
+				throw new ArgumentOutOfRangeException(
+					nameof(elementCount),
+					"This parameter must be a valid index within the array.");
+			}
 
-            if (BufferUsage == BufferUsage.WriteOnly)
-            {
-                throw new NotSupportedException(
-                    "Calling GetData on a resource that was created with BufferUsage.WriteOnly is not supported.");
-            }
+			if (BufferUsage == BufferUsage.WriteOnly)
+			{
+				throw new NotSupportedException(
+					"Calling GetData on a resource that was created with BufferUsage.WriteOnly is not supported.");
+			}
 
-            var elementSizeInBytes = Marshal.SizeOf(typeof(T));
-            if (vertexStride == 0)
-            {
-                vertexStride = elementSizeInBytes;
-            }
-            else if (vertexStride < elementSizeInBytes)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(vertexStride),
-                    "The vertex stride is too small for the type of data requested. This is not allowed.");
-            }
+			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+			if (vertexStride == 0)
+			{
+				vertexStride = elementSizeInBytes;
+			}
+			else if (vertexStride < elementSizeInBytes)
+			{
+				throw new ArgumentOutOfRangeException(
+					nameof(vertexStride),
+					"The vertex stride is too small for the type of data requested. This is not allowed.");
+			}
 
-            if (elementCount > 1 &&
-                elementCount * vertexStride > VertexCount * VertexDeclaration.VertexStride)
-            {
-                throw new InvalidOperationException(
-                    "The array is not the correct size for the amount of data requested.");
-            }
+			if (elementCount > 1 &&
+			    elementCount * vertexStride > VertexCount * VertexDeclaration.VertexStride)
+			{
+				throw new InvalidOperationException(
+					"The array is not the correct size for the amount of data requested.");
+			}
 
-            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            FNA3D.FNA3D_GetVertexBufferData(
-                GraphicsDevice.GLDevice,
-                _buffer,
-                offsetInBytes,
-                handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
-                elementCount,
-                elementSizeInBytes,
-                vertexStride);
-            handle.Free();
-        }
+			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			FNA3D.FNA3D_GetVertexBufferData(
+				GraphicsDevice.GLDevice,
+				_buffer,
+				offsetInBytes,
+				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				elementCount,
+				elementSizeInBytes,
+				vertexStride);
 
-        public void SetData<T>(T[] data)
-            where T : struct
-        {
-            SetData(
-                0,
-                data,
-                0,
-                data.Length,
-                Marshal.SizeOf(typeof(T)));
-        }
+			handle.Free();
+		}
 
-        public void SetData<T>(
-            T[] data,
-            int startIndex,
-            int elementCount)
-            where T : struct
-        {
-            SetData(
-                0,
-                data,
-                startIndex,
-                elementCount,
-                Marshal.SizeOf(typeof(T)));
-        }
+		public void SetData<T>(T[] data)
+			where T : struct =>
+			SetData(
+				0,
+				data,
+				0,
+				data.Length,
+				Marshal.SizeOf(typeof(T)));
 
-        public void SetData<T>(
-            int offsetInBytes,
-            T[] data,
-            int startIndex,
-            int elementCount,
-            int vertexStride)
-            where T : struct
-        {
-            ErrorCheck(data, startIndex, elementCount, vertexStride);
+		public void SetData<T>(
+			T[] data,
+			int startIndex,
+			int elementCount)
+			where T : struct =>
+			SetData(
+				0,
+				data,
+				startIndex,
+				elementCount,
+				Marshal.SizeOf(typeof(T)));
 
-            var elementSizeInBytes = Marshal.SizeOf(typeof(T));
-            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            FNA3D.FNA3D_SetVertexBufferData(
-                GraphicsDevice.GLDevice,
-                _buffer,
-                offsetInBytes,
-                handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
-                elementCount,
-                elementSizeInBytes,
-                vertexStride,
-                SetDataOptions.None);
-            handle.Free();
-        }
+		public void SetData<T>(
+			int offsetInBytes,
+			T[] data,
+			int startIndex,
+			int elementCount,
+			int vertexStride)
+			where T : struct
+		{
+			ErrorCheck(data, startIndex, elementCount, vertexStride);
 
-        public void SetDataPointerEXT(
-            int offsetInBytes,
-            IntPtr data,
-            int dataLength,
-            SetDataOptions options)
-        {
-            FNA3D.FNA3D_SetVertexBufferData(
-                GraphicsDevice.GLDevice,
-                _buffer,
-                offsetInBytes,
-                data,
-                dataLength,
-                1,
-                1,
-                options);
-        }
+			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			FNA3D.FNA3D_SetVertexBufferData(
+				GraphicsDevice.GLDevice,
+				_buffer,
+				offsetInBytes,
+				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				elementCount,
+				elementSizeInBytes,
+				vertexStride,
+				SetDataOptions.None);
 
-        [Conditional("DEBUG")]
-        internal void ErrorCheck<T>(
-            T[] data,
-            int startIndex,
-            int elementCount,
-            int vertexStride)
-            where T : struct
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+			handle.Free();
+		}
 
-            if (startIndex + elementCount > data.Length || elementCount <= 0)
-            {
-                throw new InvalidOperationException(
-                    "The array specified in the data parameter is not the correct size for the amount of data requested.");
-            }
+		public void SetDataPointerEXT(
+			int offsetInBytes,
+			IntPtr data,
+			int dataLength,
+			SetDataOptions options) =>
+			FNA3D.FNA3D_SetVertexBufferData(
+				GraphicsDevice.GLDevice,
+				_buffer,
+				offsetInBytes,
+				data,
+				dataLength,
+				1,
+				1,
+				options);
 
-            if (elementCount > 1 &&
-                elementCount * vertexStride > VertexCount * VertexDeclaration.VertexStride)
-            {
-                throw new InvalidOperationException(
-                    "The vertex stride is larger than the vertex buffer.");
-            }
+		[Conditional("DEBUG")]
+		internal void ErrorCheck<T>(
+			T[] data,
+			int startIndex,
+			int elementCount,
+			int vertexStride)
+			where T : struct
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
 
-            var elementSizeInBytes = Marshal.SizeOf(typeof(T));
-            if (vertexStride == 0)
-            {
-                vertexStride = elementSizeInBytes;
-            }
+			if (startIndex + elementCount > data.Length || elementCount <= 0)
+			{
+				throw new InvalidOperationException(
+					"The array specified in the data parameter is not the correct size for the amount of data requested.");
+			}
 
-            if (vertexStride < elementSizeInBytes)
-            {
-                throw new ArgumentOutOfRangeException(
-                    $"The vertex stride must be greater than or equal to the size of the specified data ({elementSizeInBytes}).");
-            }
-        }
+			if (elementCount > 1 &&
+			    elementCount * vertexStride > VertexCount * VertexDeclaration.VertexStride)
+			{
+				throw new InvalidOperationException(
+					"The vertex stride is larger than the vertex buffer.");
+			}
 
-        protected internal override void GraphicsDeviceResetting()
-        {
-            // FIXME: Do we even want to bother with DeviceResetting for GL? -flibit
-        }
+			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+			if (vertexStride == 0)
+			{
+				vertexStride = elementSizeInBytes;
+			}
 
-        protected override void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
-            {
-                FNA3D.FNA3D_AddDisposeVertexBuffer(
-                    GraphicsDevice.GLDevice,
-                    _buffer);
-            }
+			if (vertexStride < elementSizeInBytes)
+			{
+				throw new ArgumentOutOfRangeException(
+					$"The vertex stride must be greater than or equal to the size of the specified data ({elementSizeInBytes}).");
+			}
+		}
 
-            base.Dispose(disposing);
-        }
-    }
+		protected internal override void GraphicsDeviceResetting()
+		{
+			// FIXME: Do we even want to bother with DeviceResetting for GL? -flibit
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (!IsDisposed)
+			{
+				FNA3D.FNA3D_AddDisposeVertexBuffer(
+					GraphicsDevice.GLDevice,
+					_buffer);
+			}
+
+			base.Dispose(disposing);
+		}
+	}
 }

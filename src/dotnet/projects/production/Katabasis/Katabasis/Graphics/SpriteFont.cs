@@ -9,254 +9,255 @@ using System.Text;
 
 namespace Katabasis
 {
-    // http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.graphics.spritefont.aspx
-    public sealed class SpriteFont
-    {
-        /* I've had a bunch of games use reflection on SpriteFont to get
-         * this data. Keep these names as they are for XNA4 accuracy!
-         * -flibit
-         */
-        internal Texture2D _textureValue;
-        internal List<Rectangle> _glyphData;
-        internal List<Rectangle> _croppingData;
-        internal List<Vector3> _kerning;
-        internal List<char> _characterMap;
+	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.graphics.spritefont.aspx
+	public sealed class SpriteFont
+	{
+		/* This is not a part of the spec as far as we know, but we
+		 * added this because it's WAY faster than going to characterMap
+		 * and calling IndexOf on each character.
+		 */
+		internal Dictionary<char, int> _characterIndexMap;
+		internal List<char> _characterMap;
+		internal List<Rectangle> _croppingData;
+		internal List<Rectangle> _glyphData;
+		internal List<Vector3> _kerning;
 
-        /* If, by chance, you're seeing this and thinking about using
-         * reflection to access the fields:
-         * Don't.
-         * To date, one (1) game is using the fields directly,
-         * even though the properties are publicly accessible.
-         * Not even FNA uses the fields directly.
-         * -ade
-         */
-        internal int _lineSpacing;
-        internal float _spacing;
+		/* If, by chance, you're seeing this and thinking about using
+		 * reflection to access the fields:
+		 * Don't.
+		 * To date, one (1) game is using the fields directly,
+		 * even though the properties are publicly accessible.
+		 * Not even FNA uses the fields directly.
+		 * -ade
+		 */
+		internal int _lineSpacing;
 
-        /* This is not a part of the spec as far as we know, but we
-         * added this because it's WAY faster than going to characterMap
-         * and calling IndexOf on each character.
-         */
-        internal Dictionary<char, int> _characterIndexMap;
+		internal float _spacing;
 
-        internal SpriteFont(
-            Texture2D texture,
-            List<Rectangle> glyphBounds,
-            List<Rectangle> cropping,
-            List<char> characters,
-            int lineSpacing,
-            float spacing,
-            List<Vector3> kerningData,
-            char? defaultCharacter)
-        {
-            Characters = new ReadOnlyCollection<char>(characters.ToArray());
-            DefaultCharacter = defaultCharacter;
-            LineSpacing = lineSpacing;
-            Spacing = spacing;
+		/* I've had a bunch of games use reflection on SpriteFont to get
+		 * this data. Keep these names as they are for XNA4 accuracy!
+		 * -flibit
+		 */
+		internal Texture2D _textureValue;
 
-            _textureValue = texture;
-            _glyphData = glyphBounds;
-            _croppingData = cropping;
-            _kerning = kerningData;
-            _characterMap = characters;
+		internal SpriteFont(
+			Texture2D texture,
+			List<Rectangle> glyphBounds,
+			List<Rectangle> cropping,
+			List<char> characters,
+			int lineSpacing,
+			float spacing,
+			List<Vector3> kerningData,
+			char? defaultCharacter)
+		{
+			Characters = new ReadOnlyCollection<char>(characters.ToArray());
+			DefaultCharacter = defaultCharacter;
+			LineSpacing = lineSpacing;
+			Spacing = spacing;
 
-            _characterIndexMap = new Dictionary<char, int>(characters.Count);
-            for (var i = 0; i < characters.Count; i += 1)
-            {
-                _characterIndexMap[characters[i]] = i;
-            }
-        }
+			_textureValue = texture;
+			_glyphData = glyphBounds;
+			_croppingData = cropping;
+			_kerning = kerningData;
+			_characterMap = characters;
 
-        public ReadOnlyCollection<char> Characters { get; }
+			_characterIndexMap = new Dictionary<char, int>(characters.Count);
+			for (var i = 0; i < characters.Count; i += 1)
+			{
+				_characterIndexMap[characters[i]] = i;
+			}
+		}
 
-        public char? DefaultCharacter { get; set; }
+		public ReadOnlyCollection<char> Characters { get; }
 
-        public int LineSpacing
-        {
-            get => _lineSpacing;
-            set => _lineSpacing = value;
-        }
+		public char? DefaultCharacter { get; set; }
 
-        public float Spacing
-        {
-            get => _spacing;
-            set => _spacing = value;
-        }
+		public int LineSpacing
+		{
+			get => _lineSpacing;
+			set => _lineSpacing = value;
+		}
 
-        public Vector2 MeasureString(string text)
-        {
-            /* FIXME: This method is a duplicate of MeasureString(StringBuilder)!
-             * The only difference is how we iterate through the string.
-             * -flibit
-             */
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+		public float Spacing
+		{
+			get => _spacing;
+			set => _spacing = value;
+		}
 
-            if (text.Length == 0)
-            {
-                return Vector2.Zero;
-            }
+		public Vector2 MeasureString(string text)
+		{
+			/* FIXME: This method is a duplicate of MeasureString(StringBuilder)!
+			 * The only difference is how we iterate through the string.
+			 * -flibit
+			 */
+			if (text == null)
+			{
+				throw new ArgumentNullException(nameof(text));
+			}
 
-            // FIXME: This needs an accuracy check! -flibit
+			if (text.Length == 0)
+			{
+				return Vector2.Zero;
+			}
 
-            var result = Vector2.Zero;
-            var curLineWidth = 0.0f;
-            float finalLineHeight = LineSpacing;
-            var firstInLine = true;
+			// FIXME: This needs an accuracy check! -flibit
 
-            foreach (var c in text)
-            {
-                switch (c)
-                {
-                    // Special characters
-                    case '\r':
-                        continue;
-                    case '\n':
-                        result.X = Math.Max(result.X, curLineWidth);
-                        result.Y += LineSpacing;
-                        curLineWidth = 0.0f;
-                        finalLineHeight = LineSpacing;
-                        firstInLine = true;
-                        continue;
-                }
+			var result = Vector2.Zero;
+			var curLineWidth = 0.0f;
+			float finalLineHeight = LineSpacing;
+			var firstInLine = true;
 
-                /* Get the List index from the character map, defaulting to the
-                 * DefaultCharacter if it's set.
-                 */
-                if (!_characterIndexMap.TryGetValue(c, out var index))
-                {
-                    if (!DefaultCharacter.HasValue)
-                    {
-                        throw new ArgumentException("Text contains characters that cannot be resolved by this SpriteFont.", nameof(text));
-                    }
+			foreach (var c in text)
+			{
+				switch (c)
+				{
+					// Special characters
+					case '\r':
+						continue;
+					case '\n':
+						result.X = Math.Max(result.X, curLineWidth);
+						result.Y += LineSpacing;
+						curLineWidth = 0.0f;
+						finalLineHeight = LineSpacing;
+						firstInLine = true;
+						continue;
+				}
 
-                    index = _characterIndexMap[DefaultCharacter.Value];
-                }
+				/* Get the List index from the character map, defaulting to the
+				 * DefaultCharacter if it's set.
+				 */
+				if (!_characterIndexMap.TryGetValue(c, out var index))
+				{
+					if (!DefaultCharacter.HasValue)
+					{
+						throw new ArgumentException("Text contains characters that cannot be resolved by this SpriteFont.", nameof(text));
+					}
 
-                /* For the first character in a line, always push the width
-                 * rightward, even if the kerning pushes the character to the
-                 * left.
-                 */
-                var cKern = _kerning[index];
-                if (firstInLine)
-                {
-                    curLineWidth += Math.Abs(cKern.X);
-                    firstInLine = false;
-                }
-                else
-                {
-                    curLineWidth += Spacing + cKern.X;
-                }
+					index = _characterIndexMap[DefaultCharacter.Value];
+				}
 
-                /* Add the character width and right-side bearing to the line
-                 * width.
-                 */
-                curLineWidth += cKern.Y + cKern.Z;
+				/* For the first character in a line, always push the width
+				 * rightward, even if the kerning pushes the character to the
+				 * left.
+				 */
+				var cKern = _kerning[index];
+				if (firstInLine)
+				{
+					curLineWidth += Math.Abs(cKern.X);
+					firstInLine = false;
+				}
+				else
+				{
+					curLineWidth += Spacing + cKern.X;
+				}
 
-                /* If a character is taller than the default line height,
-                 * increase the height to that of the line's tallest character.
-                 */
-                var cCropHeight = _croppingData[index].Height;
-                if (cCropHeight > finalLineHeight)
-                {
-                    finalLineHeight = cCropHeight;
-                }
-            }
+				/* Add the character width and right-side bearing to the line
+				 * width.
+				 */
+				curLineWidth += cKern.Y + cKern.Z;
 
-            // Calculate the final width/height of the text box
-            result.X = Math.Max(result.X, curLineWidth);
-            result.Y += finalLineHeight;
+				/* If a character is taller than the default line height,
+				 * increase the height to that of the line's tallest character.
+				 */
+				var cCropHeight = _croppingData[index].Height;
+				if (cCropHeight > finalLineHeight)
+				{
+					finalLineHeight = cCropHeight;
+				}
+			}
 
-            return result;
-        }
+			// Calculate the final width/height of the text box
+			result.X = Math.Max(result.X, curLineWidth);
+			result.Y += finalLineHeight;
 
-        public Vector2 MeasureString(StringBuilder text)
-        {
-            /* FIXME: This method is a duplicate of MeasureString(string)!
-             * The only difference is how we iterate through the StringBuilder.
-             * We don't use ToString() since it generates garbage.
-             * -flibit
-             */
-            if (text.Length == 0)
-            {
-                return Vector2.Zero;
-            }
+			return result;
+		}
 
-            // FIXME: This needs an accuracy check! -flibit
+		public Vector2 MeasureString(StringBuilder text)
+		{
+			/* FIXME: This method is a duplicate of MeasureString(string)!
+			 * The only difference is how we iterate through the StringBuilder.
+			 * We don't use ToString() since it generates garbage.
+			 * -flibit
+			 */
+			if (text.Length == 0)
+			{
+				return Vector2.Zero;
+			}
 
-            var result = Vector2.Zero;
-            var curLineWidth = 0.0f;
-            float finalLineHeight = LineSpacing;
-            var firstInLine = true;
+			// FIXME: This needs an accuracy check! -flibit
 
-            for (var i = 0; i < text.Length; i += 1)
-            {
-                var c = text[i];
+			var result = Vector2.Zero;
+			var curLineWidth = 0.0f;
+			float finalLineHeight = LineSpacing;
+			var firstInLine = true;
 
-                switch (c)
-                {
-                    // Special characters
-                    case '\r':
-                        continue;
-                    case '\n':
-                        result.X = Math.Max(result.X, curLineWidth);
-                        result.Y += LineSpacing;
-                        curLineWidth = 0.0f;
-                        finalLineHeight = LineSpacing;
-                        firstInLine = true;
-                        continue;
-                }
+			for (var i = 0; i < text.Length; i += 1)
+			{
+				var c = text[i];
 
-                /* Get the List index from the character map, defaulting to the
-                 * DefaultCharacter if it's set.
-                 */
-                if (!_characterIndexMap.TryGetValue(c, out var index))
-                {
-                    if (!DefaultCharacter.HasValue)
-                    {
-                        throw new ArgumentException("Text contains characters that cannot be resolved by this SpriteFont.", nameof(text));
-                    }
+				switch (c)
+				{
+					// Special characters
+					case '\r':
+						continue;
+					case '\n':
+						result.X = Math.Max(result.X, curLineWidth);
+						result.Y += LineSpacing;
+						curLineWidth = 0.0f;
+						finalLineHeight = LineSpacing;
+						firstInLine = true;
+						continue;
+				}
 
-                    index = _characterIndexMap[DefaultCharacter.Value];
-                }
+				/* Get the List index from the character map, defaulting to the
+				 * DefaultCharacter if it's set.
+				 */
+				if (!_characterIndexMap.TryGetValue(c, out var index))
+				{
+					if (!DefaultCharacter.HasValue)
+					{
+						throw new ArgumentException("Text contains characters that cannot be resolved by this SpriteFont.", nameof(text));
+					}
 
-                /* For the first character in a line, always push the width
-                 * rightward, even if the kerning pushes the character to the
-                 * left.
-                 */
-                var cKern = _kerning[index];
-                if (firstInLine)
-                {
-                    curLineWidth += Math.Abs(cKern.X);
-                    firstInLine = false;
-                }
-                else
-                {
-                    curLineWidth += Spacing + cKern.X;
-                }
+					index = _characterIndexMap[DefaultCharacter.Value];
+				}
 
-                /* Add the character width and right-side bearing to the line
-                 * width.
-                 */
-                curLineWidth += cKern.Y + cKern.Z;
+				/* For the first character in a line, always push the width
+				 * rightward, even if the kerning pushes the character to the
+				 * left.
+				 */
+				var cKern = _kerning[index];
+				if (firstInLine)
+				{
+					curLineWidth += Math.Abs(cKern.X);
+					firstInLine = false;
+				}
+				else
+				{
+					curLineWidth += Spacing + cKern.X;
+				}
 
-                /* If a character is taller than the default line height,
-                 * increase the height to that of the line's tallest character.
-                 */
-                var cCropHeight = _croppingData[index].Height;
-                if (cCropHeight > finalLineHeight)
-                {
-                    finalLineHeight = cCropHeight;
-                }
-            }
+				/* Add the character width and right-side bearing to the line
+				 * width.
+				 */
+				curLineWidth += cKern.Y + cKern.Z;
 
-            // Calculate the final width/height of the text box
-            result.X = Math.Max(result.X, curLineWidth);
-            result.Y += finalLineHeight;
+				/* If a character is taller than the default line height,
+				 * increase the height to that of the line's tallest character.
+				 */
+				var cCropHeight = _croppingData[index].Height;
+				if (cCropHeight > finalLineHeight)
+				{
+					finalLineHeight = cCropHeight;
+				}
+			}
 
-            return result;
-        }
-    }
+			// Calculate the final width/height of the text box
+			result.X = Math.Max(result.X, curLineWidth);
+			result.Y += finalLineHeight;
+
+			return result;
+		}
+	}
 }

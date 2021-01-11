@@ -5,101 +5,101 @@ using System;
 
 namespace Katabasis
 {
-    [Serializable]
-    public class PresentationParameters
-    {
-        internal FNA3D.FNA3D_PresentationParameters _parameters;
+	[Serializable]
+	public class PresentationParameters
+	{
+		internal FNA3D.FNA3D_PresentationParameters _parameters;
 
-        public SurfaceFormat BackBufferFormat
-        {
-            get => _parameters.BackBufferFormat;
-            set => _parameters.BackBufferFormat = value;
-        }
+		public PresentationParameters()
+		{
+			BackBufferFormat = SurfaceFormat.Color;
+			BackBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
+			BackBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
+			DeviceWindowHandle = IntPtr.Zero;
+			IsFullScreen = false; // FIXME: Is this the default?
+			DepthStencilFormat = DepthFormat.None;
+			MultiSampleCount = 0;
+			PresentationInterval = PresentInterval.Default;
+			DisplayOrientation = DisplayOrientation.Default;
+			RenderTargetUsage = RenderTargetUsage.DiscardContents;
+		}
 
-        public int BackBufferHeight
-        {
-            get => _parameters.BackBufferHeight;
-            set => _parameters.BackBufferHeight = value;
-        }
+		public SurfaceFormat BackBufferFormat
+		{
+			get => _parameters.BackBufferFormat;
+			set => _parameters.BackBufferFormat = value;
+		}
 
-        public int BackBufferWidth
-        {
-            get => _parameters.BackBufferWidth;
-            set => _parameters.BackBufferWidth = value;
-        }
+		public int BackBufferHeight
+		{
+			get => _parameters.BackBufferHeight;
+			set => _parameters.BackBufferHeight = value;
+		}
 
-        public Rectangle Bounds => new Rectangle(0, 0, BackBufferWidth, BackBufferHeight);
+		public int BackBufferWidth
+		{
+			get => _parameters.BackBufferWidth;
+			set => _parameters.BackBufferWidth = value;
+		}
 
-        public IntPtr DeviceWindowHandle
-        {
-            get => _parameters.DeviceWindowHandle;
-            set => _parameters.DeviceWindowHandle = value;
-        }
+		public Rectangle Bounds => new(0, 0, BackBufferWidth, BackBufferHeight);
 
-        public DepthFormat DepthStencilFormat
-        {
-            get => _parameters.DepthStencilFormat;
-            set => _parameters.DepthStencilFormat = value;
-        }
+		public IntPtr DeviceWindowHandle
+		{
+			get => _parameters.DeviceWindowHandle;
+			set => _parameters.DeviceWindowHandle = value;
+		}
 
-        public bool IsFullScreen
-        {
-            get => _parameters.IsFullScreen == 1;
-            set => _parameters.IsFullScreen = (byte)(value ? 1 : 0);
-        }
+		public DepthFormat DepthStencilFormat
+		{
+			get => _parameters.DepthStencilFormat;
+			set => _parameters.DepthStencilFormat = value;
+		}
 
-        public int MultiSampleCount
-        {
-            get => _parameters.MultiSampleCount;
-            set => _parameters.MultiSampleCount = value;
-        }
+		public bool IsFullScreen
+		{
+			get => _parameters.IsFullScreen == 1;
+			set => _parameters.IsFullScreen = value ? 1 : 0;
+		}
 
-        public PresentInterval PresentationInterval
-        {
-            get => _parameters.PresentationInterval;
-            set => _parameters.PresentationInterval = value;
-        }
+		public int MultiSampleCount
+		{
+			get => _parameters.MultiSampleCount;
+			set => _parameters.MultiSampleCount = value;
+		}
 
-        public DisplayOrientation DisplayOrientation
-        {
-            get => _parameters.DisplayOrientation;
-            set => _parameters.DisplayOrientation = value;
-        }
+		public PresentInterval PresentationInterval
+		{
+			get => _parameters.PresentationInterval;
+			set => _parameters.PresentationInterval = value;
+		}
 
-        public RenderTargetUsage RenderTargetUsage
-        {
-            get => _parameters.RenderTargetUsage;
-            set => _parameters.RenderTargetUsage = value;
-        }
+		public DisplayOrientation DisplayOrientation
+		{
+			get => _parameters.DisplayOrientation;
+			set => _parameters.DisplayOrientation = value;
+		}
 
-        public PresentationParameters()
-        {
-            BackBufferFormat = SurfaceFormat.Color;
-            BackBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
-            BackBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
-            DeviceWindowHandle = IntPtr.Zero;
-            IsFullScreen = false; // FIXME: Is this the default?
-            DepthStencilFormat = DepthFormat.None;
-            MultiSampleCount = 0;
-            PresentationInterval = PresentInterval.Default;
-            DisplayOrientation = DisplayOrientation.Default;
-            RenderTargetUsage = RenderTargetUsage.DiscardContents;
-        }
+		public RenderTargetUsage RenderTargetUsage
+		{
+			get => _parameters.RenderTargetUsage;
+			set => _parameters.RenderTargetUsage = value;
+		}
 
-        public PresentationParameters Clone()
-        {
-            PresentationParameters clone = new PresentationParameters();
-            clone.BackBufferFormat = BackBufferFormat;
-            clone.BackBufferHeight = BackBufferHeight;
-            clone.BackBufferWidth = BackBufferWidth;
-            clone.DeviceWindowHandle = DeviceWindowHandle;
-            clone.IsFullScreen = IsFullScreen;
-            clone.DepthStencilFormat = DepthStencilFormat;
-            clone.MultiSampleCount = MultiSampleCount;
-            clone.PresentationInterval = PresentationInterval;
-            clone.DisplayOrientation = DisplayOrientation;
-            clone.RenderTargetUsage = RenderTargetUsage;
-            return clone;
-        }
-    }
+		public PresentationParameters Clone()
+		{
+			PresentationParameters clone = new();
+			clone.BackBufferFormat = BackBufferFormat;
+			clone.BackBufferHeight = BackBufferHeight;
+			clone.BackBufferWidth = BackBufferWidth;
+			clone.DeviceWindowHandle = DeviceWindowHandle;
+			clone.IsFullScreen = IsFullScreen;
+			clone.DepthStencilFormat = DepthStencilFormat;
+			clone.MultiSampleCount = MultiSampleCount;
+			clone.PresentationInterval = PresentationInterval;
+			clone.DisplayOrientation = DisplayOrientation;
+			clone.RenderTargetUsage = RenderTargetUsage;
+			return clone;
+		}
+	}
 }

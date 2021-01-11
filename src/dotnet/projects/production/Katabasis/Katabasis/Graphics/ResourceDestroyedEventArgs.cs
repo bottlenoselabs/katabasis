@@ -5,16 +5,16 @@ using System;
 
 namespace Katabasis
 {
-    public sealed class ResourceDestroyedEventArgs : EventArgs
-    {
-        public string Name { get; }
+	public sealed class ResourceDestroyedEventArgs : EventArgs
+	{
+		internal ResourceDestroyedEventArgs(string name, object? tag)
+		{
+			Name = name;
+			Tag = tag;
+		}
 
-        public object? Tag { get; }
+		public string Name { get; }
 
-        internal ResourceDestroyedEventArgs(string name, object? tag)
-        {
-            Name = name;
-            Tag = tag;
-        }
-    }
+		public object? Tag { get; }
+	}
 }

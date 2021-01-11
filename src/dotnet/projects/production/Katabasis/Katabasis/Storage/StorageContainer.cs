@@ -7,224 +7,219 @@ using System.IO;
 
 namespace Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
-    public class StorageContainer : IDisposable
-    {
-        private readonly string _storagePath;
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	public class StorageContainer : IDisposable
+	{
+		private readonly string _storagePath;
 
-        public string DisplayName { get; }
+		internal StorageContainer(
+			StorageDevice device,
+			string name,
+			string rootPath,
+			PlayerIndex? playerIndex)
+		{
+			if (string.IsNullOrEmpty(name))
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-        public bool IsDisposed { get; private set; }
+			StorageDevice = device;
+			DisplayName = name;
 
-        public StorageDevice StorageDevice { get; }
+			/* There are two types of subfolders within a StorageContainer.
+			 * The first is a PlayerX folder, X being a specified PlayerIndex.
+			 * The second is AllPlayers, when PlayerIndex is NOT specified.
+			 * Basically, you should NEVER expect to have ANY file in the root
+			 * game save folder.
+			 * -flibit
+			 */
+			_storagePath = Path.Combine(
+				rootPath, // Title folder (EXE name)...
+				name, // Container folder...
+				playerIndex.HasValue ? "Player" + ((int)playerIndex.Value + 1) : "AllPlayers");
 
-        public event EventHandler<EventArgs>? Disposing;
+			// Create the folders, if needed.
+			if (!Directory.Exists(_storagePath))
+			{
+				Directory.CreateDirectory(_storagePath);
+			}
+		}
 
-        internal StorageContainer(
-            StorageDevice device,
-            string name,
-            string rootPath,
-            PlayerIndex? playerIndex)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+		public string DisplayName { get; }
 
-            StorageDevice = device;
-            DisplayName = name;
+		public bool IsDisposed { get; private set; }
 
-            /* There are two types of subfolders within a StorageContainer.
-             * The first is a PlayerX folder, X being a specified PlayerIndex.
-             * The second is AllPlayers, when PlayerIndex is NOT specified.
-             * Basically, you should NEVER expect to have ANY file in the root
-             * game save folder.
-             * -flibit
-             */
-            _storagePath = Path.Combine(
-                rootPath, // Title folder (EXE name)...
-                name, // Container folder...
-                playerIndex.HasValue ? "Player" + ((int)playerIndex.Value + 1) : "AllPlayers");
+		public StorageDevice StorageDevice { get; }
 
-            // Create the folders, if needed.
-            if (!Directory.Exists(_storagePath))
-            {
-                Directory.CreateDirectory(_storagePath);
-            }
-        }
+		public void Dispose()
+		{
+			Disposing?.Invoke(this, EventArgs.Empty);
+			IsDisposed = true;
+			GC.SuppressFinalize(this);
+		}
 
-        public void Dispose()
-        {
-            Disposing?.Invoke(this, EventArgs.Empty);
+		public event EventHandler<EventArgs>? Disposing;
 
-            IsDisposed = true;
-        }
+		public void CreateDirectory(string directory)
+		{
+			if (string.IsNullOrEmpty(directory))
+			{
+				throw new ArgumentNullException(nameof(directory));
+			}
 
-        public void CreateDirectory(string directory)
-        {
-            if (string.IsNullOrEmpty(directory))
-            {
-                throw new ArgumentNullException(nameof(directory));
-            }
+			// Directory name is relative, so combine with our path.
+			string dirPath = Path.Combine(_storagePath, directory);
 
-            // Directory name is relative, so combine with our path.
-            string dirPath = Path.Combine(_storagePath, directory);
+			// Now let's try to create it.
+			if (!Directory.Exists(dirPath))
+			{
+				Directory.CreateDirectory(dirPath);
+			}
+		}
 
-            // Now let's try to create it.
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
-        }
+		public Stream CreateFile(string file)
+		{
+			if (string.IsNullOrEmpty(file))
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
 
-        public Stream CreateFile(string file)
-        {
-            if (string.IsNullOrEmpty(file))
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
+			// File name is relative, so combine with our path.
+			string filePath = Path.Combine(_storagePath, file);
 
-            // File name is relative, so combine with our path.
-            string filePath = Path.Combine(_storagePath, file);
+			// Return a new file with read/write access.
+			return File.Create(filePath);
+		}
 
-            // Return a new file with read/write access.
-            return File.Create(filePath);
-        }
+		public void DeleteDirectory(string directory)
+		{
+			if (string.IsNullOrEmpty(directory))
+			{
+				throw new ArgumentNullException(nameof(directory));
+			}
 
-        public void DeleteDirectory(string directory)
-        {
-            if (string.IsNullOrEmpty(directory))
-            {
-                throw new ArgumentNullException(nameof(directory));
-            }
+			// Directory name is relative, so combine with our path.
+			string dirPath = Path.Combine(_storagePath, directory);
 
-            // Directory name is relative, so combine with our path.
-            string dirPath = Path.Combine(_storagePath, directory);
+			// Now let's try to delete it.
+			Directory.Delete(dirPath);
+		}
 
-            // Now let's try to delete it.
-            Directory.Delete(dirPath);
-        }
+		public void DeleteFile(string file)
+		{
+			if (string.IsNullOrEmpty(file))
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
 
-        public void DeleteFile(string file)
-        {
-            if (string.IsNullOrEmpty(file))
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
+			// Relative, so combine with our path.
+			string filePath = Path.Combine(_storagePath, file);
 
-            // Relative, so combine with our path.
-            string filePath = Path.Combine(_storagePath, file);
+			// Now let's try to delete it.
+			File.Delete(filePath);
+		}
 
-            // Now let's try to delete it.
-            File.Delete(filePath);
-        }
+		public bool DirectoryExists(string directory)
+		{
+			if (string.IsNullOrEmpty(directory))
+			{
+				throw new ArgumentNullException(nameof(directory));
+			}
 
-        public bool DirectoryExists(string directory)
-        {
-            if (string.IsNullOrEmpty(directory))
-            {
-                throw new ArgumentNullException(nameof(directory));
-            }
+			// Directory name is relative, so combine with our path.
+			string dirPath = Path.Combine(_storagePath, directory);
 
-            // Directory name is relative, so combine with our path.
-            string dirPath = Path.Combine(_storagePath, directory);
+			return Directory.Exists(dirPath);
+		}
 
-            return Directory.Exists(dirPath);
-        }
+		public bool FileExists(string file)
+		{
+			if (string.IsNullOrEmpty(file))
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
 
-        public bool FileExists(string file)
-        {
-            if (string.IsNullOrEmpty(file))
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
+			// File name is relative, so combine with our path.
+			string filePath = Path.Combine(_storagePath, file);
 
-            // File name is relative, so combine with our path.
-            string filePath = Path.Combine(_storagePath, file);
+			// Return a new file with read/write access.
+			return File.Exists(filePath);
+		}
 
-            // Return a new file with read/write access.
-            return File.Exists(filePath);
-        }
+		public string[] GetDirectoryNames()
+		{
+			string[] names = Directory.GetDirectories(_storagePath);
+			for (var i = 0; i < names.Length; i += 1)
+			{
+				names[i] = names[i].Substring(_storagePath.Length + 1);
+			}
 
-        public string[] GetDirectoryNames()
-        {
-            string[] names = Directory.GetDirectories(_storagePath);
-            for (var i = 0; i < names.Length; i += 1)
-            {
-                names[i] = names[i].Substring(_storagePath.Length + 1);
-            }
+			return names;
+		}
 
-            return names;
-        }
+		public string[] GetDirectoryNames(string searchPattern)
+		{
+			if (string.IsNullOrEmpty(searchPattern))
+			{
+				throw new ArgumentNullException(nameof(searchPattern));
+			}
 
-        public string[] GetDirectoryNames(string searchPattern)
-        {
-            if (string.IsNullOrEmpty(searchPattern))
-            {
-                throw new ArgumentNullException(nameof(searchPattern));
-            }
+			string[] names = Directory.GetDirectories(_storagePath, searchPattern);
+			for (var i = 0; i < names.Length; i += 1)
+			{
+				names[i] = names[i].Substring(_storagePath.Length + 1);
+			}
 
-            string[] names = Directory.GetDirectories(_storagePath, searchPattern);
-            for (var i = 0; i < names.Length; i += 1)
-            {
-                names[i] = names[i].Substring(_storagePath.Length + 1);
-            }
+			return names;
+		}
 
-            return names;
-        }
+		public string[] GetFileNames()
+		{
+			string[] names = Directory.GetFiles(_storagePath);
+			for (var i = 0; i < names.Length; i += 1)
+			{
+				names[i] = names[i].Substring(_storagePath.Length + 1);
+			}
 
-        public string[] GetFileNames()
-        {
-            string[] names = Directory.GetFiles(_storagePath);
-            for (var i = 0; i < names.Length; i += 1)
-            {
-                names[i] = names[i].Substring(_storagePath.Length + 1);
-            }
+			return names;
+		}
 
-            return names;
-        }
+		public string[] GetFileNames(string searchPattern)
+		{
+			if (string.IsNullOrEmpty(searchPattern))
+			{
+				throw new ArgumentNullException(nameof(searchPattern));
+			}
 
-        public string[] GetFileNames(string searchPattern)
-        {
-            if (string.IsNullOrEmpty(searchPattern))
-            {
-                throw new ArgumentNullException(nameof(searchPattern));
-            }
+			string[] names = Directory.GetFiles(_storagePath, searchPattern);
+			for (var i = 0; i < names.Length; i += 1)
+			{
+				names[i] = names[i].Substring(_storagePath.Length + 1);
+			}
 
-            string[] names = Directory.GetFiles(_storagePath, searchPattern);
-            for (var i = 0; i < names.Length; i += 1)
-            {
-                names[i] = names[i].Substring(_storagePath.Length + 1);
-            }
+			return names;
+		}
 
-            return names;
-        }
+		public Stream OpenFile(string file, FileMode fileMode) =>
+			OpenFile(
+				file,
+				fileMode,
+				FileAccess.ReadWrite,
+				FileShare.ReadWrite);
 
-        public Stream OpenFile(string file, FileMode fileMode)
-        {
-            return OpenFile(
-                file,
-                fileMode,
-                FileAccess.ReadWrite,
-                FileShare.ReadWrite);
-        }
+		public Stream OpenFile(string file, FileMode fileMode, FileAccess fileAccess) => OpenFile(file, fileMode, fileAccess, FileShare.ReadWrite);
 
-        public Stream OpenFile(string file, FileMode fileMode, FileAccess fileAccess)
-        {
-            return OpenFile(file, fileMode, fileAccess, FileShare.ReadWrite);
-        }
+		public Stream OpenFile(string file, FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
+		{
+			if (string.IsNullOrEmpty(file))
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
 
-        public Stream OpenFile(string file, FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
-        {
-            if (string.IsNullOrEmpty(file))
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
+			// Filename is relative, so combine with our path.
+			string filePath = Path.Combine(_storagePath, file);
 
-            // Filename is relative, so combine with our path.
-            string filePath = Path.Combine(_storagePath, file);
-
-            return File.Open(filePath, fileMode, fileAccess, fileShare);
-        }
-    }
+			return File.Open(filePath, fileMode, fileAccess, fileShare);
+		}
+	}
 }
