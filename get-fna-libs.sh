@@ -6,7 +6,7 @@ FNA_LIBS_DIR=$MY_DIR/fnalibs
 
  # Downloading
 echo "Downloading latest FNA libraries ..."
-curl https://dl.dropboxusercontent.com/s/fk6a5yre6agja92/fnalibs.tar.bz2 > "$MY_DIR/fnalibs.tar.bz2"
+curl https://www.dropbox.com/s/mfsb9jc9zm2qzah/fnalibs_2020_12.tar.bz2?dl=0 > "$MY_DIR/fnalibs.tar.bz2"
 if [ $? -eq 0 ]; then
     echo "Finished downloading!"
 else
