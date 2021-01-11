@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>WinExe</OutputType>
+		<PublishReadyToRun>false</PublishReadyToRun>
+		<TieredCompilation>false</TieredCompilation>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\production\Katabasis.Extended\Katabasis.Extended.csproj" />
+	  <ProjectReference Include="..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
+	</ItemGroup>
+
+</Project>
