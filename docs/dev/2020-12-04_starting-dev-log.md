@@ -1,6 +1,6 @@
 # 2020-12-04: Starting a development log
 
-## [@lithiumtoast](https://github.com/lithiumtoast)
+### Written by [@lithiumtoast](https://github.com/lithiumtoast) on Friday, December 4th, 2020
 
 I'm starting a development log which hopefully will help people learn about the development of Katabasis.
 
