@@ -11,8 +11,6 @@
 		<EnableRootNamespace>false</EnableRootNamespace>
 		<EnableAnalyzers>true</EnableAnalyzers>
 		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
-		<CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)../../../CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
-		<StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)../../../StyleCop.json</StyleCopSettingsFilePath>
 	</PropertyGroup>
 
 	<!-- native-tools-cs -->

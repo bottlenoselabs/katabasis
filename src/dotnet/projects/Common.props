@@ -2,6 +2,12 @@
 
     <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildProjectDirectory)', '.gitignore'))/ext/my-msbuild/My-MSBuild.props" />
 
+    <!-- My-MSBuild settings -->
+    <PropertyGroup>    
+		<CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)../CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
+		<StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)../StyleCop.json</StyleCopSettingsFilePath>
+    </PropertyGroup>
+
     <!-- NuGet -->
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)NuGet.config" Link="Properties/NuGet.config" />
