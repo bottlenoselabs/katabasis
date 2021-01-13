@@ -17,7 +17,7 @@ namespace Katabasis
 		private static byte[] GetResource(string name)
 		{
 			var stream = typeof(Resources).Assembly.GetManifestResourceStream(
-				$"Microsoft.Xna.Framework.Graphics.Effect.StockEffects.FXB.{name}.fxb");
+				$"Katabasis.Graphics.Effect.StockEffects.FXB.{name}.fxb");
 
 			using MemoryStream ms = new();
 			stream!.CopyTo(ms);
