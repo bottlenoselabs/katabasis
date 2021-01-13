@@ -24,9 +24,9 @@ namespace Katabasis
 			IsDisposed = false;
 		}
 
-		internal Song(string fileName, int durationMS)
+		internal Song(string fileName, int durationMilliseconds)
 			: this(fileName) =>
-			Duration = TimeSpan.FromMilliseconds(durationMS);
+			Duration = TimeSpan.FromMilliseconds(durationMilliseconds);
 
 		public bool IsDisposed { get; private set; }
 
