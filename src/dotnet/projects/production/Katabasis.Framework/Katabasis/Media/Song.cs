@@ -52,6 +52,12 @@ namespace Katabasis
 
 		public bool Equals(Song? other) => !ReferenceEquals(other, null) && _handle == other._handle;
 
+		public static Song FromFile(string name, string filePath)
+		{
+			var uri = new Uri(filePath, Path.IsPathRooted(filePath) ? UriKind.Absolute : UriKind.Relative);
+			return FromUri(name, uri);
+		}
+
 		public static Song FromUri(string name, Uri uri)
 		{
 			string path;

@@ -258,6 +258,12 @@ namespace Katabasis
 		public static int GetSampleSizeInBytes(TimeSpan duration, int sampleRate, AudioChannels channels) =>
 			(int)(duration.TotalSeconds * sampleRate * (int)channels * 2);
 
+		public static SoundEffect FromFile(string filePath)
+		{
+			var stream = TitleContainer.OpenStream(filePath);
+			return FromStream(stream);
+		}
+
 		public static SoundEffect FromStream(Stream stream)
 		{
 			// Sample data

@@ -275,6 +275,12 @@ namespace Katabasis
 			Marshal.FreeHGlobal(data);
 		}
 
+		public static Texture2D FromFile(string filePath)
+		{
+			var stream = TitleContainer.OpenStream(filePath);
+			return FromStream(stream);
+		}
+
 		public static Texture2D FromStream(Stream stream)
 		{
 			if (stream.CanSeek && stream.Position == stream.Length)
