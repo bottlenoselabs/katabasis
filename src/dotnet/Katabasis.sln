@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Extended", "projects\production\Katabasis.Extended\Katabasis.Extended.csproj", "{DAB20B7A-A543-46C3-8369-9D721FA3A74A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Assetyard", "projects\production\Katabasis.Assetyard\Katabasis.Assetyard.csproj", "{1406D87C-1FA7-417C-8CE7-FC435C8FA889}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -229,6 +231,18 @@ Global
 		{DAB20B7A-A543-46C3-8369-9D721FA3A74A}.Debug|AnyCPU.Build.0 = Debug|Any CPU
 		{DAB20B7A-A543-46C3-8369-9D721FA3A74A}.Release|AnyCPU.ActiveCfg = Release|Any CPU
 		{DAB20B7A-A543-46C3-8369-9D721FA3A74A}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Debug|x86.Build.0 = Debug|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Release|x86.ActiveCfg = Release|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Release|x86.Build.0 = Release|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Debug|x64.Build.0 = Debug|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Release|x64.ActiveCfg = Release|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Release|x64.Build.0 = Release|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889}.Release|AnyCPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = FNA.csproj
@@ -251,5 +265,6 @@ Global
 		{D246FF73-7E9E-4E06-AA42-538D96C394A2} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
 		{3C227360-D146-4011-AE7C-40AADD1EBD82} = {AE115228-207F-4697-BAD2-A7F199E5BFAE}
 		{DAB20B7A-A543-46C3-8369-9D721FA3A74A} = {BE39AE7C-FFA6-415A-A35C-08349CE2E8A8}
+		{1406D87C-1FA7-417C-8CE7-FC435C8FA889} = {BE39AE7C-FFA6-415A-A35C-08349CE2E8A8}
 	EndGlobalSection
 EndGlobal

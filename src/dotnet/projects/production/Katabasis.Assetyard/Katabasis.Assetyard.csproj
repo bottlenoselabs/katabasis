@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- MSBuild project settings -->
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<RootNamespace />
+	</PropertyGroup>
+
+	<!-- My-MSBuild settings -->
+	<PropertyGroup>
+		<EnableRootNamespace>false</EnableRootNamespace>
+		<EnableAnalyzers>true</EnableAnalyzers>
+		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
+	</PropertyGroup>
+
+	<!-- Project references -->
+	<ItemGroup>
+		<ProjectReference Include="..\Katabasis.Framework\Katabasis.Framework.csproj" />
+	</ItemGroup>
+
+</Project>
