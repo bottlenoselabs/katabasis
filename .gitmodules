@@ -4,3 +4,6 @@
 [submodule "ext/my-msbuild"]
 	path = ext/my-msbuild
 	url = https://github.com/lithiumtoast/my-msbuild.git
+[submodule "ext/assetyard"]
+	path = ext/assetyard
+	url = https://github.com/craftworkgames/assetyard.git
