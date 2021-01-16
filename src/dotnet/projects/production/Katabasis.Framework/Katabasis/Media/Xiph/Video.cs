@@ -44,7 +44,7 @@ namespace Katabasis
 			_needsDurationHack = true;
 		}
 
-		internal Video(string fileName, int durationMS, int width, int height, float framesPerSecond, VideoSoundtrackType soundtrackType)
+		internal Video(string fileName, int durationMilliseconds, int width, int height, float framesPerSecond, VideoSoundtrackType soundtrackType)
 			: this(fileName)
 		{
 			/* If you got here, you've still got the XNB file! Well done!
@@ -65,7 +65,7 @@ namespace Katabasis
 			}
 
 			// FIXME: Oh, hey! I wish we had this info in Theora!
-			Duration = TimeSpan.FromMilliseconds(durationMS);
+			Duration = TimeSpan.FromMilliseconds(durationMilliseconds);
 			_needsDurationHack = false;
 
 			VideoSoundtrackType = soundtrackType;

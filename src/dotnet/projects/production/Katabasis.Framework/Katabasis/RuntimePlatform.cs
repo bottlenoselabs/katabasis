@@ -27,7 +27,7 @@ namespace Katabasis
 		///     Desktop versions of macOS on 64-bit computing architecture. Includes macOS 10.9 and up.
 		/// </summary>
 		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Product name.")]
-		[SuppressMessage("ReSharper", "SA1300", Justification = "Product name.")]
+		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Product name.")]
 		macOS = 1 << 1,
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Katabasis
 		///     Mobile versions of iOS on 64-bit computing architecture. Includes iOS 11.x and up.
 		/// </summary>
 		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Product name.")]
-		[SuppressMessage("ReSharper", "SA1300", Justification = "Product name.")]
+		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Product name.")]
 		iOS = 1 << 4
 
 		// TODO: tvOS, RaspberryPi, WebAssembly, PlayStation4, PlayStationVita, Switch etc

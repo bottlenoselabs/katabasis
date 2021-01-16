@@ -14,6 +14,7 @@ using static SDL2.SDL;
 
 namespace Katabasis
 {
+	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
 	internal static class SDL2_FNAPlatform
 	{
 		/* This is needed for asynchronous window events */
@@ -1203,7 +1204,7 @@ namespace Katabasis
 			}
 
 			// The "master" button state is built from this.
-			Buttons gc_buttonState = 0;
+			Buttons buttonState = 0;
 
 			// Sticks
 			var stickLeft = new Vector2(
@@ -1214,7 +1215,7 @@ namespace Katabasis
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f,
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY) / -32767.0f);
 
-			gc_buttonState |= READ_StickToButtons(
+			buttonState |= READ_StickToButtons(
 				stickLeft,
 				Buttons.LeftThumbstickLeft,
 				Buttons.LeftThumbstickRight,
@@ -1222,7 +1223,7 @@ namespace Katabasis
 				Buttons.LeftThumbstickDown,
 				GamePad.LeftDeadZone);
 
-			gc_buttonState |= READ_StickToButtons(
+			buttonState |= READ_StickToButtons(
 				stickRight,
 				Buttons.RightThumbstickLeft,
 				Buttons.RightThumbstickRight,
@@ -1239,69 +1240,69 @@ namespace Katabasis
 
 			if (triggerLeft > GamePad.TriggerThreshold)
 			{
-				gc_buttonState |= Buttons.LeftTrigger;
+				buttonState |= Buttons.LeftTrigger;
 			}
 
 			if (triggerRight > GamePad.TriggerThreshold)
 			{
-				gc_buttonState |= Buttons.RightTrigger;
+				buttonState |= Buttons.RightTrigger;
 			}
 
 			// Buttons
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) != 0)
 			{
-				gc_buttonState |= Buttons.A;
+				buttonState |= Buttons.A;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B) != 0)
 			{
-				gc_buttonState |= Buttons.B;
+				buttonState |= Buttons.B;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X) != 0)
 			{
-				gc_buttonState |= Buttons.X;
+				buttonState |= Buttons.X;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y) != 0)
 			{
-				gc_buttonState |= Buttons.Y;
+				buttonState |= Buttons.Y;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK) != 0)
 			{
-				gc_buttonState |= Buttons.Back;
+				buttonState |= Buttons.Back;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE) != 0)
 			{
-				gc_buttonState |= Buttons.BigButton;
+				buttonState |= Buttons.BigButton;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START) != 0)
 			{
-				gc_buttonState |= Buttons.Start;
+				buttonState |= Buttons.Start;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK) !=
 			    0)
 			{
-				gc_buttonState |= Buttons.LeftStick;
+				buttonState |= Buttons.LeftStick;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK) != 0)
 			{
-				gc_buttonState |= Buttons.RightStick;
+				buttonState |= Buttons.RightStick;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER) != 0)
 			{
-				gc_buttonState |= Buttons.LeftShoulder;
+				buttonState |= Buttons.LeftShoulder;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) != 0)
 			{
-				gc_buttonState |= Buttons.RightShoulder;
+				buttonState |= Buttons.RightShoulder;
 			}
 
 			// DPad
@@ -1312,77 +1313,77 @@ namespace Katabasis
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP) !=
 			    0)
 			{
-				gc_buttonState |= Buttons.DPadUp;
+				buttonState |= Buttons.DPadUp;
 				dpadUp = ButtonState.Pressed;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN) !=
 			    0)
 			{
-				gc_buttonState |= Buttons.DPadDown;
+				buttonState |= Buttons.DPadDown;
 				dpadDown = ButtonState.Pressed;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT) !=
 			    0)
 			{
-				gc_buttonState |= Buttons.DPadLeft;
+				buttonState |= Buttons.DPadLeft;
 				dpadLeft = ButtonState.Pressed;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT) != 0)
 			{
-				gc_buttonState |= Buttons.DPadRight;
+				buttonState |= Buttons.DPadRight;
 				dpadRight = ButtonState.Pressed;
 			}
 
 			// Extensions
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1) != 0)
 			{
-				gc_buttonState |= Buttons.Misc1EXT;
+				buttonState |= Buttons.Misc1EXT;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1) != 0)
 			{
-				gc_buttonState |= Buttons.Paddle1EXT;
+				buttonState |= Buttons.Paddle1EXT;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) != 0)
 			{
-				gc_buttonState |= Buttons.Paddle2EXT;
+				buttonState |= Buttons.Paddle2EXT;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) != 0)
 			{
-				gc_buttonState |= Buttons.Paddle3EXT;
+				buttonState |= Buttons.Paddle3EXT;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) != 0)
 			{
-				gc_buttonState |= Buttons.Paddle4EXT;
+				buttonState |= Buttons.Paddle4EXT;
 			}
 
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) != 0)
 			{
-				gc_buttonState |= Buttons.TouchPadEXT;
+				buttonState |= Buttons.TouchPadEXT;
 			}
 
 			// Build the GamePadState, increment PacketNumber if state changed.
-			var gc_builtState = new GamePadState(
+			var builtState = new GamePadState(
 				new GamePadThumbSticks(stickLeft, stickRight, deadZoneMode),
 				new GamePadTriggers(triggerLeft, triggerRight, deadZoneMode),
-				new GamePadButtons(gc_buttonState),
+				new GamePadButtons(buttonState),
 				new GamePadDPad(dpadUp, dpadDown, dpadLeft, dpadRight));
 
-			gc_builtState.IsConnected = true;
-			gc_builtState.PacketNumber = _states[index].PacketNumber;
-			if (gc_builtState != _states[index])
+			builtState.IsConnected = true;
+			builtState.PacketNumber = _states[index].PacketNumber;
+			if (builtState != _states[index])
 			{
-				gc_builtState.PacketNumber += 1;
-				_states[index] = gc_builtState;
+				builtState.PacketNumber += 1;
+				_states[index] = builtState;
 			}
 
-			return gc_builtState;
+			return builtState;
 		}
 
 		public static bool SetGamePadVibration(int index, float leftTrigger, float rightTrigger)
@@ -2115,14 +2116,15 @@ namespace Katabasis
 		}
 
 		[DllImport("emscripten", CallingConvention = CallingConvention.Cdecl)]
-		[SuppressMessage("ReSharper", "SA1300", Justification = "emscripten")]
+		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
+		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
 		private static extern void emscripten_set_main_loop(
 			em_callback_func func,
 			int fps,
 			int simulate_infinite_loop);
 
 		[DllImport("emscripten", CallingConvention = CallingConvention.Cdecl)]
-		[SuppressMessage("ReSharper", "SA1300", Justification = "emscripten")]
+		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
 		private static extern void emscripten_cancel_main_loop();
 
 		[MonoPInvokeCallback(typeof(em_callback_func))]
@@ -2513,7 +2515,8 @@ namespace Katabasis
 			return 1;
 		}
 
-		[SuppressMessage("ReSharper", "SA1300", Justification = "emscripten")]
+		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
+		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
 		private delegate void em_callback_func();
 	}
 }

@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory (https://github.com/craftworkgames/Katabasis) for full license information.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace Katabasis
@@ -582,6 +583,7 @@ namespace Katabasis
 		}
 
 		// All possible states of Gesture detection.
+		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
 		private enum GestureState
 		{
 			NONE,

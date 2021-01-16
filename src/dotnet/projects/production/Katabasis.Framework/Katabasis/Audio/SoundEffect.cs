@@ -299,14 +299,14 @@ namespace Katabasis
 				}
 
 				// WAVE Header
-				string format_signature = new(reader.ReadChars(4));
-				while (format_signature != "fmt ")
+				string formatSignature = new(reader.ReadChars(4));
+				while (formatSignature != "fmt ")
 				{
 					reader.ReadBytes(reader.ReadInt32());
-					format_signature = new string(reader.ReadChars(4));
+					formatSignature = new string(reader.ReadChars(4));
 				}
 
-				var format_chunk_size = reader.ReadInt32();
+				var formatChunkSize = reader.ReadInt32();
 
 				wFormatTag = reader.ReadUInt16();
 				nChannels = reader.ReadUInt16();
@@ -316,20 +316,20 @@ namespace Katabasis
 				wBitsPerSample = reader.ReadUInt16();
 
 				// Reads residual bytes
-				if (format_chunk_size > 16)
+				if (formatChunkSize > 16)
 				{
-					reader.ReadBytes(format_chunk_size - 16);
+					reader.ReadBytes(formatChunkSize - 16);
 				}
 
 				// data Signature
-				string data_signature = new(reader.ReadChars(4));
-				while (data_signature.ToLowerInvariant() != "data")
+				string dataSignature = new(reader.ReadChars(4));
+				while (dataSignature.ToLowerInvariant() != "data")
 				{
 					reader.ReadBytes(reader.ReadInt32());
-					data_signature = new string(reader.ReadChars(4));
+					dataSignature = new string(reader.ReadChars(4));
 				}
 
-				if (data_signature != "data")
+				if (dataSignature != "data")
 				{
 					throw new NotSupportedException("Specified wave file is not supported.");
 				}

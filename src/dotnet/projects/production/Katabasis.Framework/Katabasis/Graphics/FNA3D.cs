@@ -11,6 +11,7 @@ using ObjCRuntime;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
 	internal static class FNA3D
 	{
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

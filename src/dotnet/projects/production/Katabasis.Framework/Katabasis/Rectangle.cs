@@ -135,21 +135,21 @@ namespace Katabasis
 		{
 			if (value1.Intersects(value2))
 			{
-				var right_side = Math.Min(
+				var rightSide = Math.Min(
 					value1.X + value1.Width,
 					value2.X + value2.Width);
 
-				var left_side = Math.Max(value1.X, value2.X);
-				var top_side = Math.Max(value1.Y, value2.Y);
-				var bottom_side = Math.Min(
+				var leftSide = Math.Max(value1.X, value2.X);
+				var topSide = Math.Max(value1.Y, value2.Y);
+				var bottomSide = Math.Min(
 					value1.Y + value1.Height,
 					value2.Y + value2.Height);
 
 				result = new Rectangle(
-					left_side,
-					top_side,
-					right_side - left_side,
-					bottom_side - top_side);
+					leftSide,
+					topSide,
+					rightSide - leftSide,
+					bottomSide - topSide);
 			}
 			else
 			{

@@ -8,15 +8,16 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-	[SuppressMessage("ReSharper", "SA1202", Justification = "Will gut Mojo shader soon.")]
+	[SuppressMessage("StyleCop.Ordering", "SA1202:ElementsMustBeOrderedByAccess", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "CommentTypo", Justification = "Will gut Mojo shader soon.")]
-	[SuppressMessage("ReSharper", "SA1307", Justification = "Will gut Mojo shader soon.")]
-	[SuppressMessage("ReSharper", "SA1310", Justification = "Will gut Mojo shader soon.")]
+	[SuppressMessage("StyleCop.Naming", "SA1307:AccessibleFieldsMustBeginWithUpperCaseLetter", Justification = "Will gut Mojo shader soon.")]
+	[SuppressMessage("StyleCop.Naming", "SA1310:FieldNamesMustNotContainUnderscore", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "IdentifierTypo", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "UnusedMember.Local", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Local", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("Microsoft.Naming", "CA1712", Justification = "Will gut Mojo shader soon.")]
+	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Will gut Mojo shader soon.")]
 	public class Effect : GraphicsResource
 	{
 		private static readonly EffectParameterType[] XNAType =

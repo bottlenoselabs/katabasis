@@ -58,6 +58,7 @@ namespace Katabasis
 				rightMotor);
 
 		// ReSharper disable once IdentifierTypo
+		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Abbreviations.")]
 		public static string GetGUIDEXT(PlayerIndex playerIndex) => FNAPlatform.GetGamePadGUID((int)playerIndex);
 
 		public static void SetLightBarEXT(PlayerIndex playerIndex, Color color) => FNAPlatform.SetGamePadLightBar((int)playerIndex, color);

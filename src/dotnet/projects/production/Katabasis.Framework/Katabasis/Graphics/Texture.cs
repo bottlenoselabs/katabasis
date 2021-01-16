@@ -7,6 +7,7 @@ using System.IO;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
 	public abstract class Texture : GraphicsResource
 	{
 		internal IntPtr _texture;

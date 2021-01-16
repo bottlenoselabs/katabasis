@@ -156,7 +156,7 @@ namespace Katabasis.Samples
 				{
 					for (var z = 0; z < textureSize; z++)
 					{
-						var randomU32 = XORShift32(ref _xorShift32State);
+						var randomU32 = XorShift32(ref _xorShift32State);
 						var red = (byte)(randomU32 >> 24);
 						var green = (byte)(randomU32 >> 16);
 						var blue = (byte)(randomU32 >> 8);
@@ -179,7 +179,7 @@ namespace Katabasis.Samples
 			return texture;
 		}
 
-		private static uint XORShift32(ref uint state)
+		private static uint XorShift32(ref uint state)
 		{
 			// This is a fast but unsecure pseudo random number generator: https://en.wikipedia.org/wiki/Xorshift
 			var x = state;
