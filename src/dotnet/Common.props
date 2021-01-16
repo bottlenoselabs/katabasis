@@ -4,8 +4,8 @@
 
     <!-- My-MSBuild settings -->
     <PropertyGroup>    
-		<CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)../CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
-		<StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)../StyleCop.json</StyleCopSettingsFilePath>
+		<CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
+		<StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)StyleCop.json</StyleCopSettingsFilePath>
     </PropertyGroup>
 
     <!-- NuGet -->
