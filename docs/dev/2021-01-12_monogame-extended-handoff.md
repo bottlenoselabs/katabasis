@@ -2,7 +2,7 @@
 
 ### Written by [@lithiumtoast](https://github.com/lithiumtoast) on Tuesday, January 12th, 2021
 
-This dev log about the roots about Katabasis. 
+This dev log is about the relationship between MonoGame.Extended and Katabasis. 
 
 MonoGame.Extended is an important part of the story for Katabasis because it gives context of why MonoGame was essentially forked (it's actually FNA that was forked). MonoGame is pretty bare bones, so some people had a good idea to write and share common functionality to make MonoGame easier to develop games. I had previously [written code for MonoGame.Extended starting back in early 2016](https://github.com/craftworkgames/MonoGame.Extended/graphs/contributors). Note that MonoGame.Extended started in July 19th, 2015. I also have been [posting over on https://community.monogame.net since 2016](https://community.monogame.net/u/lithiumtoast/summary) as well. You can also see my first post on the forums:
 
