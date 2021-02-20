@@ -4,6 +4,8 @@ Developer notes about the latest news and changes to Katabasis
 
 ## Feburary 2021
 
+- [2021-02-20: The vision for Katabasis; Part 2; Reflections & Architecture](2021-02-20_vision-for-katabasis-part-2-reflections-architecture.md)
+
 - [2021-02-10: The vision for Katabasis; Part 1: My past](2021-02-10_vision-for-katabasis-part-1-my-past.md)
 
 ## Janurary 2021

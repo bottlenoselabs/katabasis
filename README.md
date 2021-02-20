@@ -10,7 +10,7 @@ Katabasis is built for [programmers](https://en.wikipedia.org/wiki/Programmer) t
 ## News
 
 To see what's new, check the development log! [docs/dev/LOG.md](docs/dev/LOG.md)  
-Lastest update: [2021-02-10: The vision for Katabasis; Part 1: My past](docs/dev/2021-02-10_vision-for-katabasis-part-1-my-past.md)
+Lastest update: - [2021-02-20: The vision for Katabasis; Part 2; Reflections & Architecture](docs/dev/2021-02-20_vision-for-katabasis-part-2-reflections-architecture.md)
 
 ## Background: Why?
 
