@@ -1,6 +1,6 @@
 # The vision for Katabasis; Part 2: Reflections & Architecture
 
-### Written by [@lithiumtoast](https://github.com/lithiumtoast) on Sunday, Feburary 20th, 2021
+### Written by [@lithiumtoast](https://github.com/lithiumtoast) on Saturday, Feburary 20th, 2021
 
 This dev log is part of a multiple part series about the vision for Katabasis.
 
