@@ -243,7 +243,7 @@ namespace Katabasis
 				FAudio.FAudio_CreateSourceVoice(
 					dev.Handle,
 					out _handle,
-					ref (this as DynamicSoundEffectInstance)._format,
+					ref (this as DynamicSoundEffectInstance)!._format,
 					FAudio.FAUDIO_VOICE_USEFILTER,
 					FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
 					IntPtr.Zero,
@@ -255,7 +255,7 @@ namespace Katabasis
 				FAudio.FAudio_CreateSourceVoice(
 					dev.Handle,
 					out _handle,
-					_parentEffect._formatPtr,
+					_parentEffect!._formatPtr,
 					FAudio.FAUDIO_VOICE_USEFILTER,
 					FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
 					IntPtr.Zero,
