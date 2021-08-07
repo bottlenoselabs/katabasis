@@ -627,6 +627,18 @@ namespace Katabasis
 			                SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS |
 			                (SDL_WindowFlags)FNA3D.FNA3D_PrepareWindowAttributes();
 
+#if !DEBUG // Save pipeline cache files to the base directory for debug builds
+			if ((initFlags & SDL_WindowFlags.SDL_WINDOW_VULKAN) == SDL_WindowFlags.SDL_WINDOW_VULKAN)
+ 			{
+ 				var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", string.Empty);
+ 				SDL_SetHint(
+	                "FNA3D_VULKAN_PIPELINE_CACHE_FILE_NAME",
+	                Path.Combine(
+		                SDL_GetPrefPath(null, "FNA3D"),
+		                exeName + "_Vulkan_PipelineCache.blob"));
+            }
+#endif
+
 			if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
 			{
 				initFlags |= SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI;
