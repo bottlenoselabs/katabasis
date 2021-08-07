@@ -33,8 +33,6 @@ namespace Katabasis
 
 		private FAudio.FACTNotificationDescription _notificationDesc;
 
-		private GCHandle _pin;
-
 		public AudioEngine(string settingsFile)
 			: this(
 				settingsFile,
@@ -56,8 +54,8 @@ namespace Katabasis
 
 			// Generate engine parameters
 			var settings = default(FAudio.FACTRuntimeParameters);
-			settings.pGlobalSettingsBuffer = _pin.AddrOfPinnedObject();
-			settings.globalSettingsBufferSize = (uint)buffer.Length;
+			settings.pGlobalSettingsBuffer = buffer;
+			settings.globalSettingsBufferSize = (uint)bufferLen;
 			FAudio.FACTNotificationCallback xactNotificationFunc = OnXACTNotification;
 			settings.fnNotificationCallback = Marshal.GetFunctionPointerForDelegate(xactNotificationFunc);
 
@@ -138,14 +136,14 @@ namespace Katabasis
 		{
 			lock (_gcSync)
 			{
-				if (!IsDisposed)
+				if (IsDisposed)
 				{
-					Disposing?.Invoke(this, EventArgs.Empty);
-
-					FAudio.FACTAudioEngine_ShutDown(_handle);
-					_pin.Free();
-					IsDisposed = true;
+					return;
 				}
+
+				Disposing?.Invoke(this, EventArgs.Empty);
+				FAudio.FACTAudioEngine_ShutDown(_handle);
+				IsDisposed = true;
 			}
 		}
 

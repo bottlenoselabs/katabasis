@@ -22,18 +22,18 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(filename));
 			}
 
-			byte[] buffer = TitleContainer.ReadToPointer(filename);
-			var pin = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+			IntPtr bufferLen;
+			var buffer = TitleContainer.ReadToPointer(filename, out bufferLen);
 
 			FAudio.FACTAudioEngine_CreateSoundBank(
 				audioEngine._handle,
-				pin.AddrOfPinnedObject(),
-				(uint)buffer.Length,
+				buffer,
+				(uint) bufferLen,
 				0,
 				0,
 				out _handle);
 
-			pin.Free();
+			FNAPlatform.FreeFilePointer(buffer);
 
 			_engine = audioEngine;
 			_selfReference = new WeakReference(this, true);
