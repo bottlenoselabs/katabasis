@@ -2094,6 +2094,16 @@ namespace Katabasis
 			return drive >= 0 ? drives[drive] : Path.GetPathRoot(storageRoot);
 		}
 
+		public static IntPtr ReadToPointer(string path, out IntPtr size)
+		{
+			return SDL.SDL_LoadFile(path, out size);
+		}
+
+		public static void FreeFilePointer(IntPtr file)
+		{
+			SDL.SDL_free(file);
+		}
+
 		private static unsafe int MeasureStringLength(byte* ptr)
 		{
 			int bytes;

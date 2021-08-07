@@ -13,13 +13,11 @@ namespace Katabasis
 	{
 		private readonly AudioEngine _engine;
 
-		// Non-streaming WaveBanks
-		private byte[]? _buffer;
 		private IntPtr _handle;
 
-		// Streaming WaveBanks
-		private IntPtr _ioStream;
-		private GCHandle _pin;
+		private IntPtr _bankData;
+		private IntPtr _bankDataLen; // Non-zero for in-memory WaveBanks
+
 		private WeakReference? _selfReference;
 
 		public WaveBank(AudioEngine audioEngine, string nonStreamingWaveBankFilename)
@@ -34,13 +32,12 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(nonStreamingWaveBankFilename));
 			}
 
-			_buffer = TitleContainer.ReadAllBytes(nonStreamingWaveBankFilename);
-			_pin = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
+			_bankData = TitleContainer.ReadToPointer(nonStreamingWaveBankFilename, out _bankDataLen);
 
 			FAudio.FACTAudioEngine_CreateInMemoryWaveBank(
 				audioEngine._handle,
-				_pin.AddrOfPinnedObject(),
-				(uint)_buffer.Length,
+				_bankData,
+				(uint)_bankDataLen,
 				0,
 				0,
 				out _handle);
@@ -76,10 +73,10 @@ namespace Katabasis
 					safeName);
 			}
 
-			_ioStream = FAudio.FAudio_fopen(safeName);
+			_bankData = FAudio.FAudio_fopen(safeName);
 
 			var settings = default(FAudio.FACTStreamingParameters);
-			settings.file = _ioStream;
+			settings.file = _bankData;
 			FAudio.FACTAudioEngine_CreateStreamingWaveBank(
 				audioEngine._handle,
 				ref settings,
@@ -139,15 +136,19 @@ namespace Katabasis
 		internal void OnWaveBankDestroyed()
 		{
 			IsDisposed = true;
-			if (_buffer != null)
+			if (_bankData != IntPtr.Zero)
 			{
-				_pin.Free();
-				_buffer = null;
-			}
-			else if (_ioStream != IntPtr.Zero)
-			{
-				FAudio.FAudio_close(_ioStream);
-				_ioStream = IntPtr.Zero;
+				if (_bankDataLen != IntPtr.Zero)
+				{
+					FNAPlatform.FreeFilePointer(_bankData);
+					_bankDataLen = IntPtr.Zero;
+				}
+				else
+				{
+					FAudio.FAudio_close(_bankData);
+				}
+
+				_bankData = IntPtr.Zero;
 			}
 
 			_handle = IntPtr.Zero;

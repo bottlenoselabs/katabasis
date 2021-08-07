@@ -22,7 +22,7 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(filename));
 			}
 
-			byte[] buffer = TitleContainer.ReadAllBytes(filename);
+			byte[] buffer = TitleContainer.ReadToPointer(filename);
 			var pin = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 
 			FAudio.FACTAudioEngine_CreateSoundBank(

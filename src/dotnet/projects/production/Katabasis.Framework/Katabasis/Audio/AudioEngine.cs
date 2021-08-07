@@ -50,9 +50,9 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(settingsFile));
 			}
 
-			// Read entire file into memory, pin buffer
-			byte[] buffer = TitleContainer.ReadAllBytes(settingsFile);
-			_pin = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+			// Read entire file into memory, let FACT manage the pointer
+			IntPtr bufferLen;
+			IntPtr buffer = TitleContainer.ReadToPointer(settingsFile, out bufferLen);
 
 			// Generate engine parameters
 			var settings = default(FAudio.FACTRuntimeParameters);

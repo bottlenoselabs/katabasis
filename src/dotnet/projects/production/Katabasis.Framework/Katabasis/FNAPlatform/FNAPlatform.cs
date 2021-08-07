@@ -27,6 +27,10 @@ namespace Katabasis
 
 		public delegate DriveInfo? GetDriveInfoFunc(string storageRoot);
 
+		public delegate IntPtr ReadFileToPointerFunc(string path, out IntPtr size);
+
+		public delegate void FreeFilePointerFunc(IntPtr file);
+
 		public delegate bool GetGamePadAccelerometerFunc(int index, out Vector3 accel);
 
 		public delegate GamePadCapabilities GetGamePadCapabilitiesFunc(int index);
@@ -228,6 +232,10 @@ namespace Katabasis
 
 		public static readonly GetDriveInfoFunc GetDriveInfo;
 
+		public static readonly ReadFileToPointerFunc ReadFileToPointer;
+
+		public static readonly FreeFilePointerFunc FreeFilePointer;
+
 		public static readonly ShowRuntimeErrorFunc ShowRuntimeError;
 
 		public static readonly GetMicrophonesFunc GetMicrophones;
@@ -344,6 +352,8 @@ namespace Katabasis
 			GetGamePadAccelerometer = SDL2_FNAPlatform.GetGamePadAccelerometer;
 			GetStorageRoot = SDL2_FNAPlatform.GetStorageRoot;
 			GetDriveInfo = SDL2_FNAPlatform.GetDriveInfo;
+			ReadFileToPointer =	SDL2_FNAPlatform.ReadToPointer;
+			FreeFilePointer = SDL2_FNAPlatform.FreeFilePointer;
 			ShowRuntimeError = SDL2_FNAPlatform.ShowRuntimeError;
 			GetMicrophones = SDL2_FNAPlatform.GetMicrophones;
 			GetMicrophoneSamples = SDL2_FNAPlatform.GetMicrophoneSamples;
