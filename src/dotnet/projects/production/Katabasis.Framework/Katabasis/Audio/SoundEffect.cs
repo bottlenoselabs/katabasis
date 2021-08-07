@@ -12,17 +12,20 @@ namespace Katabasis
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
 	public sealed class SoundEffect : IDisposable
 	{
-		internal FAudio.FAudioWaveFormatEx _format;
 		internal FAudio.FAudioBuffer _handle;
+		internal IntPtr _formatPtr;
+		internal ushort _channels;
+		internal uint _sampleRate;
 		internal uint _loopLength;
 		internal uint _loopStart;
 		internal List<WeakReference> Instances = new();
 
-		internal SoundEffect(
+		internal unsafe SoundEffect(
 			string name,
 			byte[] buffer,
 			int offset,
 			int count,
+			byte[]? extraData,
 			ushort wFormatTag,
 			ushort nChannels,
 			uint nSamplesPerSec,
@@ -34,18 +37,34 @@ namespace Katabasis
 		{
 			Device();
 			Name = name;
+			_channels = nChannels;
+			_sampleRate = nSamplesPerSec;
 			_loopStart = (uint)loopStart;
 			_loopLength = (uint)loopLength;
 
 			/* Buffer format */
-			_format = default;
-			_format.wFormatTag = wFormatTag;
-			_format.nChannels = nChannels;
-			_format.nSamplesPerSec = nSamplesPerSec;
-			_format.nAvgBytesPerSec = nAvgBytesPerSec;
-			_format.nBlockAlign = nBlockAlign;
-			_format.wBitsPerSample = wBitsPerSample;
-			_format.cbSize = 0; /* May be needed for ADPCM? */
+			if (extraData == null)
+			{
+				_formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(FAudio.FAudioWaveFormatEx)));
+			}
+			else
+			{
+				_formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(FAudio.FAudioWaveFormatEx)) + extraData.Length);
+				Marshal.Copy(
+					extraData,
+					0,
+					_formatPtr + Marshal.SizeOf(typeof(FAudio.FAudioWaveFormatEx)),
+					extraData.Length);
+			}
+
+			FAudio.FAudioWaveFormatEx* pcm = (FAudio.FAudioWaveFormatEx*) _formatPtr;
+			pcm->wFormatTag = wFormatTag;
+			pcm->nChannels = nChannels;
+			pcm->nSamplesPerSec = nSamplesPerSec;
+			pcm->nAvgBytesPerSec = nAvgBytesPerSec;
+			pcm->nBlockAlign = nBlockAlign;
+			pcm->wBitsPerSample = wBitsPerSample;
+			pcm->cbSize = (ushort) extraData.Length;
 
 			/* Easy stuff */
 			_handle = default;
@@ -74,6 +93,12 @@ namespace Katabasis
 			{
 				_handle.PlayLength = (uint)(count / nBlockAlign * ((nBlockAlign / nChannels) - 6) * 2);
 			}
+			else if (wFormatTag == 0x166)
+			{
+				var xma2 = (FAudio.FAudioXMA2WaveFormatEx*) _formatPtr;
+				// dwSamplesEncoded / nChannels / (wBitsPerSample / 8) doesn't always (if ever?) match up.
+				_handle.PlayLength = xma2->dwPlayLength;
+			}
 
 			/* Set by Instances! */
 			_handle.LoopBegin = 0;
@@ -90,6 +115,7 @@ namespace Katabasis
 				buffer,
 				0,
 				buffer.Length,
+				null,
 				1,
 				(ushort)channels,
 				(uint)sampleRate,
@@ -114,6 +140,7 @@ namespace Katabasis
 				buffer,
 				offset,
 				count,
+				null,
 				1,
 				(ushort)channels,
 				(uint)sampleRate,
@@ -125,7 +152,7 @@ namespace Katabasis
 		{
 		}
 
-		public TimeSpan Duration => TimeSpan.FromSeconds(_handle.PlayLength / (double)_format.nSamplesPerSec);
+		public TimeSpan Duration => TimeSpan.FromSeconds(_handle.PlayLength / (double)_sampleRate);
 
 		public bool IsDisposed { get; private set; }
 
@@ -206,6 +233,7 @@ namespace Katabasis
 			}
 
 			Instances.Clear();
+			Marshal.FreeHGlobal(_formatPtr);
 			Marshal.FreeHGlobal(_handle.pAudioData);
 			IsDisposed = true;
 			GC.SuppressFinalize(this);
@@ -405,6 +433,7 @@ namespace Katabasis
 				data,
 				0,
 				data.Length,
+				null,
 				wFormatTag,
 				nChannels,
 				nSamplesPerSec,

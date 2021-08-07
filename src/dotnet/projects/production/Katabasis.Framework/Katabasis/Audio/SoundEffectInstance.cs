@@ -36,7 +36,7 @@ namespace Katabasis
 
 			if (!_isDynamic)
 			{
-				InitDSPSettings(_parentEffect!._format.nChannels);
+				InitDSPSettings(_parentEffect!._channels);
 			}
 
 			_parentEffect?.Instances.Add(_selfReference);
@@ -238,16 +238,30 @@ namespace Katabasis
 			SoundEffect.FAudioContext dev = SoundEffect.Device();
 
 			/* Create handle */
-			var fmt = _isDynamic ? (this as DynamicSoundEffectInstance)!._format : _parentEffect!._format;
-			FAudio.FAudio_CreateSourceVoice(
-				dev.Handle,
-				out _handle,
-				ref fmt,
-				FAudio.FAUDIO_VOICE_USEFILTER,
-				FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
-				IntPtr.Zero,
-				IntPtr.Zero,
-				IntPtr.Zero);
+			if (_isDynamic)
+			{
+				FAudio.FAudio_CreateSourceVoice(
+					dev.Handle,
+					out _handle,
+					ref (this as DynamicSoundEffectInstance)._format,
+					FAudio.FAUDIO_VOICE_USEFILTER,
+					FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
+					IntPtr.Zero,
+					IntPtr.Zero,
+					IntPtr.Zero);
+			}
+			else
+			{
+				FAudio.FAudio_CreateSourceVoice(
+					dev.Handle,
+					out _handle,
+					_parentEffect._formatPtr,
+					FAudio.FAUDIO_VOICE_USEFILTER,
+					FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
+					IntPtr.Zero,
+					IntPtr.Zero,
+					IntPtr.Zero);
+			}
 
 			if (_handle == IntPtr.Zero)
 			{
