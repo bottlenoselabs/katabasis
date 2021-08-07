@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using ObjCRuntime;
+using SDL2;
 using static SDL2.SDL;
 
 namespace Katabasis
@@ -20,7 +21,7 @@ namespace Katabasis
 		/* This is needed for asynchronous window events */
 		private static readonly List<Game> _activeGames = new();
 
-		private static string? _osVersion;
+		private static string _osVersion = null!;
 
 		private static readonly bool UseScancodes =
 			Environment.GetEnvironmentVariable("FNA_KEYBOARD_USE_SCANCODES") == "1";
@@ -627,17 +628,39 @@ namespace Katabasis
 			                SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS |
 			                (SDL_WindowFlags)FNA3D.FNA3D_PrepareWindowAttributes();
 
-#if !DEBUG // Save pipeline cache files to the base directory for debug builds
-			if ((initFlags & SDL_WindowFlags.SDL_WINDOW_VULKAN) == SDL_WindowFlags.SDL_WINDOW_VULKAN)
- 			{
- 				var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", string.Empty);
- 				SDL_SetHint(
-	                "FNA3D_VULKAN_PIPELINE_CACHE_FILE_NAME",
-	                Path.Combine(
-		                SDL_GetPrefPath(null, "FNA3D"),
-		                exeName + "_Vulkan_PipelineCache.blob"));
-            }
+			var cachePath = SDL_GetHint("FNA3D_VULKAN_PIPELINE_CACHE_FILE_NAME");
+			if (cachePath == null)
+			{
+				if (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
+				    _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
+				    _osVersion.Equals("Linux", StringComparison.Ordinal) ||
+				    _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
+				    _osVersion.Equals("OpenBSD", StringComparison.Ordinal) ||
+				    _osVersion.Equals("NetBSD", StringComparison.Ordinal))
+				{
+#if DEBUG // Save pipeline cache files to the base directory for debug builds
+					var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", string.Empty);
+					cachePath = Path.Combine(
+						SDL_GetPrefPath(null, "FNA3D"),
+						exeName + "_Vulkan_PipelineCache.blob");
 #endif
+				}
+				else
+				{
+					/* For all non-desktop targets, disable
+					  * the pipeline cache. There is usually
+					  * some specialized path you have to
+					  * take to use pipeline cache files, so
+					  * developers will have to do things the
+					  * hard way over there.
+					  */
+					cachePath = string.Empty;
+				}
+
+				SDL_SetHint(
+					"FNA3D_VULKAN_PIPELINE_CACHE_FILE_NAME",
+					cachePath);
+			}
 
 			if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
 			{
