@@ -55,7 +55,7 @@ namespace Katabasis
 
 			_buffer = FNA3D.FNA3D_GenVertexBuffer(
 				GraphicsDevice.GLDevice,
-				dynamic ? 1 : 0,
+				(byte)(dynamic ? 1 : 0),
 				bufferUsage,
 				VertexCount * VertexDeclaration.VertexStride);
 		}

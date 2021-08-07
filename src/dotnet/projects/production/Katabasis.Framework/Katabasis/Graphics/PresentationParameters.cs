@@ -58,7 +58,7 @@ namespace Katabasis
 		public bool IsFullScreen
 		{
 			get => _parameters.IsFullScreen == 1;
-			set => _parameters.IsFullScreen = value ? 1 : 0;
+			set => _parameters.IsFullScreen = (byte)(value ? 1 : 0);
 		}
 
 		public int MultiSampleCount

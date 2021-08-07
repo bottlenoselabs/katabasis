@@ -574,7 +574,7 @@ namespace Katabasis
 					0,
 					IntPtr.Zero,
 					DepthFormat.None,
-					PresentationParameters.RenderTargetUsage != RenderTargetUsage.DiscardContents ? 1 : 0); /* lol c# */
+					PresentationParameters.RenderTargetUsage != RenderTargetUsage.DiscardContents ? (byte)1 : (byte)0); /* lol c# */
 
 				// Set the viewport/scissor to the size of the backbuffer.
 				newWidth = PresentationParameters.BackBufferWidth;
@@ -605,7 +605,7 @@ namespace Katabasis
 							renderTargets.Length,
 							target!.DepthStencilBuffer,
 							target.DepthStencilFormat,
-							target.RenderTargetUsage != RenderTargetUsage.DiscardContents ? 1 : 0); /* lol c# */
+							target.RenderTargetUsage != RenderTargetUsage.DiscardContents ? (byte)1 : (byte)0); /* lol c# */
 					}
 				}
 
@@ -1256,7 +1256,7 @@ namespace Katabasis
 					GLDevice,
 					b,
 					_vertexBufferCount,
-					_vertexBuffersUpdated ? 1 : 0,
+					(byte)(_vertexBuffersUpdated ? 1 : 0),
 					baseVertex);
 			}
 

@@ -64,7 +64,7 @@ namespace Katabasis
 
 			_buffer = FNA3D.FNA3D_GenIndexBuffer(
 				GraphicsDevice.GLDevice,
-				dynamic ? 1 : 0,
+				(byte)(dynamic ? 1 : 0),
 				usage,
 				IndexCount * stride);
 		}

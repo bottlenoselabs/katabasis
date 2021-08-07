@@ -59,7 +59,7 @@ namespace Katabasis
 				Width,
 				Height,
 				LevelCount,
-				this is IRenderTarget ? 1 : 0);
+				(byte)(this is IRenderTarget ? 1 : 0));
 		}
 
 		public int Width { get; }

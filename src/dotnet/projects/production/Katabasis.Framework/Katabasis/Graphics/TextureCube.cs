@@ -42,7 +42,7 @@ namespace Katabasis
 				Format,
 				Size,
 				LevelCount,
-				this is IRenderTarget ? 1 : 0);
+				(byte)(this is IRenderTarget ? 1 : 0));
 		}
 
 		public int Size { get; }

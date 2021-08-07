@@ -653,7 +653,7 @@ namespace Katabasis
 							_oldTargets.Length,
 							oldTarget!.DepthStencilBuffer,
 							oldTarget.DepthStencilFormat,
-							oldTarget.RenderTargetUsage != RenderTargetUsage.DiscardContents ? 1 : 0);
+							(byte)(oldTarget.RenderTargetUsage != RenderTargetUsage.DiscardContents ? 1 : 0));
 					}
 				}
 			}

@@ -90,7 +90,7 @@ namespace Katabasis
 		public static bool IsVisualizationEnabled
 		{
 			get => FAudio.XNA_VisualizationEnabled() == 1;
-			set => FAudio.XNA_EnableVisualization(value ? 1 : 0);
+			set => FAudio.XNA_EnableVisualization((byte)(value ? 1 : 0));
 		}
 
 		public static event EventHandler<EventArgs>? ActiveSongChanged;

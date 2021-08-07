@@ -55,13 +55,13 @@ namespace Katabasis
 		public bool DepthBufferEnable
 		{
 			get => _state.DepthBufferEnable == 1;
-			set => _state.DepthBufferEnable = value ? 1 : 0;
+			set => _state.DepthBufferEnable = (byte)(value ? 1 : 0);
 		}
 
 		public bool DepthBufferWriteEnable
 		{
 			get => _state.DepthBufferWriteEnable == 1;
-			set => _state.DepthBufferWriteEnable = value ? 1 : 0;
+			set => _state.DepthBufferWriteEnable = (byte)(value ? 1 : 0);
 		}
 
 		public StencilOperation CounterClockwiseStencilDepthBufferFail
@@ -109,7 +109,7 @@ namespace Katabasis
 		public bool StencilEnable
 		{
 			get => _state.StencilEnable == 1;
-			set => _state.StencilEnable = value ? 1 : 0;
+			set => _state.StencilEnable = (byte)(value ? 1 : 0);
 		}
 
 		public StencilOperation StencilFail
@@ -145,7 +145,7 @@ namespace Katabasis
 		public bool TwoSidedStencilMode
 		{
 			get => _state.TwoSidedStencilMode == 1;
-			set => _state.TwoSidedStencilMode = value ? 1 : 0;
+			set => _state.TwoSidedStencilMode = (byte)(value ? 1 : 0);
 		}
 	}
 }

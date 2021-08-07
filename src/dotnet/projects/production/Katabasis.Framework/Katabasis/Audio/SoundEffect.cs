@@ -537,7 +537,7 @@ namespace Katabasis
 						(FAudio.FAudioEffectDescriptor*)reverbChain->pEffectDescriptors;
 
 					reverbDesc->InitialState = 1;
-					reverbDesc->OutputChannels = DeviceDetails.OutputFormat.Format.nChannels == 6 ? 6 : 1;
+					reverbDesc->OutputChannels = (uint)(DeviceDetails.OutputFormat.Format.nChannels == 6 ? 6 : 1);
 					reverbDesc->pEffect = reverb;
 
 					FAudio.FAudio_CreateSubmixVoice(

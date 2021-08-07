@@ -61,13 +61,13 @@ namespace Katabasis
 		public bool MultiSampleAntiAlias
 		{
 			get => _state.MultiSampleAntiAlias == 1;
-			set => _state.MultiSampleAntiAlias = value ? 1 : 0;
+			set => _state.MultiSampleAntiAlias = (byte)(value ? 1 : 0);
 		}
 
 		public bool ScissorTestEnable
 		{
 			get => _state.ScissorTestEnable == 1;
-			set => _state.ScissorTestEnable = value ? 1 : 0;
+			set => _state.ScissorTestEnable = (byte)(value ? 1 : 0);
 		}
 
 		public float SlopeScaleDepthBias

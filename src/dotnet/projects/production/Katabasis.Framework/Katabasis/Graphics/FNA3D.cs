@@ -655,7 +655,7 @@ namespace Katabasis
 				out len,
 				forceW,
 				forceH,
-				zoom ? 1 : 0);
+				(byte)(zoom ? 1 : 0));
 
 			lock (_readStreams)
 			{
