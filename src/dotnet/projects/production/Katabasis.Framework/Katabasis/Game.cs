@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
-using lithiumtoast.NativeTools;
 
 namespace Katabasis
 {
