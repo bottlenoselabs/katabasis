@@ -39,7 +39,7 @@ namespace Katabasis
 			{
 				var src = (Color)value;
 				return string.Join(
-					culture.TextInfo.ListSeparator,
+					culture.TextInfo.ListSeparator + " ",
 					src.R.ToString(culture),
 					src.G.ToString(culture),
 					src.B.ToString(culture),
