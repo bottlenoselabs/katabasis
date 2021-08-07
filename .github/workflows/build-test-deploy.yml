@@ -77,8 +77,7 @@ jobs:
     - name: "Checkout repository"
       uses: actions/checkout@master
       with:
-        submodules: true
-        lfs: true
+        submodules: 'recursive'
 
     - name: "Setup .NET Core CLI"
       uses: actions/setup-dotnet@v1
