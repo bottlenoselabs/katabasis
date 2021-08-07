@@ -64,7 +64,7 @@ namespace Katabasis
 			pcm->nAvgBytesPerSec = nAvgBytesPerSec;
 			pcm->nBlockAlign = nBlockAlign;
 			pcm->wBitsPerSample = wBitsPerSample;
-			pcm->cbSize = (ushort) extraData.Length;
+			pcm->cbSize = (ushort) (extraData?.Length ?? 0);
 
 			/* Easy stuff */
 			_handle = default;
