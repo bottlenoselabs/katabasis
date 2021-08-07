@@ -6,7 +6,7 @@ FNA_LIBS_DIR=$MY_DIR/fnalibs
 
  # Downloading
 echo "Downloading latest FNA libraries ..."
-curl -L https://dl.dropbox.com/s/wucrnflprgv58j6/fnalibs_2020_12.zip > "$MY_DIR/fnalibs.zip"
+curl -L https://github.com/deccer/FNA-libs/archive/refs/heads/main.zip > "$MY_DIR/fnalibs.zip"
 if [ $? -eq 0 ]; then
     echo "Finished downloading!"
 else
@@ -26,6 +26,7 @@ else
     exit 1
 fi
 
+FNA_LIBS_DIR=$MY_DIR/fnalibs/FNA-libs-main
 mkdir -p $MY_DIR/lib
 
 # Move files to specific places...
@@ -75,4 +76,4 @@ mv $FNA_LIBS_DIR/x86/libtheorafile.dll $THEORAFILE_LIB_DIR/win-x86/libtheorafile
 echo "Finished moving files!"
 
 ## Delete uncompressed folder
- rm -rf $FNA_LIBS_DIR
+rm -rf $FNA_LIBS_DIR
