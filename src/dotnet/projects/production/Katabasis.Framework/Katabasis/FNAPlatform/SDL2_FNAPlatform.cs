@@ -746,9 +746,7 @@ namespace Katabasis
 			ref string resultDeviceName)
 		{
 			var center = false;
-			if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1" &&
-			    !string.IsNullOrEmpty(_osVersion) &&
-			    _osVersion.Equals("Mac OS X", StringComparison.Ordinal))
+			if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
 			{
 				/* For high-DPI windows, halve the size!
 				 * The drawable size is now the primary width/height, so
