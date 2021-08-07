@@ -13,6 +13,11 @@
 		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
 	</PropertyGroup>
 
+	<!-- Project references -->
+	<ItemGroup>
+		<ProjectReference Include="$(RootPath)/ext/c2cs/src/cs/production/C2CS.Runtime/C2CS.Runtime.csproj" />
+	</ItemGroup>
+
 	<!-- Stock effects files emedded into assembly -->
 	<ItemGroup>
 		<EmbeddedResource Include="Katabasis/Graphics/Effect/StockEffects/FXB/*.fxb" />
@@ -122,9 +127,6 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/linux-x64/native/libtheorafile.so</PackagePath>
 		</Content>
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\..\ext\c2cs\src\cs\production\C2CS.Runtime\C2CS.Runtime.csproj" />
 	</ItemGroup>
 
 </Project>
