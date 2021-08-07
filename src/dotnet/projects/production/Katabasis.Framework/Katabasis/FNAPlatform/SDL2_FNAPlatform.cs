@@ -639,6 +639,8 @@ namespace Katabasis
 				    _osVersion.Equals("NetBSD", StringComparison.Ordinal))
 				{
 #if DEBUG // Save pipeline cache files to the base directory for debug builds
+					cachePath = "FNA3D_Vulkan_PipelineCache.blob";
+#else
 					var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", string.Empty);
 					cachePath = Path.Combine(
 						SDL_GetPrefPath(null, "FNA3D"),
