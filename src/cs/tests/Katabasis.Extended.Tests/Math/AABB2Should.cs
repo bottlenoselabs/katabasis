@@ -1,26 +1,39 @@
 // Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory (https://github.com/craftworkgames/Katabasis) for full license information.
 
-using System.Numerics;
 using Xunit;
 
 namespace Katabasis.Extended.Tests.Math
 {
-    public class AABB2Should
+    public class AABB2Should : MathTestBase
     {
-        [Fact]
-        public void Intersects()
+        public static TheoryData<bool, AABB2, AABB2> IntersectTestData => new()
         {
-            AABB2 first;
-            first.Center = new Vector2(50, 50);
-            first.HalfSize = new Vector2(25, 25);
+            // always intersects with itself when width/height is non-negative
+            { true, AABB2.Empty, AABB2.Empty },
+            { true, new AABB2(0, 0, 50, 50), new AABB2(0, 0, 50, 50) },
+            { true, new AABB2(25, 25, 25, 25), new AABB2(25, 25, 25, 25) },
+            { true, new AABB2(-25, -25, 25, 25), new AABB2(-25, -25, 25, 25) },
 
-            AABB2 second;
-            second.Center = new Vector2(50, 50);
-            second.HalfSize = new Vector2(25, 25);
+            // overlaps
+            { true, new AABB2(25, 25, 25, 25), new AABB2(0, 0, 50, 50) },
+            { true, new AABB2(-25, -25, 25, 25), new AABB2(0, 0, 50, 50) },
 
-            var x = first.Intersects(second);
-            Assert.True(x);
+            // contains
+            { true, new AABB2(0, 0, 0, 0), new AABB2(0, 0, 1, 1) },
+
+            // never intersect with negative size
+            { false, new AABB2(0, 0, -50, -50), new AABB2(0, 0, -50, -50) },
+
+            // disjoint
+            { false, new AABB2(-100, -100, 25, 25), new AABB2(0, 0, 50, 50) },
+        };
+
+        [Theory]
+        [MemberData(nameof(IntersectTestData), MemberType = typeof(AABB2Should))]
+        public void Intersect(bool expectedValue, AABB2 first, AABB2 second)
+        {
+            Assert.Equal(expectedValue, first.Intersects(second));
         }
     }
 }

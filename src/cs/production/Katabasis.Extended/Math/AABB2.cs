@@ -24,13 +24,13 @@ namespace Katabasis.Extended
     ///     </para>
     /// </remarks>
     /// <seealso cref="IEquatable{T}" />
-    [DebuggerDisplay("{DebugDisplayString,nq}")]
     [PublicAPI]
+    [DebuggerDisplay("{DebugDisplayString,nq}")]
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Acronym.")]
     public struct AABB2 : IEquatable<AABB2>
     {
         /// <summary>
-        ///     The <see cref="AABB2" /> with <see cref="Center" /> set to <see cref="Vector2.Zero"/> and
+        ///     The <see cref="AABB2" /> with <see cref="Position" /> set to <see cref="Vector2.Zero"/> and
         ///     <see cref="HalfSize" /> set to <see cref="Vector2.Zero"/>.
         /// </summary>
         public static readonly AABB2 Empty;
@@ -38,23 +38,46 @@ namespace Katabasis.Extended
         /// <summary>
         ///     The centre position of this <see cref="AABB2" />.
         /// </summary>
-        public Vector2 Center;
+        public Vector2 Position;
 
         /// <summary>
-        ///     The distance from the <see cref="Center" /> point along both axes to any point on the boundary of the
+        ///     The distance from the <see cref="Position" /> point along both axes to any point on the boundary of this
         ///     <see cref="AABB2" />.
         /// </summary>
         public Vector2 HalfSize;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AABB2" /> structure from the specified center and half-size.
+        ///     The width and height of this <see cref="AABB2" />.
         /// </summary>
-        /// <param name="center">The center <see cref="Vector2" />.</param>
-        /// <param name="halfSize">The radii <see cref="Vector2" />.</param>
-        public AABB2(Vector2 center, Vector2 halfSize)
+        [ExcludeFromCodeCoverage]
+        public Vector2 Size => HalfSize * 2;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AABB2" /> structure from the specified center position and
+        ///     size.
+        /// </summary>
+        /// <param name="position">The center position.</param>
+        /// <param name="size">The width and height.</param>
+        [ExcludeFromCodeCoverage]
+        public AABB2(Vector2 position, Vector2 size)
         {
-            Center = center;
-            HalfSize = halfSize;
+            Position = position;
+            HalfSize = size * 0.5f;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AABB2" /> structure from the specified center position and
+        ///     size.
+        /// </summary>
+        /// <param name="x">The center position X-coordinate.</param>
+        /// <param name="y">The center position Y-coordinate.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        [ExcludeFromCodeCoverage]
+        public AABB2(float x, float y, float width, float height)
+        {
+            Position = new Vector2(x, y);
+            HalfSize = new Vector2(width * 0.5f, height * 0.5f);
         }
 
         /// <summary>
@@ -65,7 +88,7 @@ namespace Katabasis.Extended
         /// <param name="result">The resulting bounding rectangle.</param>
         public static void CreateFrom(Vector2 minimum, Vector2 maximum, out AABB2 result)
         {
-            result.Center = new Vector2((maximum.X + minimum.X) * 0.5f, (maximum.Y + minimum.Y) * 0.5f);
+            result.Position = new Vector2((maximum.X + minimum.X) * 0.5f, (maximum.Y + minimum.Y) * 0.5f);
             result.HalfSize = new Vector2((maximum.X - minimum.X) * 0.5f, (maximum.Y - minimum.Y) * 0.5f);
         }
 
@@ -158,10 +181,10 @@ namespace Katabasis.Extended
         ///     and <paramref name="second" />.</param>
         public static void Union(ref AABB2 first, ref AABB2 second, out AABB2 result)
         {
-            var firstMinimum = first.Center - first.HalfSize;
-            var firstMaximum = first.Center + first.HalfSize;
-            var secondMinimum = second.Center - second.HalfSize;
-            var secondMaximum = second.Center + second.HalfSize;
+            var firstMinimum = first.Position - first.HalfSize;
+            var firstMaximum = first.Position + first.HalfSize;
+            var secondMinimum = second.Position - second.HalfSize;
+            var secondMaximum = second.Position + second.HalfSize;
 
             var minimum = Vector2.Min(firstMinimum, secondMinimum);
             var maximum = Vector2.Max(firstMaximum, secondMaximum);
@@ -206,10 +229,10 @@ namespace Katabasis.Extended
         ///     <see cref="Empty"/>.</param>
         public static void Intersection(ref AABB2 first, ref AABB2 second, out AABB2 result)
         {
-            var firstMinimum = first.Center - first.HalfSize;
-            var firstMaximum = first.Center + first.HalfSize;
-            var secondMinimum = second.Center - second.HalfSize;
-            var secondMaximum = second.Center + second.HalfSize;
+            var firstMinimum = first.Position - first.HalfSize;
+            var firstMaximum = first.Position + first.HalfSize;
+            var secondMinimum = second.Position - second.HalfSize;
+            var secondMaximum = second.Position + second.HalfSize;
 
             var minimum = Vector2.Max(firstMinimum, secondMinimum);
             var maximum = Vector2.Min(firstMaximum, secondMaximum);
@@ -270,9 +293,18 @@ namespace Katabasis.Extended
         /// </returns>
         public static bool Intersects(ref AABB2 first, ref AABB2 second)
         {
-            var position = first.Center - second.Center;
-            var size = first.HalfSize + second.HalfSize;
-            return Math.Abs(position.X) <= size.X && Math.Abs(position.Y) <= size.Y;
+            if (Math.Abs(first.Position.X - second.Position.X) > first.HalfSize.X + second.HalfSize.X)
+            {
+                return false;
+            }
+
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (Math.Abs(first.Position.Y - second.Position.Y) > first.HalfSize.Y + second.HalfSize.Y)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -395,13 +427,13 @@ namespace Katabasis.Extended
 
         /// <summary>
         ///     Compares two <see cref="AABB2" /> structures. The result specifies whether the values of the
-        ///     <see cref="Center" /> and <see cref="HalfSize" /> fields of the two <see cref="AABB2" /> structures
+        ///     <see cref="Position" /> and <see cref="HalfSize" /> fields of the two <see cref="AABB2" /> structures
         ///     are equal.
         /// </summary>
         /// <param name="first">The first axis-aligned-bounding-box.</param>
         /// <param name="second">The second axis-aligned-bounding-box.</param>
         /// <returns>
-        ///     <c>true</c> if the <see cref="Center" /> and <see cref="HalfSize" /> fields of the two
+        ///     <c>true</c> if the <see cref="Position" /> and <see cref="HalfSize" /> fields of the two
         ///     <see cref="AABB2" /> structures are equal; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator ==(AABB2 first, AABB2 second)
@@ -411,13 +443,13 @@ namespace Katabasis.Extended
 
         /// <summary>
         ///     Compares two <see cref="AABB2" /> structures. The result specifies whether the values of the
-        ///     <see cref="Center" /> and <see cref="HalfSize" /> fields of the two <see cref="AABB2" /> structures
+        ///     <see cref="Position" /> and <see cref="HalfSize" /> fields of the two <see cref="AABB2" /> structures
         ///     are unequal.
         /// </summary>
         /// <param name="first">The first axis-aligned-bounding-box.</param>
         /// <param name="second">The second axis-aligned-bounding-box.</param>
         /// <returns>
-        ///     <c>true</c> if the <see cref="Center" /> and <see cref="HalfSize" /> fields of the two
+        ///     <c>true</c> if the <see cref="Position" /> and <see cref="HalfSize" /> fields of the two
         ///     <see cref="AABB2" /> structures are unequal; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator !=(AABB2 first, AABB2 second)
@@ -449,7 +481,7 @@ namespace Katabasis.Extended
         /// </returns>
         public bool Equals(ref AABB2 aabb)
         {
-            return (aabb.Center == Center) && (aabb.HalfSize == HalfSize);
+            return (aabb.Position == Position) && (aabb.HalfSize == HalfSize);
         }
 
         /// <summary>
@@ -471,10 +503,11 @@ namespace Katabasis.Extended
         /// <returns>
         ///     A hash code of this <see cref="AABB2" />.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "Mutable desired.")]
         public override int GetHashCode()
         {
-            return HashCode.Combine(Center, HalfSize);
+            return HashCode.Combine(Position, HalfSize);
         }
 
         /// <summary>
@@ -500,7 +533,7 @@ namespace Katabasis.Extended
         /// </returns>
         public static explicit operator Rectangle(AABB2 aabb)
         {
-            var minimum = aabb.Center - aabb.HalfSize;
+            var minimum = aabb.Position - aabb.HalfSize;
             return new Rectangle((int)minimum.X, (int)minimum.Y, (int)aabb.HalfSize.X * 2, (int)aabb.HalfSize.Y * 2);
         }
 
@@ -510,11 +543,13 @@ namespace Katabasis.Extended
         /// <returns>
         ///     A <see cref="string" /> that represents this <see cref="AABB2" />.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            return $"Centre: {Center}, Radii: {HalfSize}";
+            return $"Position: ({Position.X},{Position.Y}), Size: {Size}";
         }
 
+        [ExcludeFromCodeCoverage]
         internal string DebugDisplayString => ToString();
     }
 }
