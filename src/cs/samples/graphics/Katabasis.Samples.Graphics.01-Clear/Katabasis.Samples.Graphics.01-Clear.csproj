@@ -15,6 +15,7 @@
 
     <!-- Custom project settings -->
     <PropertyGroup>
+        <EnableCodeCoverage>false</EnableCodeCoverage>
         <EnableAnalyzers>true</EnableAnalyzers>
         <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
     </PropertyGroup>

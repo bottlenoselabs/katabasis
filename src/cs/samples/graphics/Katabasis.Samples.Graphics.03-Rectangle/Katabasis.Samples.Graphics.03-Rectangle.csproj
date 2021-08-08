@@ -15,20 +15,21 @@
 
     <!-- Custom project settings -->
     <PropertyGroup>
+        <EnableCodeCoverage>false</EnableCodeCoverage>
         <EnableAnalyzers>true</EnableAnalyzers>
         <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
     </PropertyGroup>
 
     <!-- Project references -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
+    </ItemGroup>
 
     <!-- Assets -->
     <ItemGroup>
         <None Update="Assets/Shaders/**/*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
     </ItemGroup>
 
 </Project>
