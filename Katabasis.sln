@@ -43,6 +43,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Assetyard", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C2CS.Runtime", "ext\c2cs\src\cs\production\C2CS.Runtime\C2CS.Runtime.csproj", "{14CB120A-7CC7-4210-8235-A2BC691A1878}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2607F1D3-0176-455E-B4DE-4C610F1AEB9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Extended.Tests", "src\cs\tests\Katabasis.Extended.Tests\Katabasis.Extended.Tests.csproj", "{3337F83F-6CB5-4C85-B416-35D9AAB48413}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -257,6 +261,18 @@ Global
 		{14CB120A-7CC7-4210-8235-A2BC691A1878}.Debug|AnyCPU.Build.0 = Debug|Any CPU
 		{14CB120A-7CC7-4210-8235-A2BC691A1878}.Release|AnyCPU.ActiveCfg = Release|Any CPU
 		{14CB120A-7CC7-4210-8235-A2BC691A1878}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Debug|x86.Build.0 = Debug|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Release|x86.ActiveCfg = Release|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Release|x86.Build.0 = Release|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Debug|x64.Build.0 = Debug|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Release|x64.ActiveCfg = Release|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Release|x64.Build.0 = Release|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413}.Release|AnyCPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = FNA.csproj
@@ -281,5 +297,6 @@ Global
 		{DAB20B7A-A543-46C3-8369-9D721FA3A74A} = {BE39AE7C-FFA6-415A-A35C-08349CE2E8A8}
 		{1406D87C-1FA7-417C-8CE7-FC435C8FA889} = {BE39AE7C-FFA6-415A-A35C-08349CE2E8A8}
 		{14CB120A-7CC7-4210-8235-A2BC691A1878} = {BE39AE7C-FFA6-415A-A35C-08349CE2E8A8}
+		{3337F83F-6CB5-4C85-B416-35D9AAB48413} = {2607F1D3-0176-455E-B4DE-4C610F1AEB9A}
 	EndGlobalSection
 EndGlobal

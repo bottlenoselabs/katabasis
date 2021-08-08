@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- MSBuild project settings -->
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<!-- My-MSBuild settings -->
+	<PropertyGroup>
+		<EnableAnalyzers>true</EnableAnalyzers>
+		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
+	</PropertyGroup>
+
+	<!-- Project references -->
+	<ItemGroup>
+	  	<ProjectReference Include="..\..\production\Katabasis.Extended\Katabasis.Extended.csproj" />
+	</ItemGroup>
+	
+	<!-- NuGet packages -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+	  	<PackageReference Include="xunit" Version="2.4.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+	</ItemGroup>
+
+	<!-- Disable warnins -->
+	<PropertyGroup>
+		<NoWarn>CA1051</NoWarn>
+	</PropertyGroup>
+
+</Project>
