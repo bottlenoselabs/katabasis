@@ -220,7 +220,7 @@ namespace Katabasis.Extended
         }
 
         /// <summary>
-        ///     Computes the <see cref="AABB2" /> that is in common between the two specified <see cref="AABB2" /> structures.
+        ///     Computes the <see cref="AABB2" /> that is in common between two <see cref="AABB2" /> structures.
         /// </summary>
         /// <param name="first">The first axis-aligned-bounding-box.</param>
         /// <param name="second">The second axis-aligned-bounding-box.</param>
@@ -241,7 +241,7 @@ namespace Katabasis.Extended
         }
 
         /// <summary>
-        ///     Computes the <see cref="AABB2" /> that is in common between the two specified <see cref="AABB2" /> structures.
+        ///     Computes the <see cref="AABB2" /> that is in common between two <see cref="AABB2" /> structures.
         /// </summary>
         /// <param name="first">The first axis-aligned-bounding-box.</param>
         /// <param name="second">The second axis-aligned-bounding-box.</param>
@@ -249,6 +249,7 @@ namespace Katabasis.Extended
         ///     A <see cref="AABB2" /> that is in common between both <paramref name="first" /> and
         ///     <paramref name="second" />, if they intersect; otherwise, <see cref="Empty"/>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static AABB2 Intersection(AABB2 first, AABB2 second)
         {
             Intersection(ref first, ref second, out var result);
@@ -263,6 +264,7 @@ namespace Katabasis.Extended
         ///     A <see cref="AABB2" /> that is in common between both the <paramref name="aabb" /> and
         ///     this <see cref="AABB2"/>, if they intersect; otherwise, <see cref="Empty"/>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public AABB2 Intersection(AABB2 aabb)
         {
             Intersection(ref this, ref aabb, out var result);
@@ -277,6 +279,7 @@ namespace Katabasis.Extended
         ///     A <see cref="AABB2" /> that is in common between both the <paramref name="aabb" /> and
         ///     this <see cref="AABB2"/>, if they intersect; otherwise, <see cref="Empty"/>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public AABB2 Intersection(ref AABB2 aabb)
         {
             Intersection(ref this, ref aabb, out var result);
@@ -315,6 +318,7 @@ namespace Katabasis.Extended
         /// <returns>
         ///     <c>true</c> if the <paramref name="first" /> intersects with the <see cref="second" />; otherwise, <c>false</c>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static bool Intersects(AABB2 first, AABB2 second)
         {
             return Intersects(ref first, ref second);

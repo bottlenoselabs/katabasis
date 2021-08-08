@@ -33,7 +33,8 @@ namespace Katabasis.Extended.Tests.Math
         [MemberData(nameof(IntersectTestData), MemberType = typeof(AABB2Should))]
         public void Intersect(bool expectedValue, AABB2 first, AABB2 second)
         {
-            Assert.Equal(expectedValue, first.Intersects(second));
+            var actualValue = AABB2.Intersects(ref first, ref second);
+            Assert.Equal(expectedValue, actualValue);
         }
     }
 }
