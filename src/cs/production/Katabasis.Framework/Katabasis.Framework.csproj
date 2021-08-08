@@ -11,11 +11,12 @@
 		<EnableRootNamespace>false</EnableRootNamespace>
 		<EnableAnalyzers>true</EnableAnalyzers>
 		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
+		<EnableCodeCoverage>false</EnableCodeCoverage>
 	</PropertyGroup>
 
 	<!-- Project references -->
 	<ItemGroup>
-		<ProjectReference Include="$(RootPath)/ext/c2cs/src/cs/production/C2CS.Runtime/C2CS.Runtime.csproj" />
+		<ProjectReference Include="$(GitRepositoryPath)/ext/c2cs/src/cs/production/C2CS.Runtime/C2CS.Runtime.csproj" />
 	</ItemGroup>
 
 	<!-- Stock effects files emedded into assembly -->
