@@ -98,6 +98,7 @@ namespace Katabasis.Extended
         /// <param name="minimum">The minimum point.</param>
         /// <param name="maximum">The maximum point.</param>
         /// <returns>The resulting <see cref="AABB2" />.</returns>
+        [ExcludeFromCodeCoverage]
         public static AABB2 CreateFrom(Vector2 minimum, Vector2 maximum)
         {
             CreateFrom(minimum, maximum, out var result);
@@ -200,6 +201,7 @@ namespace Katabasis.Extended
         /// <returns>
         ///     A <see cref="AABB2" /> that contains both <paramref name="first" /> and <paramref name="second" />.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static AABB2 Union(AABB2 first, AABB2 second)
         {
             Union(ref first, ref second, out var result);
@@ -214,6 +216,7 @@ namespace Katabasis.Extended
         /// <returns>
         ///     A <see cref="AABB2" /> that contains both the <paramref name="aabb" /> and this <see cref="AABB2" />.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public AABB2 Union(AABB2 aabb)
         {
             return Union(this, aabb);
@@ -332,6 +335,7 @@ namespace Katabasis.Extended
         ///     <c>true</c> if the <paramref name="aabb" /> intersects with this <see cref="AABB2" />; otherwise,
         ///     <c>false</c>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public bool Intersects(ref AABB2 aabb)
         {
             return Intersects(ref this, ref aabb);
@@ -346,6 +350,7 @@ namespace Katabasis.Extended
         ///     <c>true</c> if the <paramref name="aabb" /> intersects with this <see cref="AABB2" />; otherwise,
         ///     <c>false</c>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public bool Intersects(AABB2 aabb)
         {
             return Intersects(ref this, ref aabb);
@@ -440,6 +445,7 @@ namespace Katabasis.Extended
         ///     <c>true</c> if the <see cref="Position" /> and <see cref="HalfSize" /> fields of the two
         ///     <see cref="AABB2" /> structures are equal; otherwise, <c>false</c>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static bool operator ==(AABB2 first, AABB2 second)
         {
             return first.Equals(ref second);
@@ -456,22 +462,10 @@ namespace Katabasis.Extended
         ///     <c>true</c> if the <see cref="Position" /> and <see cref="HalfSize" /> fields of the two
         ///     <see cref="AABB2" /> structures are unequal; otherwise, <c>false</c>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static bool operator !=(AABB2 first, AABB2 second)
         {
             return !(first == second);
-        }
-
-        /// <summary>
-        ///     Indicates whether this <see cref="AABB2" /> is equal to another <see cref="AABB2" />.
-        /// </summary>
-        /// <param name="aabb">The axis-aligned-bounding-box.</param>
-        /// <returns>
-        ///     <c>true</c> if this <see cref="AABB2" /> is equal to the <paramref name="aabb" />;
-        ///     otherwise, <c>false</c>.
-        /// </returns>
-        public bool Equals(AABB2 aabb)
-        {
-            return Equals(ref aabb);
         }
 
         /// <summary>
@@ -485,7 +479,21 @@ namespace Katabasis.Extended
         /// </returns>
         public bool Equals(ref AABB2 aabb)
         {
-            return (aabb.Position == Position) && (aabb.HalfSize == HalfSize);
+            return aabb.Position == Position && aabb.HalfSize == HalfSize;
+        }
+
+        /// <summary>
+        ///     Indicates whether this <see cref="AABB2" /> is equal to another <see cref="AABB2" />.
+        /// </summary>
+        /// <param name="aabb">The axis-aligned-bounding-box.</param>
+        /// <returns>
+        ///     <c>true</c> if this <see cref="AABB2" /> is equal to the <paramref name="aabb" />;
+        ///     otherwise, <c>false</c>.
+        /// </returns>
+        [ExcludeFromCodeCoverage]
+        public bool Equals(AABB2 aabb)
+        {
+            return Equals(ref aabb);
         }
 
         /// <summary>
@@ -495,6 +503,7 @@ namespace Katabasis.Extended
         /// <returns>
         ///     <c>true</c> if this  <see cref="AABB2" /> is equal to <paramref name="obj" />; otherwise, <c>false</c>.
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object? obj)
         {
             return obj is AABB2 aabb && Equals(aabb);
@@ -529,7 +538,8 @@ namespace Katabasis.Extended
         }
 
         /// <summary>
-        ///     Performs an explicit conversion (explicit ) from a <see cref="AABB2" /> to a <see cref="Rectangle" />.
+        ///     Performs an explicit conversion from a <see cref="AABB2" /> to a <see cref="Rectangle" />. Values are
+        ///     truncated from <see cref="float" /> to <see cref="int" />.
         /// </summary>
         /// <param name="aabb">The bounding rectangle.</param>
         /// <returns>
