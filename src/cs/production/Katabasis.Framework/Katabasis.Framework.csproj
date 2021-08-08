@@ -26,22 +26,22 @@
 
 	<!-- FAudio native library -->
 	<ItemGroup>
-		<Content Include="$(RootPath)/lib/FAudio/win-x64/FAudio.dll">
+		<Content Include="$(GitRepositoryPath)/lib/FAudio/win-x64/FAudio.dll">
 			<Link>libs/win-x64/FAudio.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x64/native/FAudio.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FAudio/win-x86/FAudio.dll">
+		<Content Include="$(GitRepositoryPath)/lib/FAudio/win-x86/FAudio.dll">
 			<Link>libs/win-x86/FAudio.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x86/native/FAudio.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FAudio/osx-x64/libFAudio.0.dylib">
+		<Content Include="$(GitRepositoryPath)/lib/FAudio/osx-x64/libFAudio.0.dylib">
 			<Link>libs/osx-x64/libFAudio.dylib</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/osx-x64/native/libFAudio.dylib</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FAudio/linux-x64/libFAudio.so.0">
+		<Content Include="$(GitRepositoryPath)/lib/FAudio/linux-x64/libFAudio.so.0">
 			<Link>libs/linux-x64/libFAudio.so</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/linux-x64/native/libFAudio.so</PackagePath>
@@ -50,32 +50,32 @@
 
 	<!-- FNA3D native library -->
 	<ItemGroup>
-		<Content Include="$(RootPath)/lib/FNA3D/win-x64/FNA3D.dll">
+		<Content Include="$(GitRepositoryPath)/lib/FNA3D/win-x64/FNA3D.dll">
 			<Link>libs/win-x64/FNA3D.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x64/native/FNA3D.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FNA3D/win-x86/FNA3D.dll">
+		<Content Include="$(GitRepositoryPath)/lib/FNA3D/win-x86/FNA3D.dll">
 			<Link>libs/win-x86/FNA3D.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x86/native/FNA3D.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FNA3D/osx-x64/libFNA3D.0.dylib">
+		<Content Include="$(GitRepositoryPath)/lib/FNA3D/osx-x64/libFNA3D.0.dylib">
 			<Link>libs/osx-x64/libFNA3D.dylib</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/osx-x64/native/libFNA3D.dylib</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FNA3D/osx-x64/libMoltenVK.dylib">
+		<Content Include="$(GitRepositoryPath)/lib/FNA3D/osx-x64/libMoltenVK.dylib">
 			<Link>libs/osx-x64/libMoltenVK.dylib</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/osx-x64/native/libMoltenVK.dylib</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FNA3D/osx-x64/libvulkan.1.dylib">
+		<Content Include="$(GitRepositoryPath)/lib/FNA3D/osx-x64/libvulkan.1.dylib">
 			<Link>libs/osx-x64/libvulkan.dylib</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/osx-x64/native/libvulkan.dylib</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/FNA3D/linux-x64/libFNA3D.so.0">
+		<Content Include="$(GitRepositoryPath)/lib/FNA3D/linux-x64/libFNA3D.so.0">
 			<Link>libs/linux-x64/libFNA3D.so</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/linux-x64/native/libFNA3D.so</PackagePath>
@@ -84,22 +84,22 @@
 
 	<!-- SDL2 native library -->
 	<ItemGroup>
-		<Content Include="$(RootPath)/lib/SDL2/win-x64/SDL2.dll">
+		<Content Include="$(GitRepositoryPath)/lib/SDL2/win-x64/SDL2.dll">
 			<Link>libs/win-x64/SDL2.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x64/native/SDL2.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/SDL2/win-x86/SDL2.dll">
+		<Content Include="$(GitRepositoryPath)/lib/SDL2/win-x86/SDL2.dll">
 			<Link>libs/win-x86/SDL2.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x86/native/SDL2.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/SDL2/osx-x64/libSDL2-2.0.0.dylib">
+		<Content Include="$(GitRepositoryPath)/lib/SDL2/osx-x64/libSDL2-2.0.0.dylib">
 			<Link>libs/osx-x64/libSDL2.dylib</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/osx-x64/native/libSDL2.dylib</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/SDL2/linux-x64/libSDL2-2.0.so.0">
+		<Content Include="$(GitRepositoryPath)/lib/SDL2/linux-x64/libSDL2-2.0.so.0">
 			<Link>libs/linux-x64/libSDL2.so</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/linux-x64/native/libSDL2.so</PackagePath>
@@ -108,22 +108,22 @@
 
 	<!-- theorafile native library -->
 	<ItemGroup>
-		<Content Include="$(RootPath)/lib/theorafile/win-x64/libtheorafile.dll">
+		<Content Include="$(GitRepositoryPath)/lib/theorafile/win-x64/libtheorafile.dll">
 			<Link>libs/win-x64/libtheorafile.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x64/native/libtheorafile.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/theorafile/win-x86/libtheorafile.dll">
+		<Content Include="$(GitRepositoryPath)/lib/theorafile/win-x86/libtheorafile.dll">
 			<Link>libs/win-x86/libtheorafile.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/win-x86/native/libtheorafile.dll</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/theorafile/osx-x64/libtheorafile.dylib">
+		<Content Include="$(GitRepositoryPath)/lib/theorafile/osx-x64/libtheorafile.dylib">
 			<Link>libs/osx-x64/libtheorafile.dylib</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/osx-x64/native/libtheorafile.dylib</PackagePath>
 		</Content>
-		<Content Include="$(RootPath)/lib/theorafile/linux-x64/libtheorafile.so">
+		<Content Include="$(GitRepositoryPath)/lib/theorafile/linux-x64/libtheorafile.so">
 			<Link>libs/linux-x64/libtheorafile.so</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<PackagePath>runtimes/linux-x64/native/libtheorafile.so</PackagePath>
