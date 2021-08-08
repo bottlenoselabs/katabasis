@@ -9,6 +9,8 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RootNamespace>Katabasis.Samples</RootNamespace>
         <AssemblyName>Katabasis.Samples.Graphics.CubeTexture3D</AssemblyName>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <!-- Custom project settings -->
