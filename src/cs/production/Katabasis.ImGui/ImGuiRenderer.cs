@@ -1,31 +1,33 @@
-﻿using System;
+﻿// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static imgui;
 
 namespace Katabasis.ImGui
 {
+    [PublicAPI]
     public unsafe class ImGuiRenderer
     {
-        private ImGuiEffect _effect;
+        private ImGuiEffect? _effect;
         private readonly RasterizerState _rasterizerState;
 
-        private byte[] _vertexData;
-        private VertexBuffer _vertexBuffer;
+        private byte[] _vertexData = null!;
+        private VertexBuffer? _vertexBuffer;
         private int _vertexBufferSize;
 
-        private byte[] _indexData;
-        private IndexBuffer _indexBuffer;
+        private byte[] _indexData = null!;
+        private IndexBuffer? _indexBuffer;
         private int _indexBufferSize;
 
-        // Textures
-        private readonly Dictionary<IntPtr, Texture2D> _loadedTextures;
+        private readonly Dictionary<IntPtr, Texture2D> _textures;
 
         private int _textureId;
         private IntPtr? _fontTextureId;
-
-        // Input
         private int _scrollWheelValue;
 
         private readonly List<int> _keys = new();
@@ -35,11 +37,11 @@ namespace Katabasis.ImGui
             var context = igCreateContext(default);
             igSetCurrentContext(context);
 
-            _loadedTextures = new Dictionary<IntPtr, Texture2D>();
+            _textures = new Dictionary<IntPtr, Texture2D>();
 
             _rasterizerState = new RasterizerState
             {
-                CullMode = CullMode.None,
+                CullMode = CullMode.CullCounterClockwiseFace,
                 DepthBias = 0,
                 FillMode = FillMode.Solid,
                 MultiSampleAntiAlias = false,
@@ -48,14 +50,14 @@ namespace Katabasis.ImGui
             };
 
             SetupInput();
+            ImFontAtlas_AddFontDefault(igGetIO()->Fonts, default);
         }
 
         /// <summary>
         ///     Creates a texture and loads the font data from ImGui.
         /// </summary>
-        public virtual void RebuildFontAtlas()
+        public void BuildFontAtlas()
         {
-            // Get font texture from ImGui
             var io = igGetIO();
             ulong* pixelData;
             long width;
@@ -63,75 +65,68 @@ namespace Katabasis.ImGui
             long bytesPerPixel;
             ImFontAtlas_GetTexDataAsRGBA32(io->Fonts, &pixelData, &width, &height, &bytesPerPixel);
 
-            // Copy the data to a managed array
             var pixels = new byte[width * height * bytesPerPixel];
             Marshal.Copy(new IntPtr(pixelData), pixels, 0, pixels.Length);
-
-            // Create and register the texture as an XNA texture
-            var tex2d = new Texture2D((int)width, (int)height, false, SurfaceFormat.Color);
-            tex2d.SetData(pixels);
+            var texture = new Texture2D((int)width, (int)height, false, SurfaceFormat.Color);
+            texture.SetData(pixels);
 
             // Should a texture already have been build previously, unbind it first so it can be deallocated
-            if (_fontTextureId.HasValue)
+            if (_fontTextureId != null)
             {
                 UnbindTexture(_fontTextureId.Value);
             }
 
             // Bind the new texture to an ImGui-friendly id
-            _fontTextureId = BindTexture(tex2d);
+            _fontTextureId = BindTexture(texture);
 
             // Let ImGui know where to find the texture
             ImFontAtlas_SetTexID(io->Fonts, new ImTextureID { Data = (void*)_fontTextureId });
             ImFontAtlas_ClearTexData(io->Fonts); // Clears CPU side texture data
         }
 
-        /// <summary>
-        ///     Creates a pointer to a texture, which can be passed through ImGui calls such as <see cref="ImGui.Image" />. That
-        ///     pointer is then used by ImGui to let us know what texture to draw
-        /// </summary>
-        public virtual IntPtr BindTexture(Texture2D texture)
+        // TODO: Add XML docs.
+        public IntPtr BindTexture(Texture2D texture)
         {
             var id = new IntPtr(_textureId++);
 
-            _loadedTextures.Add(id, texture);
+            _textures.Add(id, texture);
 
             return id;
         }
 
-        /// <summary>
-        ///     Removes a previously created texture pointer, releasing its reference and allowing it to be deallocated
-        /// </summary>
-        public virtual void UnbindTexture(IntPtr textureId)
+        // TODO: Add XML docs.
+        public void UnbindTexture(IntPtr textureId)
         {
-            _loadedTextures.Remove(textureId);
+            _textures.Remove(textureId);
         }
 
         /// <summary>
-        ///     Sets up ImGui for a new frame, should be called at frame start
+        ///     Sets up ImGui for the current frame.
         /// </summary>
-        public virtual void BeforeLayout(GameTime gameTime)
+        /// <param name="gameTime">The elapsed time to pass ImGui.</param>
+        public void Begin(GameTime gameTime)
         {
-            igGetIO()->DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (deltaSeconds > 0)
+            {
+                igGetIO()->DeltaTime = deltaSeconds;
+            }
 
             UpdateInput();
-
             igNewFrame();
         }
 
         /// <summary>
-        ///     Asks ImGui for the generated geometry data and sends it to the graphics pipeline, should be called after the UI is
-        ///     drawn using ImGui.** calls
+        ///     Flushes the ImGui function calls and sends the geometry data the graphics pipeline for rendering.
         /// </summary>
-        public virtual void AfterLayout()
+        public void End()
         {
+            _effect ??= new ImGuiEffect();
             igRender();
             RenderDrawData(igGetDrawData());
         }
 
-        /// <summary>
-        ///     Maps ImGui keys to XNA keys. We use this later on to tell ImGui what keys were pressed
-        /// </summary>
-        protected virtual void SetupInput()
+        private void SetupInput()
         {
             var io = igGetIO();
             var keyMap = io->KeyMap;
@@ -158,48 +153,38 @@ namespace Katabasis.ImGui
             _keys.Add(keyMap[ImGuiKey_Z] = (int)Keys.Z);
 
             TextInputEXT.TextInput += OnTextInput;
-
-            ImFontAtlas_AddFontDefault(io->Fonts, default);
         }
-        
+
         private static void OnTextInput(char c)
         {
-            if (c == '\t') return;
+            if (c == '\t')
+			{
+				return;
+			}
+
             ImGuiIO_AddInputCharacter(igGetIO(), c);
         }
 
-        /// <summary>
-        ///     Updates the <see cref="Effect" /> to the current matrices and texture
-        /// </summary>
-        protected virtual Effect UpdateEffect(Texture2D texture)
+        private void BindShaderParams()
         {
-            _effect = _effect ?? new BasicEffect(_graphicsDevice);
-
             var io = igGetIO();
 
-            _effect.World = Matrix.Identity;
-            _effect.View = Matrix.Identity;
-            _effect.Projection = Matrix.CreateOrthographicOffCenter(0f, io.DisplaySize.X, io.DisplaySize.Y, 0f, -1f, 1f);
-            _effect.TextureEnabled = true;
-            _effect.Texture = texture;
-            _effect.VertexColorEnabled = true;
-
-            return _effect;
+            var displayWidth = io->DisplaySize.X;
+            var displayHeight = io->DisplaySize.Y;
+            var worldViewProjectionMatrix = Matrix4x4.CreateOrthographicOffCenter(0f, displayWidth, displayHeight, 0f, -1f, 1f);
+            _effect!.UpdateWorldViewProjectionMatrix(ref worldViewProjectionMatrix);
         }
 
-        /// <summary>
-        ///     Sends XNA input state to ImGui
-        /// </summary>
-        protected virtual void UpdateInput()
+        private void UpdateInput()
         {
             var io = igGetIO();
 
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
-            for (var i = 0; i < _keys.Count; i++)
+            foreach (var key in _keys)
             {
-                io->KeysDown[_keys[i]] = keyboard.IsKeyDown((Keys)_keys[i]);
+                io->KeysDown[key] = keyboard.IsKeyDown((Keys)key);
             }
 
             io->KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
@@ -222,9 +207,6 @@ namespace Katabasis.ImGui
             _scrollWheelValue = mouse.ScrollWheelValue;
         }
 
-        /// <summary>
-        ///     Gets the geometry as set up by ImGui and sends it to the graphics device
-        /// </summary>
         private void RenderDrawData(ImDrawData* drawData)
         {
             var graphicsDevice = GraphicsDevice.Instance;
@@ -240,15 +222,13 @@ namespace Katabasis.ImGui
             // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
             ImDrawData_ScaleClipRects(drawData, igGetIO()->DisplayFramebufferScale);
 
-            // Setup projection
             graphicsDevice.Viewport = new Viewport(
-                0, 
+                0,
                 0,
                 graphicsDevice.PresentationParameters.BackBufferWidth,
                 graphicsDevice.PresentationParameters.BackBufferHeight);
 
             UpdateBuffers(drawData);
-
             RenderCommandLists(drawData);
 
             // Restore modified state
@@ -267,7 +247,6 @@ namespace Katabasis.ImGui
             if (drawData->TotalVtxCount > _vertexBufferSize)
             {
                 _vertexBuffer?.Dispose();
-
                 _vertexBufferSize = (int)(drawData->TotalVtxCount * 1.5f);
                 _vertexBuffer = new VertexBuffer(ImGuiVertexDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
                 _vertexData = new byte[_vertexBufferSize * ImGuiVertexDeclaration.Size];
@@ -276,7 +255,6 @@ namespace Katabasis.ImGui
             if (drawData->TotalIdxCount > _indexBufferSize)
             {
                 _indexBuffer?.Dispose();
-
                 _indexBufferSize = (int)(drawData->TotalIdxCount * 1.5f);
                 _indexBuffer = new IndexBuffer(IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
                 _indexData = new byte[_indexBufferSize * sizeof(ushort)];
@@ -291,35 +269,38 @@ namespace Katabasis.ImGui
                 var cmdList = drawData->CmdLists[n];
 
                 fixed (void* vtxDstPtr = &_vertexData[vtxOffset * ImGuiVertexDeclaration.Size])
-                fixed (void* idxDstPtr = &_indexData[idxOffset * sizeof(ushort)])
-                {
-                    Buffer.MemoryCopy(
-                        cmdList->VtxBuffer.Data, 
-                        vtxDstPtr, 
-                        _vertexData.Length, 
-                        cmdList->VtxBuffer.Size * ImGuiVertexDeclaration.Size);
-                    Buffer.MemoryCopy(
-                        cmdList->IdxBuffer.Data,
-                        idxDstPtr,
-                        _indexData.Length,
-                        cmdList->IdxBuffer.Size * sizeof(ushort));
-                }
+				{
+					fixed (void* idxDstPtr = &_indexData[idxOffset * sizeof(ushort)])
+                    {
+                        Buffer.MemoryCopy(
+                            cmdList->VtxBuffer.Data,
+                            vtxDstPtr,
+                            _vertexData.Length,
+                            cmdList->VtxBuffer.Size * ImGuiVertexDeclaration.Size);
+                        Buffer.MemoryCopy(
+                            cmdList->IdxBuffer.Data,
+                            idxDstPtr,
+                            _indexData.Length,
+                            cmdList->IdxBuffer.Size * sizeof(ushort));
+                    }
+				}
 
                 vtxOffset += cmdList->VtxBuffer.Size;
                 idxOffset += cmdList->IdxBuffer.Size;
             }
 
             // Copy the managed byte arrays to the gpu vertex- and index buffers
-            _vertexBuffer.SetData(_vertexData, 0, drawData->TotalVtxCount * ImGuiVertexDeclaration.Size);
-            _indexBuffer.SetData(_indexData, 0, drawData->TotalIdxCount * sizeof(ushort));
+            _vertexBuffer!.SetData(_vertexData, 0, drawData->TotalVtxCount * ImGuiVertexDeclaration.Size);
+            _indexBuffer!.SetData(_indexData, 0, drawData->TotalIdxCount * sizeof(ushort));
         }
 
         private void RenderCommandLists(ImDrawData* drawData)
         {
             var graphicsDevice = GraphicsDevice.Instance;
-            
-            graphicsDevice.SetVertexBuffer(_vertexBuffer);
+
+            graphicsDevice.SetVertexBuffer(_vertexBuffer!);
             graphicsDevice.Indices = _indexBuffer;
+            var lastTexture = graphicsDevice.Textures[0];
 
             var vtxOffset = 0;
             var idxOffset = 0;
@@ -332,22 +313,23 @@ namespace Katabasis.ImGui
                 {
                     var drawCmd = cmdList->CmdBuffer.Data[cmdi];
 
-                    if (!_loadedTextures.ContainsKey((IntPtr)drawCmd.TextureId.Data))
+                    if (!_textures.ContainsKey((IntPtr)drawCmd.TextureId.Data))
                     {
                         throw new InvalidOperationException(
                             $"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings");
                     }
 
+                    var texture = _textures[(IntPtr)drawCmd.TextureId.Data];
+                    GraphicsDevice.Instance.Textures[0] = texture;
                     graphicsDevice.ScissorRectangle = new Rectangle(
                         (int)drawCmd.ClipRect.X,
                         (int)drawCmd.ClipRect.Y,
                         (int)(drawCmd.ClipRect.Z - drawCmd.ClipRect.X),
-                        (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
-                    );
+                        (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y));
 
-                    var effect = UpdateEffect(_loadedTextures[(IntPtr)drawCmd.TextureId.Data]);
+                    BindShaderParams();
 
-                    foreach (var pass in effect.CurrentTechnique!.Passes)
+                    foreach (var pass in _effect!.CurrentTechnique!.Passes)
                     {
                         pass.Apply();
                         graphicsDevice.DrawIndexedPrimitives(
@@ -356,8 +338,7 @@ namespace Katabasis.ImGui
                             minVertexIndex: 0,
                             numVertices: cmdList->VtxBuffer.Size,
                             startIndex: idxOffset,
-                            primitiveCount: (int)drawCmd.ElemCount / 3
-                        );
+                            primitiveCount: (int)drawCmd.ElemCount / 3);
                     }
 
                     idxOffset += (int)drawCmd.ElemCount;
@@ -365,6 +346,8 @@ namespace Katabasis.ImGui
 
                 vtxOffset += cmdList->VtxBuffer.Size;
             }
+
+            graphicsDevice.Textures[0] = lastTexture;
         }
     }
 }

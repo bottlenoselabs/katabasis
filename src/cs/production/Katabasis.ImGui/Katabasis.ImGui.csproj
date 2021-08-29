@@ -1,7 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <!-- MSBuild project settings -->
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <!-- My-MSBuild settings -->
+    <PropertyGroup>
+        <EnableAnalyzers>true</EnableAnalyzers>
+        <EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +20,15 @@
       <None Update="Main.fx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Main.fxb" />
+      <EmbeddedResource Include="Main.fxb" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     </ItemGroup>
 
 </Project>
