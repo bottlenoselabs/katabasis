@@ -1,4 +1,4 @@
-name: "Build test deploy"
+name: "Develop"
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -23,8 +23,6 @@ jobs:
     steps:
     - name: "Checkout Git repository"
       uses: actions/checkout@v2
-      with:
-        submodules: 'true'
 
     - name: "Fetch all history for all tags and branches"
       run: git fetch --prune --unshallow
@@ -83,8 +81,8 @@ jobs:
       with:
         dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
 
-    - name: "Downlaod FNA libraries"
-      run: bash ./get-fna-libs.sh
+    - name: "Build or download native libraries"
+      run: bash ./library.sh
 
     - name: "Build solution"
       run: dotnet build --nologo --verbosity minimal --configuration Release /p:Version='${{ env.VERSION }}'
