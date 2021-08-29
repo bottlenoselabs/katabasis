@@ -4,9 +4,6 @@
 [submodule "ext/assetyard"]
 	path = ext/assetyard
 	url = https://github.com/craftworkgames/assetyard.git
-[submodule "ext/c2cs"]
-	path = ext/c2cs
-	url = https://github.com/lithiumtoast/c2cs
 [submodule "ext/imgui-cs"]
 	path = ext/imgui-cs
 	url = https://github.com/lithiumtoast/imgui-cs
