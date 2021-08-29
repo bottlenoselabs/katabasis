@@ -1,16 +1,13 @@
-name: "Develop"
+name: "Pull requests"
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CORE_SDK_VERSION: 5.0.100
-  MYGET_ACCESS_TOKEN: ${{ secrets.MYGET_ACCESS_TOKEN }}
-  MYGET_SOURCE_URL: 'https://www.myget.org/F/lithiumtoast/api/v3/index.json'
 
 on:
-  push:
+  pull_request_target:
     branches: [develop]
-    tags: [v*]
 
 jobs:
 
@@ -22,7 +19,7 @@ jobs:
     - name: "Checkout Git repository"
       uses: actions/checkout@v2
       with:
-        ref: ${{ GITHUB_REF }}
+        ref: ${{ GITHUB_HEAD_REF }}
 
     - name: "Fetch all history for all tags and branches"
       run: git fetch --prune --unshallow
@@ -75,7 +72,7 @@ jobs:
       uses: actions/checkout@master
       with:
         submodules: 'recursive'
-        ref: ${{ GITHUB_REF }}
+        ref: ${{ GITHUB_HEAD_REF }}
 
     - name: "Setup .NET Core CLI"
       uses: actions/setup-dotnet@v1
@@ -90,40 +87,3 @@ jobs:
 
     - name: "Test solution"
       run: dotnet test --nologo --verbosity normal --configuration Release --no-build
-
-    - name: "Pack solution"
-      if: matrix.os == 'ubuntu-latest'
-      run: dotnet pack --nologo --output "./nuget-packages-packed" --verbosity minimal --configuration Release --no-build -p:PackageVersion='${{ env.VERSION }}'
-
-    - name: "Upload packages"
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v2
-      with:
-        name: nuget-packages-packed
-        path: './nuget-packages-packed/*/**'
-
-  deploy-job:
-    name: "Deploy"
-    needs: [build-test-pack-job]
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: "Setup .NET Core CLI"
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
-
-    - name: "Download NuGet Packages"
-      uses: actions/download-artifact@v1
-      with:
-        name: nuget-packages-packed
-        path: './nuget-packages-packed'
-
-    - name: "Echo Packages"
-      run: find ./nuget-packages-packed/ -not -type d -exec basename {} \;
-      
-    - name: "Add Packages Source: MyGet"
-      run: dotnet nuget add source $MYGET_SOURCE_URL --name "MyGet"
- 
-    - name: "Upload Packages: MyGet"
-      run: dotnet nuget push "./**/*.nupkg" --source "MyGet" --skip-duplicate --api-key $MYGET_ACCESS_TOKEN
