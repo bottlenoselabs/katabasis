@@ -11,6 +11,11 @@ namespace Katabasis
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
 	public class GraphicsDevice : IDisposable
 	{
+		/// <summary>
+		/// 	Gets the current <see cref="GraphicsDevice" />.
+		/// </summary>
+		public static GraphicsDevice Instance => GraphicsDeviceManager.Instance.GraphicsDevice;
+
 		// Per XNA4 General Spec
 		internal const int MaxTextureSamples = 16;
 

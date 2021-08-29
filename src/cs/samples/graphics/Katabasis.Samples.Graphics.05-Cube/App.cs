@@ -48,7 +48,7 @@ namespace Katabasis.Samples
 			//     please don't use these, you should only ever have use for one effect technique and one effect pass
 			// NOTE: This applies any changes we have set for our render pipeline including:
 			//     vertex buffers, index buffers, textures, samplers, blend, rasterizer, depth stencil, etc.
-			_shader!.Techniques![0]!.Passes![0]!.Apply();
+			_shader.Techniques![0]!.Passes[0]!.Apply();
 
 			// XNA crap: also we say the topology type of the vertices in the render loop; rasterizer should know this
 			//    plus, in XNA we have `DrawIndexedPrimitives` and `DrawPrimitives`; we really only need `DrawElements`

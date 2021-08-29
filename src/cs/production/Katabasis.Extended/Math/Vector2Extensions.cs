@@ -166,5 +166,20 @@ namespace Katabasis.Extended
             var lengthSquaredDenominator = Vector2.Dot(vector2, vector2);
             return dotNumerator/lengthSquaredDenominator*vector2;
         }
+
+        public static float Clamp(float value, float min, float max, float? rangeMin = null, float? rangeMax = null)
+        {
+            var rmin = rangeMin ?? -Math.PI;
+            var rmax = rangeMax ?? Math.PI;
+
+            var modulus = (float)Math.Abs(rmin - rmax);
+            if ((value %= modulus) < 0f)
+            {
+                value += modulus;
+            }
+
+            value += (float)Math.Min(rmin, rmax);
+            return Math.Clamp(value, min, max);
+        }
     }
 }
