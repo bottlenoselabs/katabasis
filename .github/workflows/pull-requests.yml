@@ -19,7 +19,7 @@ jobs:
     - name: "Checkout Git repository"
       uses: actions/checkout@v2
       with:
-        ref: ${{ GITHUB_HEAD_REF }}
+        ref: ${{ env.GITHUB_HEAD_REF }}
 
     - name: "Fetch all history for all tags and branches"
       run: git fetch --prune --unshallow
@@ -72,7 +72,7 @@ jobs:
       uses: actions/checkout@master
       with:
         submodules: 'recursive'
-        ref: ${{ GITHUB_HEAD_REF }}
+        ref: ${{ env.GITHUB_HEAD_REF }}
 
     - name: "Setup .NET Core CLI"
       uses: actions/setup-dotnet@v1
