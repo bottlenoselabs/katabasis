@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="ImGui.fx">
+      <None Update="Main.fx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
