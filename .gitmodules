@@ -7,3 +7,6 @@
 [submodule "ext/imgui-cs"]
 	path = ext/imgui-cs
 	url = https://github.com/lithiumtoast/imgui-cs
+[submodule "ext/sdl-cs"]
+	path = ext/sdl-cs
+	url = https://github.com/lithiumtoast/sdl-cs.git
