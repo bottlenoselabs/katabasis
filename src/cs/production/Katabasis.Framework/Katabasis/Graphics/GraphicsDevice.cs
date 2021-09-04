@@ -243,6 +243,8 @@ namespace Katabasis
 				byte debugMode;
 #if DEBUG
 				debugMode = 1;
+#else
+				debugMode = 0;
 #endif
 				Device = FNA3D_CreateDevice((FNA3D_PresentationParameters*)Unsafe.AsPointer(ref PresentationParameters.Parameters), debugMode);
 			}

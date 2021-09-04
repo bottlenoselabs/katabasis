@@ -671,7 +671,7 @@ namespace Katabasis
 #else
 					var exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", string.Empty);
 					cachePath = Path.Combine(
-						SDL_GetPrefPath(null, "FNA3D"),
+						SDL_GetPrefPath(default, "FNA3D"),
 						exeName + "_Vulkan_PipelineCache.blob");
 #endif
 				}
