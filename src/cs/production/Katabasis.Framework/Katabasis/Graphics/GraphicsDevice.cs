@@ -1,15 +1,19 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static FNA3D;
 
 namespace Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class GraphicsDevice : IDisposable
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
+	public sealed unsafe class GraphicsDevice : IDisposable
 	{
 		/// <summary>
 		/// 	Gets the current <see cref="GraphicsDevice" />.
@@ -25,10 +29,10 @@ namespace Katabasis
 		internal const int MaxVertexTextureSamplers = 4;
 
 		// Some of these are internal for validation purposes
-		internal readonly RenderTargetBinding[] _renderTargetBindings = new RenderTargetBinding[MaxRenderTargetBindings];
-		internal int _renderTargetCount;
+		internal readonly RenderTargetBinding[] RenderTargetBindings = new RenderTargetBinding[MaxRenderTargetBindings];
+		internal int RenderTargetCount;
 
-		internal readonly IntPtr GLDevice;
+		internal readonly FNA3D_Device* Device;
 		internal readonly PipelineCache PipelineCache;
 
 		/* We have to store this internally because we flip the Viewport for
@@ -43,11 +47,11 @@ namespace Katabasis
 		 */
 		private Rectangle _scissorRectangle;
 
-		private readonly FNA3D.FNA3D_RenderTargetBinding[] _nativeTargetBindings =
-			new FNA3D.FNA3D_RenderTargetBinding[MaxRenderTargetBindings];
+		private readonly FNA3D_RenderTargetBinding[] _nativeTargetBindings =
+			new FNA3D_RenderTargetBinding[MaxRenderTargetBindings];
 
-		private readonly FNA3D.FNA3D_RenderTargetBinding[] _nativeTargetBindingsNext =
-			new FNA3D.FNA3D_RenderTargetBinding[MaxRenderTargetBindings];
+		private readonly FNA3D_RenderTargetBinding[] _nativeTargetBindingsNext =
+			new FNA3D_RenderTargetBinding[MaxRenderTargetBindings];
 
 		// Used to prevent alloc on SetRenderTarget()
 		private readonly RenderTargetBinding[] _singleTargetCache = new RenderTargetBinding[1];
@@ -55,8 +59,8 @@ namespace Katabasis
 		private readonly VertexBufferBinding[] _vertexBufferBindings =
 			new VertexBufferBinding[MaxVertexAttributes];
 
-		private readonly FNA3D.FNA3D_VertexBufferBinding[] _nativeBufferBindings =
-			new FNA3D.FNA3D_VertexBufferBinding[MaxVertexAttributes];
+		private readonly FNA3D_VertexBufferBinding[] _nativeBufferBindings =
+			new FNA3D_VertexBufferBinding[MaxVertexAttributes];
 
 		private int _vertexBufferCount;
 		private bool _vertexBuffersUpdated;
@@ -107,11 +111,12 @@ namespace Katabasis
 			{
 				if (PresentationParameters.IsFullScreen)
 				{
-					FNA3D.FNA3D_GetBackbufferSize(GLDevice, out var w, out var h);
+					int w, h;
+					FNA3D_GetBackbufferSize(Device, &w, &h);
 					return new DisplayMode(
 						w,
 						h,
-						FNA3D.FNA3D_GetBackbufferSurfaceFormat(GLDevice));
+						(SurfaceFormat)FNA3D_GetBackbufferSurfaceFormat(Device));
 				}
 
 				return Adapter.CurrentDisplayMode;
@@ -138,9 +143,9 @@ namespace Katabasis
 			set
 			{
 				_scissorRectangle = value;
-				FNA3D.FNA3D_SetScissorRect(
-					GLDevice,
-					ref value);
+				FNA3D_SetScissorRect(
+					Device,
+					(FNA3D_Rect*)Unsafe.AsPointer(ref value));
 			}
 		}
 
@@ -150,7 +155,7 @@ namespace Katabasis
 			set
 			{
 				_viewport = value;
-				FNA3D.FNA3D_SetViewport(GLDevice, ref value._viewport);
+				FNA3D_SetViewport(Device, (FNA3D_Viewport*)Unsafe.AsPointer(ref value._viewport));
 			}
 		}
 
@@ -158,37 +163,39 @@ namespace Katabasis
 		{
 			get
 			{
-				FNA3D.FNA3D_GetBlendFactor(GLDevice, out var result);
-				return result;
+				FNA3D_Color result;
+				FNA3D_GetBlendFactor(Device, &result);
+				return Unsafe.ReadUnaligned<Color>(&result);
 			}
+
 			set =>
 				/* FIXME: Does this affect the value found in
 				 * BlendState?
 				 * -flibit
 				 */
-				FNA3D.FNA3D_SetBlendFactor(GLDevice, ref value);
+				FNA3D_SetBlendFactor(Device, (FNA3D_Color*)Unsafe.AsPointer(ref value));
 		}
 
 		public int MultiSampleMask
 		{
-			get => FNA3D.FNA3D_GetMultiSampleMask(GLDevice);
+			get => FNA3D_GetMultiSampleMask(Device);
 			set =>
 				/* FIXME: Does this affect the value found in
 				 * BlendState?
 				 * -flibit
 				 */
-				FNA3D.FNA3D_SetMultiSampleMask(GLDevice, value);
+				FNA3D_SetMultiSampleMask(Device, value);
 		}
 
 		public int ReferenceStencil
 		{
-			get => FNA3D.FNA3D_GetReferenceStencil(GLDevice);
+			get => FNA3D_GetReferenceStencil(Device);
 			set =>
 				/* FIXME: Does this affect the value found in
 				 * DepthStencilState?
 				 * -flibit
 				 */
-				FNA3D.FNA3D_SetReferenceStencil(GLDevice, value);
+				FNA3D_SetReferenceStencil(Device, value);
 		}
 
 		public IndexBuffer? Indices { get; set; }
@@ -233,11 +240,11 @@ namespace Katabasis
 			{
 				// ReSharper disable once JoinDeclarationAndInitializer
 				// ReSharper disable once ConvertToConstant.Local
-				byte debugMode = 0;
+				byte debugMode;
 #if DEBUG
 				debugMode = 1;
 #endif
-				GLDevice = FNA3D.FNA3D_CreateDevice(ref PresentationParameters._parameters, debugMode);
+				Device = FNA3D_CreateDevice((FNA3D_PresentationParameters*)Unsafe.AsPointer(ref PresentationParameters.Parameters), debugMode);
 			}
 			catch (Exception e)
 			{
@@ -258,10 +265,12 @@ namespace Katabasis
 			RasterizerState = RasterizerState.CullCounterClockwise;
 
 			// Initialize the Texture/Sampler state containers
-			FNA3D.FNA3D_GetMaxTextureSlots(
-				GLDevice,
-				out var maxTextures,
-				out var maxVertexTextures);
+			int maxTextures;
+			int maxVertexTextures;
+			FNA3D_GetMaxTextureSlots(
+				Device,
+				&maxTextures,
+				&maxVertexTextures);
 
 			Textures = new TextureCollection(
 				maxTextures,
@@ -296,11 +305,11 @@ namespace Katabasis
 		}
 
 		public void Present() =>
-			FNA3D.FNA3D_SwapBuffers(
-				GLDevice,
-				IntPtr.Zero,
-				IntPtr.Zero,
-				PresentationParameters.DeviceWindowHandle);
+			FNA3D_SwapBuffers(
+				Device,
+				(FNA3D_Rect*)IntPtr.Zero,
+				(FNA3D_Rect*)IntPtr.Zero,
+				(void*)PresentationParameters.DeviceWindowHandle);
 
 		public void Present(
 			Rectangle? sourceRectangle,
@@ -316,37 +325,37 @@ namespace Katabasis
 			{
 				var src = sourceRectangle.Value;
 				var dst = destinationRectangle.Value;
-				FNA3D.FNA3D_SwapBuffers(
-					GLDevice,
-					ref src,
-					ref dst,
-					overrideWindowHandle);
+				FNA3D_SwapBuffers(
+					Device,
+					(FNA3D_Rect*)Unsafe.AsPointer(ref src),
+					(FNA3D_Rect*)Unsafe.AsPointer(ref dst),
+					(void*)overrideWindowHandle);
 			}
 			else if (sourceRectangle.HasValue)
 			{
 				var src = sourceRectangle.Value;
-				FNA3D.FNA3D_SwapBuffers(
-					GLDevice,
-					ref src,
-					IntPtr.Zero,
-					overrideWindowHandle);
+				FNA3D_SwapBuffers(
+					Device,
+					(FNA3D_Rect*)Unsafe.AsPointer(ref src),
+					(FNA3D_Rect*)IntPtr.Zero,
+					(void*)overrideWindowHandle);
 			}
 			else if (destinationRectangle.HasValue)
 			{
 				var dst = destinationRectangle.Value;
-				FNA3D.FNA3D_SwapBuffers(
-					GLDevice,
-					IntPtr.Zero,
-					ref dst,
-					overrideWindowHandle);
+				FNA3D_SwapBuffers(
+					Device,
+					(FNA3D_Rect*)IntPtr.Zero,
+					(FNA3D_Rect*)Unsafe.AsPointer(ref dst),
+					(void*)overrideWindowHandle);
 			}
 			else
 			{
-				FNA3D.FNA3D_SwapBuffers(
-					GLDevice,
-					IntPtr.Zero,
-					IntPtr.Zero,
-					overrideWindowHandle);
+				FNA3D_SwapBuffers(
+					Device,
+					(FNA3D_Rect*)IntPtr.Zero,
+					(FNA3D_Rect*)IntPtr.Zero,
+					(void*)overrideWindowHandle);
 			}
 		}
 
@@ -362,9 +371,9 @@ namespace Katabasis
 			Adapter = graphicsAdapter;
 
 			// Verify MSAA before we really start...
-			PresentationParameters.MultiSampleCount = FNA3D.FNA3D_GetMaxMultiSampleCount(
-				GLDevice,
-				PresentationParameters.BackBufferFormat,
+			PresentationParameters.MultiSampleCount = FNA3D_GetMaxMultiSampleCount(
+				Device,
+				(FNA3D_SurfaceFormat)PresentationParameters.BackBufferFormat,
 				MathHelper.ClosestMSAAPower(PresentationParameters.MultiSampleCount));
 
 			// We're about to reset, let the application know.
@@ -391,9 +400,9 @@ namespace Katabasis
 			 * The GLDevice needs to know what we're up to right away.
 			 * -flibit
 			 */
-			FNA3D.FNA3D_ResetBackbuffer(
-				GLDevice,
-				ref PresentationParameters._parameters);
+			FNA3D_ResetBackbuffer(
+				Device,
+				(FNA3D_PresentationParameters*)Unsafe.AsPointer(ref PresentationParameters.Parameters));
 
 			// The mouse needs to know this for faux-backbuffer mouse scaling.
 			Mouse._backBufferWidth = PresentationParameters.BackBufferWidth;
@@ -441,8 +450,8 @@ namespace Katabasis
 			* a more accurate value here, but the Backbuffer may disagree.
 			* -flibit
 			*/
-			var renderTarget = _renderTargetBindings[0].RenderTarget as IRenderTarget;
-			var dsFormat = _renderTargetCount == 0 ? FNA3D.FNA3D_GetBackbufferDepthFormat(GLDevice) : renderTarget!.DepthStencilFormat;
+			var renderTarget = RenderTargetBindings[0].RenderTarget as IRenderTarget;
+			var dsFormat = RenderTargetCount == 0 ? (DepthFormat)FNA3D_GetBackbufferDepthFormat(Device) : renderTarget!.DepthStencilFormat;
 
 			if (dsFormat == DepthFormat.None)
 			{
@@ -453,10 +462,10 @@ namespace Katabasis
 				options &= ~ClearOptions.Stencil;
 			}
 
-			FNA3D.FNA3D_Clear(
-				GLDevice,
-				options,
-				ref color,
+			FNA3D_Clear(
+				Device,
+				(FNA3D_ClearOptions)options,
+				(FNA3D_Vec4*)Unsafe.AsPointer(ref color),
 				depth,
 				stencil);
 		}
@@ -484,10 +493,10 @@ namespace Katabasis
 			{
 				x = 0;
 				y = 0;
-				FNA3D.FNA3D_GetBackbufferSize(
-					GLDevice,
-					out w,
-					out h);
+				FNA3D_GetBackbufferSize(
+					Device,
+					&w,
+					&h);
 			}
 			else
 			{
@@ -499,17 +508,17 @@ namespace Katabasis
 
 			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
 			Texture.ValidateGetDataFormat(
-				FNA3D.FNA3D_GetBackbufferSurfaceFormat(GLDevice),
+				(SurfaceFormat)FNA3D_GetBackbufferSurfaceFormat(Device),
 				elementSizeInBytes);
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			FNA3D.FNA3D_ReadBackbuffer(
-				GLDevice,
+			FNA3D_ReadBackbuffer(
+				Device,
 				x,
 				y,
 				w,
 				h,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				data.Length * elementSizeInBytes);
 
 			handle.Free();
@@ -550,18 +559,18 @@ namespace Katabasis
 			ApplySamplers();
 
 			// Checking for redundant SetRenderTargets...
-			if (renderTargets == null && _renderTargetCount == 0)
+			if (renderTargets == null && RenderTargetCount == 0)
 			{
 				return;
 			}
 
-			if (renderTargets != null && renderTargets.Length == _renderTargetCount)
+			if (renderTargets != null && renderTargets.Length == RenderTargetCount)
 			{
 				var isRedundant = true;
 				for (var i = 0; i < renderTargets.Length; i += 1)
 				{
-					if (renderTargets[i].RenderTarget != _renderTargetBindings[i].RenderTarget ||
-					    renderTargets[i].CubeMapFace != _renderTargetBindings[i].CubeMapFace)
+					if (renderTargets[i].RenderTarget != RenderTargetBindings[i].RenderTarget ||
+					    renderTargets[i].CubeMapFace != RenderTargetBindings[i].CubeMapFace)
 					{
 						isRedundant = false;
 						break;
@@ -579,12 +588,12 @@ namespace Katabasis
 			RenderTargetUsage clearTarget;
 			if (renderTargets == null || renderTargets.Length == 0)
 			{
-				FNA3D.FNA3D_SetRenderTargets(
-					GLDevice,
-					IntPtr.Zero,
+				FNA3D_SetRenderTargets(
+					Device,
+					(FNA3D_RenderTargetBinding*)IntPtr.Zero,
 					0,
-					IntPtr.Zero,
-					DepthFormat.None,
+					(FNA3D_Renderbuffer*)IntPtr.Zero,
+					(FNA3D_DepthFormat)DepthFormat.None,
 					PresentationParameters.RenderTargetUsage != RenderTargetUsage.DiscardContents ? (byte)1 : (byte)0); /* lol c# */
 
 				// Set the viewport/scissor to the size of the backbuffer.
@@ -593,31 +602,28 @@ namespace Katabasis
 				clearTarget = PresentationParameters.RenderTargetUsage;
 
 				// Resolve previous targets, if needed
-				for (var i = 0; i < _renderTargetCount; i += 1)
+				for (var i = 0; i < RenderTargetCount; i += 1)
 				{
-					FNA3D.FNA3D_ResolveTarget(GLDevice, ref _nativeTargetBindings[i]);
+					FNA3D_ResolveTarget(Device, (FNA3D_RenderTargetBinding*)Unsafe.AsPointer(ref _nativeTargetBindings[i]));
 				}
 
-				Array.Clear(_renderTargetBindings, 0, _renderTargetBindings.Length);
+				Array.Clear(RenderTargetBindings, 0, RenderTargetBindings.Length);
 				Array.Clear(_nativeTargetBindings, 0, _nativeTargetBindings.Length);
-				_renderTargetCount = 0;
+				RenderTargetCount = 0;
 			}
 			else
 			{
 				var target = renderTargets[0].RenderTarget as IRenderTarget;
-				unsafe
+				fixed (FNA3D_RenderTargetBinding* rt = &_nativeTargetBindingsNext[0])
 				{
-					fixed (FNA3D.FNA3D_RenderTargetBinding* rt = &_nativeTargetBindingsNext[0])
-					{
-						PrepareRenderTargetBindings(rt, renderTargets);
-						FNA3D.FNA3D_SetRenderTargets(
-							GLDevice,
-							rt,
-							renderTargets.Length,
-							target!.DepthStencilBuffer,
-							target.DepthStencilFormat,
-							target.RenderTargetUsage != RenderTargetUsage.DiscardContents ? (byte)1 : (byte)0); /* lol c# */
-					}
+					PrepareRenderTargetBindings(rt, renderTargets);
+					FNA3D_SetRenderTargets(
+						Device,
+						rt,
+						renderTargets.Length,
+						(FNA3D_Renderbuffer*)target!.DepthStencilBuffer,
+						(FNA3D_DepthFormat)target.DepthStencilFormat,
+						target.RenderTargetUsage != RenderTargetUsage.DiscardContents ? (byte)1 : (byte)0); /* lol c# */
 				}
 
 				// Set the viewport/scissor to the size of the first render target.
@@ -626,13 +632,13 @@ namespace Katabasis
 				clearTarget = target.RenderTargetUsage;
 
 				// Resolve previous targets, if needed
-				for (var i = 0; i < _renderTargetCount; i += 1)
+				for (var i = 0; i < RenderTargetCount; i += 1)
 				{
 					// We only need to resolve if the target is no longer bound.
 					var stillBound = false;
 					for (var j = 0; j < renderTargets.Length; j += 1)
 					{
-						if (_renderTargetBindings[i].RenderTarget == renderTargets[j].RenderTarget)
+						if (RenderTargetBindings[i].RenderTarget == renderTargets[j].RenderTarget)
 						{
 							stillBound = true;
 							break;
@@ -644,14 +650,14 @@ namespace Katabasis
 						continue;
 					}
 
-					FNA3D.FNA3D_ResolveTarget(GLDevice, ref _nativeTargetBindings[i]);
+					FNA3D_ResolveTarget(Device, (FNA3D_RenderTargetBinding*)Unsafe.AsPointer(ref _nativeTargetBindings[i]));
 				}
 
-				Array.Clear(_renderTargetBindings, 0, _renderTargetBindings.Length);
-				Array.Copy(renderTargets, _renderTargetBindings, renderTargets.Length);
+				Array.Clear(RenderTargetBindings, 0, RenderTargetBindings.Length);
+				Array.Copy(renderTargets, RenderTargetBindings, renderTargets.Length);
 				Array.Clear(_nativeTargetBindings, 0, _nativeTargetBindings.Length);
 				Array.Copy(_nativeTargetBindingsNext, _nativeTargetBindings, renderTargets.Length);
-				_renderTargetCount = renderTargets.Length;
+				RenderTargetCount = renderTargets.Length;
 			}
 
 			// Apply new GL state, clear target if requested
@@ -670,8 +676,8 @@ namespace Katabasis
 		public RenderTargetBinding[] GetRenderTargets()
 		{
 			// Return a correctly sized copy our internal array.
-			RenderTargetBinding[] bindings = new RenderTargetBinding[_renderTargetCount];
-			Array.Copy(_renderTargetBindings, bindings, _renderTargetCount);
+			RenderTargetBinding[] bindings = new RenderTargetBinding[RenderTargetCount];
+			Array.Copy(RenderTargetBindings, bindings, RenderTargetCount);
 			return bindings;
 		}
 
@@ -796,16 +802,16 @@ namespace Katabasis
 
 			PrepareVertexBindingArray(baseVertex);
 
-			FNA3D.FNA3D_DrawIndexedPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawIndexedPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				baseVertex,
 				minVertexIndex,
 				numVertices,
 				startIndex,
 				primitiveCount,
-				Indices!._buffer,
-				Indices.IndexElementSize);
+				(FNA3D_Buffer*)Indices!.Buffer,
+				(FNA3D_IndexElementSize)Indices.IndexElementSize);
 		}
 
 		public void DrawInstancedPrimitives(
@@ -818,7 +824,7 @@ namespace Katabasis
 			int instanceCount)
 		{
 			// If this device doesn't have the support, just explode now before it's too late.
-			if (FNA3D.FNA3D_SupportsHardwareInstancing(GLDevice) == 0)
+			if (FNA3D_SupportsHardwareInstancing(Device) == 0)
 			{
 				throw new NoSuitableGraphicsDeviceException("Your hardware does not support hardware instancing!");
 			}
@@ -827,17 +833,17 @@ namespace Katabasis
 
 			PrepareVertexBindingArray(baseVertex);
 
-			FNA3D.FNA3D_DrawInstancedPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawInstancedPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				baseVertex,
 				minVertexIndex,
 				numVertices,
 				startIndex,
 				primitiveCount,
 				instanceCount,
-				Indices!._buffer,
-				Indices!.IndexElementSize);
+				(FNA3D_Buffer*)Indices!.Buffer,
+				(FNA3D_IndexElementSize)Indices!.IndexElementSize);
 		}
 
 		public void DrawPrimitives(
@@ -849,9 +855,9 @@ namespace Katabasis
 
 			PrepareVertexBindingArray(0);
 
-			FNA3D.FNA3D_DrawPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				vertexStart,
 				primitiveCount);
 		}
@@ -888,16 +894,16 @@ namespace Katabasis
 			ibHandle.Free();
 			vbHandle.Free();
 
-			FNA3D.FNA3D_DrawIndexedPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawIndexedPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				0,
 				0,
 				numVertices,
 				0,
 				primitiveCount,
-				_userIndexBuffer,
-				IndexElementSize.SixteenBits);
+				(FNA3D_Buffer*)_userIndexBuffer,
+				(FNA3D_IndexElementSize)IndexElementSize.SixteenBits);
 		}
 
 		public void DrawUserIndexedPrimitives<T>(
@@ -933,16 +939,16 @@ namespace Katabasis
 			ibHandle.Free();
 			vbHandle.Free();
 
-			FNA3D.FNA3D_DrawIndexedPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawIndexedPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				0,
 				0,
 				numVertices,
 				0,
 				primitiveCount,
-				_userIndexBuffer,
-				IndexElementSize.SixteenBits);
+				(FNA3D_Buffer*)_userIndexBuffer,
+				(FNA3D_IndexElementSize)IndexElementSize.SixteenBits);
 		}
 
 		public void DrawUserIndexedPrimitives<T>(
@@ -977,16 +983,16 @@ namespace Katabasis
 			ibHandle.Free();
 			vbHandle.Free();
 
-			FNA3D.FNA3D_DrawIndexedPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawIndexedPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				0,
 				0,
 				numVertices,
 				0,
 				primitiveCount,
-				_userIndexBuffer,
-				IndexElementSize.ThirtyTwoBits);
+				(FNA3D_Buffer*)_userIndexBuffer,
+				(FNA3D_IndexElementSize)IndexElementSize.ThirtyTwoBits);
 		}
 
 		public void DrawUserIndexedPrimitives<T>(
@@ -1022,16 +1028,16 @@ namespace Katabasis
 			ibHandle.Free();
 			vbHandle.Free();
 
-			FNA3D.FNA3D_DrawIndexedPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawIndexedPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				0,
 				0,
 				numVertices,
 				0,
 				primitiveCount,
-				_userIndexBuffer,
-				IndexElementSize.ThirtyTwoBits);
+				(FNA3D_Buffer*)_userIndexBuffer,
+				(FNA3D_IndexElementSize)IndexElementSize.ThirtyTwoBits);
 		}
 
 		public void DrawUserPrimitives<T>(
@@ -1055,9 +1061,9 @@ namespace Katabasis
 			// Release the handles.
 			vbHandle.Free();
 
-			FNA3D.FNA3D_DrawPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				0,
 				primitiveCount);
 		}
@@ -1084,18 +1090,19 @@ namespace Katabasis
 			// Release the handles.
 			vbHandle.Free();
 
-			FNA3D.FNA3D_DrawPrimitives(
-				GLDevice,
-				primitiveType,
+			FNA3D_DrawPrimitives(
+				Device,
+				(FNA3D_PrimitiveType)primitiveType,
 				0,
 				primitiveCount);
 		}
 
-		public void SetStringMarkerEXT(string text) => FNA3D.FNA3D_SetStringMarker(GLDevice, text);
+		// ReSharper disable once InconsistentNaming
+		public void SetStringMarkerEXT(string text) => FNA3D_SetStringMarker(Device, text);
 
 		/* Needed by VideoPlayer */
-		internal static unsafe void PrepareRenderTargetBindings(
-			FNA3D.FNA3D_RenderTargetBinding* b,
+		internal static void PrepareRenderTargetBindings(
+			FNA3D_RenderTargetBinding* b,
 			RenderTargetBinding[] bindings)
 		{
 			for (var i = 0; i < bindings.Length; i += 1, b += 1)
@@ -1104,21 +1111,23 @@ namespace Katabasis
 				var rt = texture as IRenderTarget;
 				if (texture is RenderTargetCube)
 				{
-					b->Type = 1;
-					b->Data1 = rt!.Width;
-					b->Data2 = (int)bindings[i].CubeMapFace;
+					b->type = 1;
+					// JANK: FNA3D doesn't have proper C API interface exposed for the struct
+					Unsafe.WriteUnaligned((byte*)b + 4, rt!.Width);
+					Unsafe.WriteUnaligned((byte*)b + 8, (int)bindings[i].CubeMapFace);
 				}
 				else
 				{
-					b->Type = 0;
-					b->Data1 = rt!.Width;
-					b->Data2 = rt.Height;
+					b->type = 0;
+					// JANK: FNA3D doesn't have proper C API interface exposed for the struct
+					Unsafe.WriteUnaligned((byte*)b + 4, rt!.Width);
+					Unsafe.WriteUnaligned((byte*)b + 8, rt.Height);
 				}
 
-				b->LevelCount = rt.LevelCount;
-				b->MultiSampleCount = rt.MultiSampleCount;
-				b->Texture = texture!._texture;
-				b->ColorBuffer = rt.ColorBuffer;
+				b->levelCount = rt.LevelCount;
+				b->multiSampleCount = rt.MultiSampleCount;
+				b->texture = (FNA3D_Texture*)texture!._texture;
+				b->colorBuffer = (FNA3D_Renderbuffer*)rt.ColorBuffer;
 			}
 		}
 
@@ -1138,7 +1147,7 @@ namespace Katabasis
 			}
 		}
 
-		protected virtual void Dispose(bool disposing)
+		private void Dispose(bool disposing)
 		{
 			if (!IsDisposed)
 			{
@@ -1163,20 +1172,20 @@ namespace Katabasis
 
 					if (_userVertexBuffer != IntPtr.Zero)
 					{
-						FNA3D.FNA3D_AddDisposeVertexBuffer(
-							GLDevice,
-							_userVertexBuffer);
+						FNA3D_AddDisposeVertexBuffer(
+							Device,
+							(FNA3D_Buffer*)_userVertexBuffer);
 					}
 
 					if (_userIndexBuffer != IntPtr.Zero)
 					{
-						FNA3D.FNA3D_AddDisposeIndexBuffer(
-							GLDevice,
-							_userIndexBuffer);
+						FNA3D_AddDisposeIndexBuffer(
+							Device,
+							(FNA3D_Buffer*)_userIndexBuffer);
 					}
 
 					// Dispose of the GL Device/Context
-					FNA3D.FNA3D_DestroyDevice(GLDevice);
+					FNA3D_DestroyDevice(Device);
 				}
 
 				IsDisposed = true;
@@ -1188,26 +1197,26 @@ namespace Katabasis
 			// Update Blend/DepthStencil, if applicable
 			if (_currentBlend != BlendState)
 			{
-				FNA3D.FNA3D_SetBlendState(
-					GLDevice,
-					ref BlendState!._state);
+				FNA3D_SetBlendState(
+					Device,
+					(FNA3D_BlendState*)Unsafe.AsPointer(ref BlendState!._state));
 
 				_currentBlend = BlendState;
 			}
 
 			if (_currentDepthStencil != DepthStencilState)
 			{
-				FNA3D.FNA3D_SetDepthStencilState(
-					GLDevice,
-					ref DepthStencilState!._state);
+				FNA3D_SetDepthStencilState(
+					Device,
+					(FNA3D_DepthStencilState*)Unsafe.AsPointer(ref DepthStencilState!._state));
 
 				_currentDepthStencil = DepthStencilState;
 			}
 
 			// Always update RasterizerState, as it depends on other device states
-			FNA3D.FNA3D_ApplyRasterizerState(
-				GLDevice,
-				ref RasterizerState!._state);
+			FNA3D_ApplyRasterizerState(
+				Device,
+				(FNA3D_RasterizerState*)Unsafe.AsPointer(ref RasterizerState!._state));
 
 			ApplySamplers();
 		}
@@ -1223,11 +1232,11 @@ namespace Katabasis
 
 				_modifiedSamplers[sampler] = false;
 
-				FNA3D.FNA3D_VerifySampler(
-					GLDevice,
+				FNA3D_VerifySampler(
+					Device,
 					sampler,
-					Textures[sampler] != null ? Textures[sampler]!._texture : IntPtr.Zero,
-					ref SamplerStates[sampler]!._state);
+					(FNA3D_Texture*)(Textures[sampler] != null ? Textures[sampler]!._texture : IntPtr.Zero),
+					(FNA3D_SamplerState*)Unsafe.AsPointer(ref SamplerStates[sampler]!._state));
 			}
 
 			for (var sampler = 0; sampler < _modifiedVertexSamplers.Length; sampler += 1)
@@ -1245,31 +1254,31 @@ namespace Katabasis
 				 * we get to do.
 				 * -flibit
 				 */
-				FNA3D.FNA3D_VerifyVertexSampler(
-					GLDevice,
+				FNA3D_VerifyVertexSampler(
+					Device,
 					sampler,
-					VertexTextures[sampler] != null ? VertexTextures[sampler]!._texture : IntPtr.Zero,
-					ref VertexSamplerStates[sampler]!._state);
+					(FNA3D_Texture*)(VertexTextures[sampler] != null ? VertexTextures[sampler]!._texture : IntPtr.Zero),
+					(FNA3D_SamplerState*)Unsafe.AsPointer(ref VertexSamplerStates[sampler]!._state));
 			}
 		}
 
-		private unsafe void PrepareVertexBindingArray(int baseVertex)
+		private void PrepareVertexBindingArray(int baseVertex)
 		{
-			fixed (FNA3D.FNA3D_VertexBufferBinding* b = &_nativeBufferBindings[0])
+			fixed (FNA3D_VertexBufferBinding* b = &_nativeBufferBindings[0])
 			{
 				for (var i = 0; i < _vertexBufferCount; i += 1)
 				{
 					var buffer = _vertexBufferBindings[i].VertexBuffer;
-					b[i].VertexBuffer = buffer!._buffer;
-					b[i].VertexDeclaration.VertexStride = buffer.VertexDeclaration.VertexStride;
-					b[i].VertexDeclaration.ElementCount = buffer.VertexDeclaration._elements.Length;
-					b[i].VertexDeclaration.Elements = buffer.VertexDeclaration._elementsPin;
-					b[i].VertexOffset = _vertexBufferBindings[i].VertexOffset;
-					b[i].InstanceFrequency = _vertexBufferBindings[i].InstanceFrequency;
+					b[i].vertexBuffer = (FNA3D_Buffer*)buffer!.Buffer;
+					b[i].vertexDeclaration.vertexStride = buffer.VertexDeclaration.VertexStride;
+					b[i].vertexDeclaration.elementCount = buffer.VertexDeclaration._elements.Length;
+					b[i].vertexDeclaration.elements = (FNA3D_VertexElement*)buffer.VertexDeclaration._elementsPin;
+					b[i].vertexOffset = _vertexBufferBindings[i].VertexOffset;
+					b[i].instanceFrequency = _vertexBufferBindings[i].InstanceFrequency;
 				}
 
-				FNA3D.FNA3D_ApplyVertexBufferBindings(
-					GLDevice,
+				FNA3D_ApplyVertexBufferBindings(
+					Device,
 					b,
 					_vertexBufferCount,
 					(byte)(_vertexBuffersUpdated ? 1 : 0),
@@ -1279,7 +1288,7 @@ namespace Katabasis
 			_vertexBuffersUpdated = false;
 		}
 
-		private unsafe void PrepareUserVertexBuffer(
+		private void PrepareUserVertexBuffer(
 			IntPtr vertexData,
 			int numVertices,
 			int vertexOffset,
@@ -1293,39 +1302,39 @@ namespace Katabasis
 			{
 				if (_userVertexBuffer != IntPtr.Zero)
 				{
-					FNA3D.FNA3D_AddDisposeVertexBuffer(
-						GLDevice,
-						_userVertexBuffer);
+					FNA3D_AddDisposeVertexBuffer(
+						Device,
+						(FNA3D_Buffer*)_userVertexBuffer);
 				}
 
-				_userVertexBuffer = FNA3D.FNA3D_GenVertexBuffer(
-					GLDevice,
+				_userVertexBuffer = (IntPtr)FNA3D_GenVertexBuffer(
+					Device,
 					1,
-					BufferUsage.WriteOnly,
+					(FNA3D_BufferUsage)BufferUsage.WriteOnly,
 					len);
 
 				_userVertexBufferSize = len;
 			}
 
-			FNA3D.FNA3D_SetVertexBufferData(
-				GLDevice,
-				_userVertexBuffer,
+			FNA3D_SetVertexBufferData(
+				Device,
+				(FNA3D_Buffer*)_userVertexBuffer,
 				0,
-				vertexData + offset,
+				(void*)(vertexData + offset),
 				len,
 				1,
 				1,
-				SetDataOptions.Discard);
+				(FNA3D_SetDataOptions)SetDataOptions.Discard);
 
-			fixed (FNA3D.FNA3D_VertexBufferBinding* b = &_nativeBufferBindings[0])
+			fixed (FNA3D_VertexBufferBinding* b = &_nativeBufferBindings[0])
 			{
-				b->VertexBuffer = _userVertexBuffer;
-				b->VertexDeclaration.VertexStride = vertexDeclaration.VertexStride;
-				b->VertexDeclaration.ElementCount = vertexDeclaration._elements.Length;
-				b->VertexDeclaration.Elements = vertexDeclaration._elementsPin;
-				b->VertexOffset = 0;
-				b->InstanceFrequency = 0;
-				FNA3D.FNA3D_ApplyVertexBufferBindings(GLDevice, b, 1, 1, 0);
+				b->vertexBuffer = (FNA3D_Buffer*)_userVertexBuffer;
+				b->vertexDeclaration.vertexStride = vertexDeclaration.VertexStride;
+				b->vertexDeclaration.elementCount = vertexDeclaration._elements.Length;
+				b->vertexDeclaration.elements = (FNA3D_VertexElement*)vertexDeclaration._elementsPin;
+				b->vertexOffset = 0;
+				b->instanceFrequency = 0;
+				FNA3D_ApplyVertexBufferBindings(Device, b, 1, 1, 0);
 			}
 
 			_vertexBuffersUpdated = true;
@@ -1342,27 +1351,27 @@ namespace Katabasis
 			{
 				if (_userIndexBuffer != IntPtr.Zero)
 				{
-					FNA3D.FNA3D_AddDisposeIndexBuffer(
-						GLDevice,
-						_userIndexBuffer);
+					FNA3D_AddDisposeIndexBuffer(
+						Device,
+						(FNA3D_Buffer*)_userIndexBuffer);
 				}
 
-				_userIndexBuffer = FNA3D.FNA3D_GenIndexBuffer(
-					GLDevice,
+				_userIndexBuffer = (IntPtr)FNA3D_GenIndexBuffer(
+					Device,
 					1,
-					BufferUsage.WriteOnly,
+					(FNA3D_BufferUsage)BufferUsage.WriteOnly,
 					len);
 
 				_userIndexBufferSize = len;
 			}
 
-			FNA3D.FNA3D_SetIndexBufferData(
-				GLDevice,
-				_userIndexBuffer,
+			FNA3D_SetIndexBufferData(
+				Device,
+				(FNA3D_Buffer*)_userIndexBuffer,
 				0,
-				indexData + (indexOffset * indexElementSizeInBytes),
+				(void*)(indexData + (indexOffset * indexElementSizeInBytes)),
 				len,
-				SetDataOptions.Discard);
+				(FNA3D_SetDataOptions)SetDataOptions.Discard);
 		}
 
 		private static int PrimitiveVertices(PrimitiveType primitiveType, int primitiveCount) =>

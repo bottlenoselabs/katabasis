@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -49,8 +49,7 @@ namespace Katabasis
 			}
 
 			// Read entire file into memory, let FACT manage the pointer
-			IntPtr bufferLen;
-			IntPtr buffer = TitleContainer.ReadToPointer(settingsFile, out bufferLen);
+			var buffer = TitleContainer.ReadToPointer(settingsFile, out var bufferLen);
 
 			// Generate engine parameters
 			var settings = default(FAudio.FACTRuntimeParameters);

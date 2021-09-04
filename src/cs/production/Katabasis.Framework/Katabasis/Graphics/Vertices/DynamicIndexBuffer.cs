@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -6,8 +6,9 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class DynamicIndexBuffer : IndexBuffer
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "UnusedType.Global", Justification = "Public API.")]
+	public unsafe class DynamicIndexBuffer : IndexBuffer
 	{
 		public DynamicIndexBuffer(
 			IndexElementSize indexElementSize,
@@ -52,12 +53,12 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T))),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T)))),
 				elementCount * Marshal.SizeOf(typeof(T)),
-				options);
+				(FNA3D.FNA3D_SetDataOptions)options);
 
 			handle.Free();
 		}
@@ -73,12 +74,12 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				0,
-				handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T))),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T)))),
 				elementCount * Marshal.SizeOf(typeof(T)),
-				options);
+				(FNA3D.FNA3D_SetDataOptions)options);
 
 			handle.Free();
 		}

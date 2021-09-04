@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System.Diagnostics.CodeAnalysis;
 
@@ -80,44 +80,44 @@ namespace Katabasis
 
 		public TextureAddressMode AddressU
 		{
-			get => _state.AddressU;
-			set => _state.AddressU = value;
+			get => (TextureAddressMode)_state.addressU;
+			set => _state.addressU = (FNA3D.FNA3D_TextureAddressMode)value;
 		}
 
 		public TextureAddressMode AddressV
 		{
-			get => _state.AddressV;
-			set => _state.AddressV = value;
+			get => (TextureAddressMode)_state.addressV;
+			set => _state.addressV = (FNA3D.FNA3D_TextureAddressMode)value;
 		}
 
 		public TextureAddressMode AddressW
 		{
-			get => _state.AddressW;
-			set => _state.AddressW = value;
+			get => (TextureAddressMode)_state.addressW;
+			set => _state.addressW = (FNA3D.FNA3D_TextureAddressMode)value;
 		}
 
 		public TextureFilter Filter
 		{
-			get => _state.Filter;
-			set => _state.Filter = value;
+			get => (TextureFilter)_state.filter;
+			set => _state.filter = (FNA3D.FNA3D_TextureFilter)value;
 		}
 
 		public int MaxAnisotropy
 		{
-			get => _state.MaxAnisotropy;
-			set => _state.MaxAnisotropy = value;
+			get => _state.maxAnisotropy;
+			set => _state.maxAnisotropy = value;
 		}
 
 		public int MaxMipLevel
 		{
-			get => _state.MaxMipLevel;
-			set => _state.MaxMipLevel = value;
+			get => _state.maxMipLevel;
+			set => _state.maxMipLevel = value;
 		}
 
 		public float MipMapLevelOfDetailBias
 		{
-			get => _state.MipMapLevelOfDetailBias;
-			set => _state.MipMapLevelOfDetailBias = value;
+			get => _state.mipMapLevelOfDetailBias;
+			set => _state.mipMapLevelOfDetailBias = value;
 		}
 	}
 }

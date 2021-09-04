@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 
@@ -44,9 +44,9 @@ namespace Katabasis
 						throw new ObjectDisposedException(value.GetType().ToString());
 					}
 
-					for (var i = 0; i < value.GraphicsDevice._renderTargetCount; i += 1)
+					for (var i = 0; i < value.GraphicsDevice.RenderTargetCount; i += 1)
 					{
-						if (value == value.GraphicsDevice._renderTargetBindings[i].RenderTarget)
+						if (value == value.GraphicsDevice.RenderTargetBindings[i].RenderTarget)
 						{
 							throw new InvalidOperationException("The render target must not be set on the device when it is used as a texture.");
 						}

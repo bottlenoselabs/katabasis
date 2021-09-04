@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Katabasis
 {
-	public class GraphicsDeviceManager : IDisposable
+	public unsafe class GraphicsDeviceManager : IDisposable
 	{
 		public static readonly int DefaultBackBufferWidth = 800;
 		public static readonly int DefaultBackBufferHeight = 480;
@@ -400,8 +400,8 @@ namespace Katabasis
 				 * -flibit
 				 */
 				var maxMultiSampleCount = FNA3D.FNA3D_GetMaxMultiSampleCount(
-					GraphicsDevice.GLDevice,
-					gdi.PresentationParameters.BackBufferFormat,
+					GraphicsDevice.Device,
+					(FNA3D.FNA3D_SurfaceFormat)gdi.PresentationParameters.BackBufferFormat,
 					8);
 
 				gdi.PresentationParameters.MultiSampleCount = Math.Min(

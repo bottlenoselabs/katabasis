@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -7,25 +7,15 @@ using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
-	public class Texture2D : Texture
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
+	public unsafe class Texture2D : Texture
 	{
 		public Texture2D(
 			int width,
-			int height)
-			: this(
-				width,
-				height,
-				false,
-				SurfaceFormat.Color)
-		{
-		}
-
-		public Texture2D(
-			int width,
 			int height,
-			bool mipMap,
-			SurfaceFormat format)
+			bool mipMap = false,
+			SurfaceFormat format = SurfaceFormat.Color)
 		{
 			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			Width = width;
@@ -53,9 +43,9 @@ namespace Katabasis
 				Format = format;
 			}
 
-			_texture = FNA3D.FNA3D_CreateTexture2D(
-				GraphicsDevice.GLDevice,
-				Format,
+			_texture = (IntPtr)FNA3D.FNA3D_CreateTexture2D(
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_SurfaceFormat)Format,
 				Width,
 				Height,
 				LevelCount,
@@ -106,14 +96,14 @@ namespace Katabasis
 			var elementSize = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetTextureData2D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				x,
 				y,
 				w,
 				h,
 				level,
-				handle.AddrOfPinnedObject() + (startIndex * elementSize),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSize)),
 				elementCount * elementSize);
 
 			handle.Free();
@@ -147,14 +137,14 @@ namespace Katabasis
 			}
 
 			FNA3D.FNA3D_SetTextureData2D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				x,
 				y,
 				w,
 				h,
 				level,
-				data,
+				(void*)data,
 				dataLength);
 		}
 
@@ -209,14 +199,14 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_GetTextureData2D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				subX,
 				subY,
 				subW,
 				subH,
 				level,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount * elementSizeInBytes);
 
 			handle.Free();
@@ -227,17 +217,17 @@ namespace Katabasis
 			var len = Width * Height * GetFormatSize(Format);
 			var data = Marshal.AllocHGlobal(len);
 			FNA3D.FNA3D_GetTextureData2D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				0,
 				0,
 				Width,
 				height,
 				0,
-				data,
+				(void*)data,
 				len);
 
-			FNA3D.WriteJPGStream(
+			FNA.WriteJPGStream(
 				stream,
 				Width,
 				Height,
@@ -254,17 +244,17 @@ namespace Katabasis
 			var len = Width * Height * GetFormatSize(Format);
 			var data = Marshal.AllocHGlobal(len);
 			FNA3D.FNA3D_GetTextureData2D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				0,
 				0,
 				Width,
 				height,
 				0,
-				data,
+				(void*)data,
 				len);
 
-			FNA3D.WritePNGStream(
+			FNA.WritePNGStream(
 				stream,
 				Width,
 				Height,
@@ -288,7 +278,7 @@ namespace Katabasis
 				stream.Seek(0, SeekOrigin.Begin);
 			}
 
-			var pixels = FNA3D.ReadImageStream(
+			var pixels = FNA.ReadImageStream(
 				stream,
 				out var width,
 				out var height,
@@ -301,7 +291,7 @@ namespace Katabasis
 				pixels,
 				len);
 
-			FNA3D.FNA3D_Image_Free(pixels);
+			FNA3D_Image.FNA3D_Image_Free((byte*)pixels);
 			return result;
 		}
 
@@ -317,7 +307,7 @@ namespace Katabasis
 				stream.Seek(0, SeekOrigin.Begin);
 			}
 
-			var pixels = FNA3D.ReadImageStream(
+			var pixels = FNA.ReadImageStream(
 				stream,
 				out var realWidth,
 				out var realHeight,
@@ -333,10 +323,11 @@ namespace Katabasis
 				pixels,
 				len);
 
-			FNA3D.FNA3D_Image_Free(pixels);
+			FNA3D_Image.FNA3D_Image_Free((byte*)pixels);
 			return result;
 		}
 
+		// ReSharper disable once InconsistentNaming
 		public static void TextureDataFromStreamEXT(
 			Stream stream,
 			out int width,
@@ -351,7 +342,7 @@ namespace Katabasis
 				stream.Seek(0, SeekOrigin.Begin);
 			}
 
-			var pixPtr = FNA3D.ReadImageStream(
+			var pixPtr = FNA.ReadImageStream(
 				stream,
 				out width,
 				out height,
@@ -363,7 +354,7 @@ namespace Katabasis
 			pixels = new byte[len];
 			Marshal.Copy(pixPtr, pixels, 0, len);
 
-			FNA3D.FNA3D_Image_Free(pixPtr);
+			FNA3D_Image.FNA3D_Image_Free((byte*)pixPtr);
 		}
 
 		public static Texture2D DDSFromStreamEXT(Stream stream)

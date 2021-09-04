@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class RenderTargetCube : TextureCube, IRenderTarget
+	public unsafe class RenderTargetCube : TextureCube, IRenderTarget
 	{
 		private readonly IntPtr _glColorBuffer;
 		private readonly IntPtr _glDepthStencilBuffer;
@@ -15,24 +15,9 @@ namespace Katabasis
 			int size,
 			bool mipMap,
 			SurfaceFormat preferredFormat,
-			DepthFormat preferredDepthFormat)
-			: this(
-				size,
-				mipMap,
-				preferredFormat,
-				preferredDepthFormat,
-				0,
-				RenderTargetUsage.DiscardContents)
-		{
-		}
-
-		public RenderTargetCube(
-			int size,
-			bool mipMap,
-			SurfaceFormat preferredFormat,
 			DepthFormat preferredDepthFormat,
-			int preferredMultiSampleCount,
-			RenderTargetUsage usage)
+			int preferredMultiSampleCount = 0,
+			RenderTargetUsage usage = RenderTargetUsage.DiscardContents)
 			: base(
 				size,
 				mipMap,
@@ -41,21 +26,21 @@ namespace Katabasis
 			var graphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 			DepthStencilFormat = preferredDepthFormat;
 			MultiSampleCount = FNA3D.FNA3D_GetMaxMultiSampleCount(
-				graphicsDevice.GLDevice,
-				Format,
+				graphicsDevice.Device,
+				(FNA3D.FNA3D_SurfaceFormat)Format,
 				MathHelper.ClosestMSAAPower(preferredMultiSampleCount));
 
 			RenderTargetUsage = usage;
 
 			if (MultiSampleCount > 0)
 			{
-				_glColorBuffer = FNA3D.FNA3D_GenColorRenderbuffer(
-					graphicsDevice.GLDevice,
+				_glColorBuffer = (IntPtr)FNA3D.FNA3D_GenColorRenderbuffer(
+					graphicsDevice.Device,
 					Size,
 					Size,
-					Format,
+					(FNA3D.FNA3D_SurfaceFormat)Format,
 					MultiSampleCount,
-					_texture);
+					(FNA3D.FNA3D_Texture*)_texture);
 			}
 
 			// If we don't need a depth buffer then we're done.
@@ -64,11 +49,11 @@ namespace Katabasis
 				return;
 			}
 
-			_glDepthStencilBuffer = FNA3D.FNA3D_GenDepthStencilRenderbuffer(
-				graphicsDevice.GLDevice,
+			_glDepthStencilBuffer = (IntPtr)FNA3D.FNA3D_GenDepthStencilRenderbuffer(
+				graphicsDevice.Device,
 				Size,
 				Size,
-				DepthStencilFormat,
+				(FNA3D.FNA3D_DepthFormat)DepthStencilFormat,
 				MultiSampleCount);
 		}
 
@@ -99,12 +84,12 @@ namespace Katabasis
 			{
 				if (_glColorBuffer != IntPtr.Zero)
 				{
-					FNA3D.FNA3D_AddDisposeRenderbuffer(GraphicsDevice.GLDevice, _glColorBuffer);
+					FNA3D.FNA3D_AddDisposeRenderbuffer(GraphicsDevice.Device, (FNA3D.FNA3D_Renderbuffer*)_glColorBuffer);
 				}
 
 				if (_glDepthStencilBuffer != IntPtr.Zero)
 				{
-					FNA3D.FNA3D_AddDisposeRenderbuffer(GraphicsDevice.GLDevice, _glDepthStencilBuffer);
+					FNA3D.FNA3D_AddDisposeRenderbuffer(GraphicsDevice.Device, (FNA3D.FNA3D_Renderbuffer*)_glDepthStencilBuffer);
 				}
 			}
 

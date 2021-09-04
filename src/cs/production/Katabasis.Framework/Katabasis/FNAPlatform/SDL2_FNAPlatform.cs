@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -10,14 +10,43 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using ObjCRuntime;
-using SDL2;
-using static SDL2.SDL;
+using static SDL;
 
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
-	internal static class SDL2_FNAPlatform
+	internal static unsafe class SDL2_FNAPlatform
 	{
+		// Remove when C2CS gets function-like macros
+		public static uint SDL_BUTTON(uint x)
+		{
+			// If only there were a better way of doing this in C#
+			return (uint) (1 << ((int) x - 1));
+		}
+
+#pragma warning disable SA1310
+		public static readonly uint SDL_BUTTON_LMASK =	SDL_BUTTON(SDL_BUTTON_LEFT);
+		public static readonly uint SDL_BUTTON_MMASK =	SDL_BUTTON(SDL_BUTTON_MIDDLE);
+		public static readonly uint SDL_BUTTON_RMASK =	SDL_BUTTON(SDL_BUTTON_RIGHT);
+		public static readonly uint SDL_BUTTON_X1MASK =	SDL_BUTTON(SDL_BUTTON_X1);
+		public static readonly uint SDL_BUTTON_X2MASK =	SDL_BUTTON(SDL_BUTTON_X2);
+#pragma warning restore SA1310
+
+		private static string _platform = string.Empty;
+
+		public static string Platform
+		{
+			get
+			{
+				if (_platform == string.Empty)
+				{
+					_platform = SDL_GetPlatform();
+				}
+
+				return _platform;
+			}
+		}
+
 		/* This is needed for asynchronous window events */
 		private static readonly List<Game> _activeGames = new();
 
@@ -33,11 +62,10 @@ namespace Katabasis
 		private static int _retinaHeight;
 
 		private static readonly bool OSXUseSpaces =
-			SDL_GetPlatform().Equals("Mac OS X", StringComparison.Ordinal) && // Prevents race with OSVersion
-			SDL_GetHintBoolean(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, SDL_bool.SDL_TRUE) ==
-			SDL_bool.SDL_TRUE;
+			Platform.Equals("Mac OS X", StringComparison.Ordinal) && // Prevents race with OSVersion
+			SDL_GetHintBoolean(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, true) == true;
 
-		private static readonly SDL_EventFilter _win32OnPaint = Win32OnPaint;
+		private static readonly SDL_EventFilter _win32OnPaint = new() { Pointer = &Win32OnPaint };
 		private static SDL_EventFilter? _prevEventFilter;
 
 		// Controller device information
@@ -72,128 +100,128 @@ namespace Katabasis
 		 */
 		private static readonly Dictionary<int, Keys> _keyMap = new()
 		{
-			{(int)SDL_Keycode.SDLK_a, Keys.A},
-			{(int)SDL_Keycode.SDLK_b, Keys.B},
-			{(int)SDL_Keycode.SDLK_c, Keys.C},
-			{(int)SDL_Keycode.SDLK_d, Keys.D},
-			{(int)SDL_Keycode.SDLK_e, Keys.E},
-			{(int)SDL_Keycode.SDLK_f, Keys.F},
-			{(int)SDL_Keycode.SDLK_g, Keys.G},
-			{(int)SDL_Keycode.SDLK_h, Keys.H},
-			{(int)SDL_Keycode.SDLK_i, Keys.I},
-			{(int)SDL_Keycode.SDLK_j, Keys.J},
-			{(int)SDL_Keycode.SDLK_k, Keys.K},
-			{(int)SDL_Keycode.SDLK_l, Keys.L},
-			{(int)SDL_Keycode.SDLK_m, Keys.M},
-			{(int)SDL_Keycode.SDLK_n, Keys.N},
-			{(int)SDL_Keycode.SDLK_o, Keys.O},
-			{(int)SDL_Keycode.SDLK_p, Keys.P},
-			{(int)SDL_Keycode.SDLK_q, Keys.Q},
-			{(int)SDL_Keycode.SDLK_r, Keys.R},
-			{(int)SDL_Keycode.SDLK_s, Keys.S},
-			{(int)SDL_Keycode.SDLK_t, Keys.T},
-			{(int)SDL_Keycode.SDLK_u, Keys.U},
-			{(int)SDL_Keycode.SDLK_v, Keys.V},
-			{(int)SDL_Keycode.SDLK_w, Keys.W},
-			{(int)SDL_Keycode.SDLK_x, Keys.X},
-			{(int)SDL_Keycode.SDLK_y, Keys.Y},
-			{(int)SDL_Keycode.SDLK_z, Keys.Z},
-			{(int)SDL_Keycode.SDLK_0, Keys.D0},
-			{(int)SDL_Keycode.SDLK_1, Keys.D1},
-			{(int)SDL_Keycode.SDLK_2, Keys.D2},
-			{(int)SDL_Keycode.SDLK_3, Keys.D3},
-			{(int)SDL_Keycode.SDLK_4, Keys.D4},
-			{(int)SDL_Keycode.SDLK_5, Keys.D5},
-			{(int)SDL_Keycode.SDLK_6, Keys.D6},
-			{(int)SDL_Keycode.SDLK_7, Keys.D7},
-			{(int)SDL_Keycode.SDLK_8, Keys.D8},
-			{(int)SDL_Keycode.SDLK_9, Keys.D9},
-			{(int)SDL_Keycode.SDLK_KP_0, Keys.NumPad0},
-			{(int)SDL_Keycode.SDLK_KP_1, Keys.NumPad1},
-			{(int)SDL_Keycode.SDLK_KP_2, Keys.NumPad2},
-			{(int)SDL_Keycode.SDLK_KP_3, Keys.NumPad3},
-			{(int)SDL_Keycode.SDLK_KP_4, Keys.NumPad4},
-			{(int)SDL_Keycode.SDLK_KP_5, Keys.NumPad5},
-			{(int)SDL_Keycode.SDLK_KP_6, Keys.NumPad6},
-			{(int)SDL_Keycode.SDLK_KP_7, Keys.NumPad7},
-			{(int)SDL_Keycode.SDLK_KP_8, Keys.NumPad8},
-			{(int)SDL_Keycode.SDLK_KP_9, Keys.NumPad9},
-			{(int)SDL_Keycode.SDLK_KP_CLEAR, Keys.OemClear},
-			{(int)SDL_Keycode.SDLK_KP_DECIMAL, Keys.Decimal},
-			{(int)SDL_Keycode.SDLK_KP_DIVIDE, Keys.Divide},
-			{(int)SDL_Keycode.SDLK_KP_ENTER, Keys.Enter},
-			{(int)SDL_Keycode.SDLK_KP_MINUS, Keys.Subtract},
-			{(int)SDL_Keycode.SDLK_KP_MULTIPLY, Keys.Multiply},
-			{(int)SDL_Keycode.SDLK_KP_PERIOD, Keys.OemPeriod},
-			{(int)SDL_Keycode.SDLK_KP_PLUS, Keys.Add},
-			{(int)SDL_Keycode.SDLK_F1, Keys.F1},
-			{(int)SDL_Keycode.SDLK_F2, Keys.F2},
-			{(int)SDL_Keycode.SDLK_F3, Keys.F3},
-			{(int)SDL_Keycode.SDLK_F4, Keys.F4},
-			{(int)SDL_Keycode.SDLK_F5, Keys.F5},
-			{(int)SDL_Keycode.SDLK_F6, Keys.F6},
-			{(int)SDL_Keycode.SDLK_F7, Keys.F7},
-			{(int)SDL_Keycode.SDLK_F8, Keys.F8},
-			{(int)SDL_Keycode.SDLK_F9, Keys.F9},
-			{(int)SDL_Keycode.SDLK_F10, Keys.F10},
-			{(int)SDL_Keycode.SDLK_F11, Keys.F11},
-			{(int)SDL_Keycode.SDLK_F12, Keys.F12},
-			{(int)SDL_Keycode.SDLK_F13, Keys.F13},
-			{(int)SDL_Keycode.SDLK_F14, Keys.F14},
-			{(int)SDL_Keycode.SDLK_F15, Keys.F15},
-			{(int)SDL_Keycode.SDLK_F16, Keys.F16},
-			{(int)SDL_Keycode.SDLK_F17, Keys.F17},
-			{(int)SDL_Keycode.SDLK_F18, Keys.F18},
-			{(int)SDL_Keycode.SDLK_F19, Keys.F19},
-			{(int)SDL_Keycode.SDLK_F20, Keys.F20},
-			{(int)SDL_Keycode.SDLK_F21, Keys.F21},
-			{(int)SDL_Keycode.SDLK_F22, Keys.F22},
-			{(int)SDL_Keycode.SDLK_F23, Keys.F23},
-			{(int)SDL_Keycode.SDLK_F24, Keys.F24},
-			{(int)SDL_Keycode.SDLK_SPACE, Keys.Space},
-			{(int)SDL_Keycode.SDLK_UP, Keys.Up},
-			{(int)SDL_Keycode.SDLK_DOWN, Keys.Down},
-			{(int)SDL_Keycode.SDLK_LEFT, Keys.Left},
-			{(int)SDL_Keycode.SDLK_RIGHT, Keys.Right},
-			{(int)SDL_Keycode.SDLK_LALT, Keys.LeftAlt},
-			{(int)SDL_Keycode.SDLK_RALT, Keys.RightAlt},
-			{(int)SDL_Keycode.SDLK_LCTRL, Keys.LeftControl},
-			{(int)SDL_Keycode.SDLK_RCTRL, Keys.RightControl},
-			{(int)SDL_Keycode.SDLK_LGUI, Keys.LeftWindows},
-			{(int)SDL_Keycode.SDLK_RGUI, Keys.RightWindows},
-			{(int)SDL_Keycode.SDLK_LSHIFT, Keys.LeftShift},
-			{(int)SDL_Keycode.SDLK_RSHIFT, Keys.RightShift},
-			{(int)SDL_Keycode.SDLK_APPLICATION, Keys.Apps},
-			{(int)SDL_Keycode.SDLK_MENU, Keys.Apps},
-			{(int)SDL_Keycode.SDLK_SLASH, Keys.OemQuestion},
-			{(int)SDL_Keycode.SDLK_BACKSLASH, Keys.OemPipe},
-			{(int)SDL_Keycode.SDLK_LEFTBRACKET, Keys.OemOpenBrackets},
-			{(int)SDL_Keycode.SDLK_RIGHTBRACKET, Keys.OemCloseBrackets},
-			{(int)SDL_Keycode.SDLK_CAPSLOCK, Keys.CapsLock},
-			{(int)SDL_Keycode.SDLK_COMMA, Keys.OemComma},
-			{(int)SDL_Keycode.SDLK_DELETE, Keys.Delete},
-			{(int)SDL_Keycode.SDLK_END, Keys.End},
-			{(int)SDL_Keycode.SDLK_BACKSPACE, Keys.Back},
-			{(int)SDL_Keycode.SDLK_RETURN, Keys.Enter},
-			{(int)SDL_Keycode.SDLK_ESCAPE, Keys.Escape},
-			{(int)SDL_Keycode.SDLK_HOME, Keys.Home},
-			{(int)SDL_Keycode.SDLK_INSERT, Keys.Insert},
-			{(int)SDL_Keycode.SDLK_MINUS, Keys.OemMinus},
-			{(int)SDL_Keycode.SDLK_NUMLOCKCLEAR, Keys.NumLock},
-			{(int)SDL_Keycode.SDLK_PAGEUP, Keys.PageUp},
-			{(int)SDL_Keycode.SDLK_PAGEDOWN, Keys.PageDown},
-			{(int)SDL_Keycode.SDLK_PAUSE, Keys.Pause},
-			{(int)SDL_Keycode.SDLK_PERIOD, Keys.OemPeriod},
-			{(int)SDL_Keycode.SDLK_EQUALS, Keys.OemPlus},
-			{(int)SDL_Keycode.SDLK_PRINTSCREEN, Keys.PrintScreen},
-			{(int)SDL_Keycode.SDLK_QUOTE, Keys.OemQuotes},
-			{(int)SDL_Keycode.SDLK_SCROLLLOCK, Keys.Scroll},
-			{(int)SDL_Keycode.SDLK_SEMICOLON, Keys.OemSemicolon},
-			{(int)SDL_Keycode.SDLK_SLEEP, Keys.Sleep},
-			{(int)SDL_Keycode.SDLK_TAB, Keys.Tab},
-			{(int)SDL_Keycode.SDLK_BACKQUOTE, Keys.OemTilde},
-			{(int)SDL_Keycode.SDLK_VOLUMEUP, Keys.VolumeUp},
-			{(int)SDL_Keycode.SDLK_VOLUMEDOWN, Keys.VolumeDown},
+			{SDLK_a, Keys.A},
+			{SDLK_b, Keys.B},
+			{SDLK_c, Keys.C},
+			{SDLK_d, Keys.D},
+			{SDLK_e, Keys.E},
+			{SDLK_f, Keys.F},
+			{SDLK_g, Keys.G},
+			{SDLK_h, Keys.H},
+			{SDLK_i, Keys.I},
+			{SDLK_j, Keys.J},
+			{SDLK_k, Keys.K},
+			{SDLK_l, Keys.L},
+			{SDLK_m, Keys.M},
+			{SDLK_n, Keys.N},
+			{SDLK_o, Keys.O},
+			{SDLK_p, Keys.P},
+			{SDLK_q, Keys.Q},
+			{SDLK_r, Keys.R},
+			{SDLK_s, Keys.S},
+			{SDLK_t, Keys.T},
+			{SDLK_u, Keys.U},
+			{SDLK_v, Keys.V},
+			{SDLK_w, Keys.W},
+			{SDLK_x, Keys.X},
+			{SDLK_y, Keys.Y},
+			{SDLK_z, Keys.Z},
+			{SDLK_0, Keys.D0},
+			{SDLK_1, Keys.D1},
+			{SDLK_2, Keys.D2},
+			{SDLK_3, Keys.D3},
+			{SDLK_4, Keys.D4},
+			{SDLK_5, Keys.D5},
+			{SDLK_6, Keys.D6},
+			{SDLK_7, Keys.D7},
+			{SDLK_8, Keys.D8},
+			{SDLK_9, Keys.D9},
+			{SDLK_KP_0, Keys.NumPad0},
+			{SDLK_KP_1, Keys.NumPad1},
+			{SDLK_KP_2, Keys.NumPad2},
+			{SDLK_KP_3, Keys.NumPad3},
+			{SDLK_KP_4, Keys.NumPad4},
+			{SDLK_KP_5, Keys.NumPad5},
+			{SDLK_KP_6, Keys.NumPad6},
+			{SDLK_KP_7, Keys.NumPad7},
+			{SDLK_KP_8, Keys.NumPad8},
+			{SDLK_KP_9, Keys.NumPad9},
+			{SDLK_KP_CLEAR, Keys.OemClear},
+			{SDLK_KP_DECIMAL, Keys.Decimal},
+			{SDLK_KP_DIVIDE, Keys.Divide},
+			{SDLK_KP_ENTER, Keys.Enter},
+			{SDLK_KP_MINUS, Keys.Subtract},
+			{SDLK_KP_MULTIPLY, Keys.Multiply},
+			{SDLK_KP_PERIOD, Keys.OemPeriod},
+			{SDLK_KP_PLUS, Keys.Add},
+			{SDLK_F1, Keys.F1},
+			{SDLK_F2, Keys.F2},
+			{SDLK_F3, Keys.F3},
+			{SDLK_F4, Keys.F4},
+			{SDLK_F5, Keys.F5},
+			{SDLK_F6, Keys.F6},
+			{SDLK_F7, Keys.F7},
+			{SDLK_F8, Keys.F8},
+			{SDLK_F9, Keys.F9},
+			{SDLK_F10, Keys.F10},
+			{SDLK_F11, Keys.F11},
+			{SDLK_F12, Keys.F12},
+			{SDLK_F13, Keys.F13},
+			{SDLK_F14, Keys.F14},
+			{SDLK_F15, Keys.F15},
+			{SDLK_F16, Keys.F16},
+			{SDLK_F17, Keys.F17},
+			{SDLK_F18, Keys.F18},
+			{SDLK_F19, Keys.F19},
+			{SDLK_F20, Keys.F20},
+			{SDLK_F21, Keys.F21},
+			{SDLK_F22, Keys.F22},
+			{SDLK_F23, Keys.F23},
+			{SDLK_F24, Keys.F24},
+			{SDLK_SPACE, Keys.Space},
+			{SDLK_UP, Keys.Up},
+			{SDLK_DOWN, Keys.Down},
+			{SDLK_LEFT, Keys.Left},
+			{SDLK_RIGHT, Keys.Right},
+			{SDLK_LALT, Keys.LeftAlt},
+			{SDLK_RALT, Keys.RightAlt},
+			{SDLK_LCTRL, Keys.LeftControl},
+			{SDLK_RCTRL, Keys.RightControl},
+			{SDLK_LGUI, Keys.LeftWindows},
+			{SDLK_RGUI, Keys.RightWindows},
+			{SDLK_LSHIFT, Keys.LeftShift},
+			{SDLK_RSHIFT, Keys.RightShift},
+			{SDLK_APPLICATION, Keys.Apps},
+			{SDLK_MENU, Keys.Apps},
+			{SDLK_SLASH, Keys.OemQuestion},
+			{SDLK_BACKSLASH, Keys.OemPipe},
+			{SDLK_LEFTBRACKET, Keys.OemOpenBrackets},
+			{SDLK_RIGHTBRACKET, Keys.OemCloseBrackets},
+			{SDLK_CAPSLOCK, Keys.CapsLock},
+			{SDLK_COMMA, Keys.OemComma},
+			{SDLK_DELETE, Keys.Delete},
+			{SDLK_END, Keys.End},
+			{SDLK_BACKSPACE, Keys.Back},
+			{SDLK_RETURN, Keys.Enter},
+			{SDLK_ESCAPE, Keys.Escape},
+			{SDLK_HOME, Keys.Home},
+			{SDLK_INSERT, Keys.Insert},
+			{SDLK_MINUS, Keys.OemMinus},
+			{SDLK_NUMLOCKCLEAR, Keys.NumLock},
+			{SDLK_PAGEUP, Keys.PageUp},
+			{SDLK_PAGEDOWN, Keys.PageDown},
+			{SDLK_PAUSE, Keys.Pause},
+			{SDLK_PERIOD, Keys.OemPeriod},
+			{SDLK_EQUALS, Keys.OemPlus},
+			{SDLK_PRINTSCREEN, Keys.PrintScreen},
+			{SDLK_QUOTE, Keys.OemQuotes},
+			{SDLK_SCROLLLOCK, Keys.Scroll},
+			{SDLK_SEMICOLON, Keys.OemSemicolon},
+			{SDLK_SLEEP, Keys.Sleep},
+			{SDLK_TAB, Keys.Tab},
+			{SDLK_BACKQUOTE, Keys.OemTilde},
+			{SDLK_VOLUMEUP, Keys.VolumeUp},
+			{SDLK_VOLUMEDOWN, Keys.VolumeDown},
 			// ReSharper disable once CommentTypo
 			{'²' /* FIXME: AZERTY SDL2? -flibit */, Keys.OemTilde},
 			// ReSharper disable once CommentTypo
@@ -202,7 +230,7 @@ namespace Katabasis
 			{'+' /* FIXME: Norwegian SDL2? -flibit */, Keys.OemPlus},
 			{'ø' /* FIXME: Norwegian SDL2? -flibit */, Keys.OemSemicolon},
 			{'æ' /* FIXME: Norwegian SDL2? -flibit */, Keys.OemQuotes},
-			{(int)SDL_Keycode.SDLK_UNKNOWN, Keys.None}
+			{SDLK_UNKNOWN, Keys.None}
 		};
 
 		private static readonly Dictionary<int, Keys> _scanMap = new()
@@ -461,7 +489,7 @@ namespace Katabasis
 			};
 
 		public static void ShowRuntimeError(string title, string message) =>
-			SDL_ShowSimpleMessageBox(SDL_MessageBoxFlags.SDL_MESSAGEBOX_ERROR, title, message, IntPtr.Zero);
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, message, (SDL_Window*)IntPtr.Zero);
 
 		public static string ProgramInit(LaunchParameters args)
 		{
@@ -524,7 +552,8 @@ namespace Katabasis
 				 * WM_PAINT events correctly. So we get to do this!
 				 * -flibit
 				 */
-				SDL_GetEventFilter(out _prevEventFilter, out var prevUserData);
+				void* prevUserData;
+				SDL_GetEventFilter((SDL_EventFilter*)Unsafe.AsPointer(ref _prevEventFilter), &prevUserData);
 				SDL_SetEventFilter(_win32OnPaint, prevUserData);
 			}
 
@@ -536,7 +565,8 @@ namespace Katabasis
 			var mappingsDB = Path.Combine(titleLocation, "gamecontrollerdb.txt");
 			if (File.Exists(mappingsDB))
 			{
-				SDL_GameControllerAddMappingsFromFile(mappingsDB);
+				var rwops = SDL_RWFromFile(mappingsDB, "rb");
+				SDL_GameControllerAddMappingsFromRW(rwops, 1);
 			}
 
 			// Built-in SDL2 command line arguments
@@ -591,14 +621,14 @@ namespace Katabasis
 			SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight Portrait");
 
 			// We want to initialize the controllers ASAP!
-			SDL_Event[] evt = new SDL_Event[1];
+			var evt = stackalloc SDL_Event[1];
 			SDL_PumpEvents();
 			while (SDL_PeepEvents(
 				evt,
 				1,
 				SDL_eventaction.SDL_GETEVENT,
-				SDL_EventType.SDL_CONTROLLERDEVICEADDED,
-				SDL_EventType.SDL_CONTROLLERDEVICEADDED) == 1)
+				SDL_CONTROLLERDEVICEADDED,
+				SDL_CONTROLLERDEVICEADDED) == 1)
 			{
 				INTERNAL_AddInstance(evt[0].cdevice.which);
 			}
@@ -624,12 +654,10 @@ namespace Katabasis
 		public static GameWindow CreateWindow()
 		{
 			// Set and initialize the SDL2 window
-			var initFlags = SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS |
-			                SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS |
-			                (SDL_WindowFlags)FNA3D.FNA3D_PrepareWindowAttributes();
+			var initFlags = SDL_WINDOW_HIDDEN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | FNA3D.FNA3D_PrepareWindowAttributes();
 
 			var cachePath = SDL_GetHint("FNA3D_VULKAN_PIPELINE_CACHE_FILE_NAME");
-			if (cachePath == null)
+			if (string.IsNullOrEmpty(cachePath))
 			{
 				if (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
 				    _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
@@ -666,9 +694,12 @@ namespace Katabasis
 
 			if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
 			{
-				initFlags |= SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI;
+				initFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
 			}
 
+#pragma warning disable SA1312
+			var SDL_WINDOWPOS_CENTERED = 0x2FFF0000; // TODO: Remove when C2CS supports function-like macros
+#pragma warning restore SA1312
 			string title = AssemblyHelper.GetDefaultWindowTitle();
 			var window = SDL_CreateWindow(
 				title,
@@ -678,7 +709,7 @@ namespace Katabasis
 				GraphicsDeviceManager.DefaultBackBufferHeight,
 				initFlags);
 
-			if (window == IntPtr.Zero)
+			if (window == (SDL_Window*)IntPtr.Zero)
 			{
 				/* If this happens, the GL attributes were
 				 * rejected by the platform. This is EXTREMELY
@@ -699,7 +730,9 @@ namespace Katabasis
 			 * This is our way to communicate that it failed...
 			 * -flibit
 			 */
-			FNA3D.FNA3D_GetDrawableSize(window, out var drawX, out var drawY);
+			int drawX;
+			int drawY;
+			FNA3D.FNA3D_GetDrawableSize(window, &drawX, &drawY);
 			if (drawX == GraphicsDeviceManager.DefaultBackBufferWidth &&
 			    drawY == GraphicsDeviceManager.DefaultBackBufferHeight)
 			{
@@ -712,7 +745,7 @@ namespace Katabasis
 				_retinaHeight = drawY;
 			}
 
-			return new FNAWindow(window, @"\\.\DISPLAY" + (SDL_GetWindowDisplayIndex(window) + 1));
+			return new FNAWindow((IntPtr)window, @"\\.\DISPLAY" + (SDL_GetWindowDisplayIndex(window) + 1));
 		}
 
 		public static void DisposeWindow(GameWindow window)
@@ -734,7 +767,7 @@ namespace Katabasis
 				TouchPanel.WindowHandle = IntPtr.Zero;
 			}
 
-			SDL_DestroyWindow(window.Handle);
+			SDL_DestroyWindow((SDL_Window*)window.Handle);
 		}
 
 		public static void ApplyWindowChanges(
@@ -757,13 +790,15 @@ namespace Katabasis
 				clientHeight /= 2;
 			}
 
+			var windowSDL = (SDL_Window*)window;
+
 			// When windowed, set the size before moving
 			if (!wantsFullscreen)
 			{
 				bool resize;
-				if ((SDL_GetWindowFlags(window) & (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN) != 0)
+				if ((SDL_GetWindowFlags((SDL_Window*)window) & SDL_WINDOW_FULLSCREEN) != 0)
 				{
-					var apiResult = SDL_SetWindowFullscreen(window, 0);
+					var apiResult = SDL_SetWindowFullscreen(windowSDL, 0);
 					if (apiResult != 0)
 					{
 						FNALoggerEXT.LogError!(SDL_GetError());
@@ -773,14 +808,15 @@ namespace Katabasis
 				}
 				else
 				{
-					SDL_GetWindowSize(window, out var w, out var h);
+					long w, h;
+					SDL_GetWindowSize(windowSDL, &w, &h);
 					resize = clientWidth != w || clientHeight != h;
 				}
 
 				if (resize)
 				{
-					SDL_RestoreWindow(window);
-					SDL_SetWindowSize(window, clientWidth, clientHeight);
+					SDL_RestoreWindow(windowSDL);
+					SDL_SetWindowSize(windowSDL, clientWidth, clientHeight);
 					center = true;
 				}
 			}
@@ -799,7 +835,7 @@ namespace Katabasis
 			// Just to be sure, become a window first before changing displays
 			if (resultDeviceName != screenDeviceName)
 			{
-				SDL_SetWindowFullscreen(window, 0);
+				SDL_SetWindowFullscreen(windowSDL, 0);
 				resultDeviceName = screenDeviceName;
 				center = true;
 			}
@@ -807,38 +843,32 @@ namespace Katabasis
 			// Window always gets centered on changes, per XNA behavior
 			if (center)
 			{
-				var pos = SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex);
-				SDL_SetWindowPosition(
-					window,
-					pos,
-					pos);
+				var pos = (int)(SDL_WINDOWPOS_CENTERED_MASK | displayIndex);
+				SDL_SetWindowPosition(windowSDL, pos, pos);
 			}
 
 			// Set fullscreen after we've done all the ugly stuff.
 			if (wantsFullscreen)
 			{
-				if ((SDL_GetWindowFlags(window) & (uint)SDL_WindowFlags.SDL_WINDOW_SHOWN) == 0)
+				if ((SDL_GetWindowFlags(windowSDL) & SDL_WINDOW_SHOWN) == 0)
 				{
 					/* If we're still hidden, we can't actually go fullscreen yet.
 					 * But, we can at least set the hidden window size to match
 					 * what the window/drawable sizes will eventually be later.
 					 * -flibit
 					 */
-					var apiResultGetCurrentDisplayMode = SDL_GetCurrentDisplayMode(
-						displayIndex,
-						out var mode);
+					SDL_DisplayMode mode;
+					var apiResultGetCurrentDisplayMode = SDL_GetCurrentDisplayMode(displayIndex, &mode);
 
 					if (apiResultGetCurrentDisplayMode != 0)
 					{
 						FNALoggerEXT.LogError!(SDL_GetError());
 					}
 
-					SDL_SetWindowSize(window, mode.w, mode.h);
+					SDL_SetWindowSize(windowSDL, mode.w, mode.h);
 				}
 
-				var apiResultSetWindowFullscreen = SDL_SetWindowFullscreen(
-					window,
-					(uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP);
+				var apiResultSetWindowFullscreen = SDL_SetWindowFullscreen(windowSDL, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 				if (apiResultSetWindowFullscreen != 0)
 				{
@@ -857,8 +887,9 @@ namespace Katabasis
 
 		public static Rectangle GetWindowBounds(IntPtr window)
 		{
+			var windowSDL = (SDL_Window*)window;
 			Rectangle result = default;
-			if ((SDL_GetWindowFlags(window) & (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN) != 0)
+			if ((SDL_GetWindowFlags(windowSDL) & SDL_WINDOW_FULLSCREEN) != 0)
 			{
 				/* FIXME: SDL2 b u g
 				 * SDL is a little weird about SDL_GetWindowSize.
@@ -867,7 +898,8 @@ namespace Katabasis
 				 * So you know what, let's just use this.
 				 * -flibit
 				 */
-				var apiResult = SDL_GetCurrentDisplayMode(SDL_GetWindowDisplayIndex(window), out var mode);
+				SDL_DisplayMode mode;
+				var apiResult = SDL_GetCurrentDisplayMode(SDL_GetWindowDisplayIndex(windowSDL), &mode);
 				if (apiResult != 0)
 				{
 					FNALoggerEXT.LogError!(SDL_GetError());
@@ -880,31 +912,28 @@ namespace Katabasis
 			}
 			else
 			{
-				SDL_GetWindowPosition(
-					window,
-					out result.X,
-					out result.Y);
+				long x, y, w, h;
+				SDL_GetWindowPosition(windowSDL, &x, &y);
+				SDL_GetWindowSize(windowSDL, &w, &h);
 
-				SDL_GetWindowSize(
-					window,
-					out result.Width,
-					out result.Height);
+				result.X = (int)x;
+				result.Y = (int)y;
+				result.Width = (int)w;
+				result.Height = (int)h;
 			}
 
 			return result;
 		}
 
-		public static bool GetWindowResizable(IntPtr window) => (SDL_GetWindowFlags(window) & (uint)SDL_WindowFlags.SDL_WINDOW_RESIZABLE) != 0;
+		public static bool GetWindowResizable(IntPtr window) => (SDL_GetWindowFlags((SDL_Window*)window) & SDL_WINDOW_RESIZABLE) != 0;
 
-		public static void SetWindowResizable(IntPtr window, bool resizable) =>
-			SDL_SetWindowResizable(window, resizable ? SDL_bool.SDL_TRUE : SDL_bool.SDL_FALSE);
+		public static void SetWindowResizable(IntPtr window, bool resizable) => SDL_SetWindowResizable((SDL_Window*)window, resizable);
 
-		public static bool GetWindowBorderless(IntPtr window) => (SDL_GetWindowFlags(window) & (uint)SDL_WindowFlags.SDL_WINDOW_BORDERLESS) != 0;
+		public static bool GetWindowBorderless(IntPtr window) => (SDL_GetWindowFlags((SDL_Window*)window) & SDL_WINDOW_BORDERLESS) != 0;
 
-		public static void SetWindowBorderless(IntPtr window, bool borderless) =>
-			SDL_SetWindowBordered(window, borderless ? SDL_bool.SDL_FALSE : SDL_bool.SDL_TRUE);
+		public static void SetWindowBorderless(IntPtr window, bool borderless) => SDL_SetWindowBordered((SDL_Window*)window, !borderless);
 
-		public static void SetWindowTitle(IntPtr window, string title) => SDL_SetWindowTitle(window, title);
+		public static void SetWindowTitle(IntPtr window, string title) => SDL_SetWindowTitle((SDL_Window*)window, title);
 
 		public static void SetTextInputRectangle(Rectangle rectangle)
 		{
@@ -913,7 +942,7 @@ namespace Katabasis
 			rect.y = rectangle.Y;
 			rect.w = rectangle.Width;
 			rect.h = rectangle.Height;
-			SDL_SetTextInputRect(ref rect);
+			SDL_SetTextInputRect((SDL_Rect*)Unsafe.AsPointer(ref rect));
 		}
 
 		public static bool SupportsOrientationChanges() =>
@@ -922,25 +951,24 @@ namespace Katabasis
 
 		public static GraphicsAdapter RegisterGame(Game game)
 		{
-			SDL_ShowWindow(game.Window.Handle);
+			SDL_ShowWindow((SDL_Window*)game.Window.Handle);
 
 			// Store this for internal event filter work
 			_activeGames.Add(game);
 
 			// Which display did we end up on?
-			var displayIndex = SDL_GetWindowDisplayIndex(
-				game.Window.Handle);
+			var displayIndex = SDL_GetWindowDisplayIndex((SDL_Window*)game.Window.Handle);
 
 			return GraphicsAdapter.Adapters[displayIndex];
 		}
 
 		public static void UnregisterGame(Game game) => _activeGames.Remove(game);
 
-		public static bool NeedsPlatformMainLoop() => SDL_GetPlatform().Equals("Emscripten", StringComparison.Ordinal);
+		public static bool NeedsPlatformMainLoop() => Platform.Equals("Emscripten", StringComparison.Ordinal);
 
 		public static void RunPlatformMainLoop(Game game)
 		{
-			if (SDL_GetPlatform().Equals("Emscripten", StringComparison.Ordinal))
+			if (Platform.Equals("Emscripten", StringComparison.Ordinal))
 			{
 				_emscriptenGame = game;
 				emscripten_set_main_loop(
@@ -963,7 +991,8 @@ namespace Katabasis
 				var numModes = SDL_GetNumDisplayModes(i);
 				for (var j = numModes - 1; j >= 0; j -= 1)
 				{
-					var apiResult = SDL_GetDisplayMode(i, j, out var filler);
+					SDL_DisplayMode filler;
+					var apiResult = SDL_GetDisplayMode(i, j, &filler);
 					if (apiResult != 0)
 					{
 						FNALoggerEXT.LogError!(SDL_GetError());
@@ -1001,7 +1030,8 @@ namespace Katabasis
 
 		public static DisplayMode GetCurrentDisplayMode(int adapterIndex)
 		{
-			SDL_GetCurrentDisplayMode(adapterIndex, out var filler);
+			SDL_DisplayMode filler;
+			SDL_GetCurrentDisplayMode(adapterIndex, &filler);
 
 			if (!string.IsNullOrEmpty(_osVersion) &&
 			    _osVersion.Equals("iOS", StringComparison.Ordinal) &&
@@ -1031,19 +1061,28 @@ namespace Katabasis
 			uint flags;
 			if (GetRelativeMouseMode())
 			{
-				flags = SDL_GetRelativeMouseState(out x, out y);
+				long x_tmp, y_tmp;
+				flags = SDL_GetRelativeMouseState(&x_tmp, &y_tmp);
+				x = (int)x_tmp;
+				y = (int)y_tmp;
 			}
 			else if (_supportsGlobalMouse)
 			{
-				flags = SDL_GetGlobalMouseState(out x, out y);
-				SDL_GetWindowPosition(window, out var wx, out var wy);
-				x -= wx;
-				y -= wy;
+				long x_tmp, y_tmp, wx, wy;
+				flags = SDL_GetGlobalMouseState(&x_tmp, &y_tmp);
+				x = (int)x_tmp;
+				y = (int)y_tmp;
+				SDL_GetWindowPosition((SDL_Window*)window, &wx, &wy);
+				x -= (int)wx;
+				y -= (int)wy;
 			}
 			else
 			{
+				long x_tmp, y_tmp;
 				/* This is inaccurate, but what can you do... */
-				flags = SDL_GetMouseState(out x, out y);
+				flags = SDL_GetMouseState(&x_tmp, &y_tmp);
+				x = (int)x_tmp;
+				y = (int)y_tmp;
 			}
 
 			left = (ButtonState)(flags & SDL_BUTTON_LMASK);
@@ -1055,9 +1094,9 @@ namespace Katabasis
 
 		public static void OnIsMouseVisibleChanged(bool visible) => SDL_ShowCursor(visible ? 1 : 0);
 
-		public static bool GetRelativeMouseMode() => SDL_GetRelativeMouseMode() == SDL_bool.SDL_TRUE;
+		public static bool GetRelativeMouseMode() => SDL_GetRelativeMouseMode() == true;
 
-		public static void SetRelativeMouseMode(bool enable) => SDL_SetRelativeMouseMode(enable ? SDL_bool.SDL_TRUE : SDL_bool.SDL_FALSE);
+		public static void SetRelativeMouseMode(bool enable) => SDL_SetRelativeMouseMode(enable ? true : false);
 
 		public static string GetStorageRoot()
 		{
@@ -1177,12 +1216,13 @@ namespace Katabasis
 			want.samples = 4096; /* FIXME: Anything specific? */
 
 			// First mic is always OS default
+			SDL_AudioSpec obtained; // we dont use it
 			result[0] = new Microphone(
 				SDL_OpenAudioDevice(
 					string.Empty,
 					1,
-					ref want,
-					out _,
+					(SDL_AudioSpec*)Unsafe.AsPointer(ref want),
+					&obtained,
 					0),
 				"Default Device");
 
@@ -1193,8 +1233,8 @@ namespace Katabasis
 					SDL_OpenAudioDevice(
 						name,
 						1,
-						ref want,
-						out _,
+						(SDL_AudioSpec*)Unsafe.AsPointer(ref want),
+						&obtained,
 						0),
 					name);
 			}
@@ -1210,7 +1250,7 @@ namespace Katabasis
 		{
 			fixed (byte* ptr = &buffer[offset])
 			{
-				return (int)SDL_DequeueAudio(handle, (IntPtr)ptr, (uint)count);
+				return (int)SDL_DequeueAudio(handle, ptr, (uint)count);
 			}
 		}
 
@@ -1232,8 +1272,8 @@ namespace Katabasis
 
 		public static GamePadState GetGamePadState(int index, GamePadDeadZone deadZoneMode)
 		{
-			var device = _devices[index];
-			if (device == IntPtr.Zero)
+			var device = (SDL_GameController*)_devices[index];
+			if (device == (SDL_GameController*)IntPtr.Zero)
 			{
 				return default;
 			}
@@ -1423,8 +1463,8 @@ namespace Katabasis
 
 		public static bool SetGamePadVibration(int index, float leftTrigger, float rightTrigger)
 		{
-			var device = _devices[index];
-			if (device == IntPtr.Zero)
+			var device = (SDL_GameController*)_devices[index];
+			if (device == (SDL_GameController*)IntPtr.Zero)
 			{
 				return false;
 			}
@@ -1438,8 +1478,8 @@ namespace Katabasis
 
 		public static bool SetGamePadTriggerVibration(int index, float leftMotor, float rightMotor)
 		{
-			var device = _devices[index];
-			if (device == IntPtr.Zero)
+			var device = (SDL_GameController*)_devices[index];
+			if (device == (SDL_GameController*)IntPtr.Zero)
 			{
 				return false;
 			}
@@ -1455,8 +1495,8 @@ namespace Katabasis
 
 		public static void SetGamePadLightBar(int index, Color color)
 		{
-			var device = _devices[index];
-			if (device == IntPtr.Zero)
+			var device = (SDL_GameController*)_devices[index];
+			if (device == (SDL_GameController*)IntPtr.Zero)
 			{
 				return;
 			}
@@ -1470,16 +1510,16 @@ namespace Katabasis
 
 		public static bool GetGamePadGyro(int index, out Vector3 gyro)
 		{
-			var device = _devices[index];
-			if (device == IntPtr.Zero)
+			var device = (SDL_GameController*)_devices[index];
+			if (device == (SDL_GameController*)IntPtr.Zero)
 			{
 				gyro = Vector3.Zero;
 				return false;
 			}
 
-			if (SDL_GameControllerIsSensorEnabled(device, SDL_SensorType.SDL_SENSOR_GYRO) == SDL_bool.SDL_FALSE)
+			if (SDL_GameControllerIsSensorEnabled(device, SDL_SensorType.SDL_SENSOR_GYRO) == false)
 			{
-				SDL_GameControllerSetSensorEnabled(device, SDL_SensorType.SDL_SENSOR_GYRO, SDL_bool.SDL_TRUE);
+				SDL_GameControllerSetSensorEnabled(device, SDL_SensorType.SDL_SENSOR_GYRO, true);
 			}
 
 			unsafe
@@ -1488,7 +1528,7 @@ namespace Katabasis
 				var result = SDL_GameControllerGetSensorData(
 					device,
 					SDL_SensorType.SDL_SENSOR_GYRO,
-					(IntPtr)data,
+					data,
 					3);
 
 				if (result < 0)
@@ -1506,16 +1546,16 @@ namespace Katabasis
 
 		public static bool GetGamePadAccelerometer(int index, out Vector3 accel)
 		{
-			var device = _devices[index];
-			if (device == IntPtr.Zero)
+			var device = (SDL_GameController*)_devices[index];
+			if (device == (SDL_GameController*)IntPtr.Zero)
 			{
 				accel = Vector3.Zero;
 				return false;
 			}
 
-			if (SDL_GameControllerIsSensorEnabled(device, SDL_SensorType.SDL_SENSOR_ACCEL) == SDL_bool.SDL_FALSE)
+			if (SDL_GameControllerIsSensorEnabled(device, SDL_SensorType.SDL_SENSOR_ACCEL) == false)
 			{
-				SDL_GameControllerSetSensorEnabled(device, SDL_SensorType.SDL_SENSOR_ACCEL, SDL_bool.SDL_TRUE);
+				SDL_GameControllerSetSensorEnabled(device, SDL_SensorType.SDL_SENSOR_ACCEL, true);
 			}
 
 			unsafe
@@ -1524,7 +1564,7 @@ namespace Katabasis
 				var result = SDL_GameControllerGetSensorData(
 					device,
 					SDL_SensorType.SDL_SENSOR_ACCEL,
-					(IntPtr)data,
+					data,
 					3);
 
 				if (result < 0)
@@ -1611,7 +1651,8 @@ namespace Katabasis
 			int[] textInputControlRepeat,
 			ref bool textInputSuppress)
 		{
-			while (SDL_PollEvent(out var evt) == 1)
+			SDL_Event evt;
+			while (SDL_PollEvent(&evt) == 1)
 			{
 				var shouldQuit = PollEvent(ref evt, game, ref currentAdapter, textInputControlDown, textInputControlRepeat, ref textInputSuppress);
 				if (shouldQuit)
@@ -1643,7 +1684,7 @@ namespace Katabasis
 			switch (evt.type)
 			{
 				// Keyboard
-				case SDL_EventType.SDL_KEYDOWN:
+				case SDL_KEYDOWN:
 				{
 					var key = ToXNAKey(ref evt.key.keysym);
 					if (!Keyboard._keys.Contains(key))
@@ -1668,7 +1709,7 @@ namespace Katabasis
 				}
 
 				// Mouse Input
-				case SDL_EventType.SDL_KEYUP:
+				case SDL_KEYUP:
 				{
 					var key = ToXNAKey(ref evt.key.keysym);
 					if (Keyboard._keys.Remove(key))
@@ -1687,15 +1728,15 @@ namespace Katabasis
 					break;
 				}
 
-				case SDL_EventType.SDL_MOUSEBUTTONDOWN:
+				case SDL_MOUSEBUTTONDOWN:
 					Mouse.INTERNAL_onClicked(evt.button.button - 1);
 					break;
 				// Touch Input
-				case SDL_EventType.SDL_MOUSEWHEEL:
+				case SDL_MOUSEWHEEL:
 					// 120 units per notch. Because reasons.
 					Mouse._mouseWheel += evt.wheel.y * 120;
 					break;
-				case SDL_EventType.SDL_FINGERDOWN:
+				case SDL_FINGERDOWN:
 					// Windows only notices a touch screen once it's touched
 					TouchPanel.TouchDeviceExists = true;
 
@@ -1708,7 +1749,7 @@ namespace Katabasis
 						0);
 
 					break;
-				case SDL_EventType.SDL_FINGERMOTION:
+				case SDL_FINGERMOTION:
 					TouchPanel.INTERNAL_onTouchEvent(
 						(int)evt.tfinger.fingerId,
 						TouchLocationState.Moved,
@@ -1719,7 +1760,7 @@ namespace Katabasis
 
 					break;
 				// Various Window Events...
-				case SDL_EventType.SDL_FINGERUP:
+				case SDL_FINGERUP:
 					TouchPanel.INTERNAL_onTouchEvent(
 						(int)evt.tfinger.fingerId,
 						TouchLocationState.Released,
@@ -1730,11 +1771,11 @@ namespace Katabasis
 
 					break;
 				// Display Events
-				case SDL_EventType.SDL_WINDOWEVENT:
-					switch (evt.window.windowEvent)
+				case SDL_WINDOWEVENT:
+					switch (evt.window.@event)
 					{
 						// Window Focus
-						case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
 						{
 							game.IsActive = true;
 
@@ -1742,8 +1783,8 @@ namespace Katabasis
 							{
 								// If we alt-tab away, we lose the 'fullscreen desktop' flag on some WMs
 								SDL_SetWindowFullscreen(
-									game.Window.Handle,
-									game.GraphicsDevice.PresentationParameters.IsFullScreen ? (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+									(SDL_Window*)game.Window.Handle,
+									game.GraphicsDevice.PresentationParameters.IsFullScreen ? (uint)SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 							}
 
 							// Disable the screensaver when we're back.
@@ -1752,13 +1793,13 @@ namespace Katabasis
 						}
 
 						// Window Resize
-						case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
+						case SDL_WINDOWEVENT_FOCUS_LOST:
 						{
 							game.IsActive = false;
 
 							if (!OSXUseSpaces)
 							{
-								SDL_SetWindowFullscreen(game.Window.Handle, 0);
+								SDL_SetWindowFullscreen((SDL_Window*)game.Window.Handle, 0);
 							}
 
 							// Give the screensaver back, we're not that important now.
@@ -1766,21 +1807,21 @@ namespace Katabasis
 							break;
 						}
 
-						case SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED:
+						case SDL_WINDOWEVENT_SIZE_CHANGED:
 							// This is called on both API and WM resizes
 							Mouse._windowWidth = evt.window.data1;
 							Mouse._windowHeight = evt.window.data2;
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
+						case SDL_WINDOWEVENT_RESIZED:
 						{
 							/* This should be called on user resize only, NOT ApplyChanges!
 					 * Sadly some window managers are idiots and fire events anyway.
 					 * Also ignore any other "resizes" (alt-tab, fullscreen, etc.)
 					 * -flibit
 					 */
-							var flags = SDL_GetWindowFlags(game.Window.Handle);
-							if ((flags & (uint)SDL_WindowFlags.SDL_WINDOW_RESIZABLE) != 0 &&
-							    (flags & (uint)SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS) != 0)
+							var flags = SDL_GetWindowFlags((SDL_Window*)game.Window.Handle);
+							if ((flags & SDL_WINDOW_RESIZABLE) != 0 &&
+							    (flags & SDL_WINDOW_INPUT_FOCUS) != 0)
 							{
 								((FNAWindow)game.Window).INTERNAL_ClientSizeChanged();
 							}
@@ -1789,18 +1830,18 @@ namespace Katabasis
 						}
 
 						// Window Move
-						case SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED:
+						case SDL_WINDOWEVENT_EXPOSED:
 							// This is typically called when the window is made bigger
 							game.RedrawWindow();
 							break;
 						// Mouse Focus
-						case SDL_WindowEventID.SDL_WINDOWEVENT_MOVED:
+						case SDL_WINDOWEVENT_MOVED:
 						{
 							/* Apparently if you move the window to a new
 					 * display, a GraphicsDevice Reset occurs.
 					 * -flibit
 					 */
-							var newIndex = SDL_GetWindowDisplayIndex(game.Window.Handle);
+							var newIndex = SDL_GetWindowDisplayIndex((SDL_Window*)game.Window.Handle);
 							if (GraphicsAdapter.Adapters[newIndex] != currentAdapter)
 							{
 								currentAdapter = GraphicsAdapter.Adapters[newIndex];
@@ -1812,43 +1853,43 @@ namespace Katabasis
 							break;
 						}
 
-						case SDL_WindowEventID.SDL_WINDOWEVENT_ENTER:
+						case SDL_WINDOWEVENT_ENTER:
 							SDL_DisableScreenSaver();
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE:
+						case SDL_WINDOWEVENT_LEAVE:
 							SDL_EnableScreenSaver();
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_NONE:
+						case SDL_WINDOWEVENT_NONE:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN:
+						case SDL_WINDOWEVENT_SHOWN:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN:
+						case SDL_WINDOWEVENT_HIDDEN:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED:
+						case SDL_WINDOWEVENT_MINIMIZED:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_MAXIMIZED:
+						case SDL_WINDOWEVENT_MAXIMIZED:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED:
+						case SDL_WINDOWEVENT_RESTORED:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE:
+						case SDL_WINDOWEVENT_CLOSE:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_TAKE_FOCUS:
+						case SDL_WINDOWEVENT_TAKE_FOCUS:
 							break;
-						case SDL_WindowEventID.SDL_WINDOWEVENT_HIT_TEST:
+						case SDL_WINDOWEVENT_HIT_TEST:
 							break;
 					}
 
 					break;
 				// Controller device management
-				case SDL_EventType.SDL_DISPLAYEVENT:
+				case SDL_DISPLAYEVENT:
 				{
 					GraphicsAdapter.AdaptersChanged();
 
-					var displayIndex = SDL_GetWindowDisplayIndex(game.Window.Handle);
+					var displayIndex = SDL_GetWindowDisplayIndex((SDL_Window*)game.Window.Handle);
 					currentAdapter = GraphicsAdapter.Adapters[displayIndex];
 
 					// Orientation Change
-					if (evt.display.displayEvent == SDL_DisplayEventID.SDL_DISPLAYEVENT_ORIENTATION)
+					if (evt.display.@event == SDL_DISPLAYEVENT_ORIENTATION)
 					{
 						var orientation = INTERNAL_ConvertOrientation((SDL_DisplayOrientation)evt.display.data1);
 
@@ -1861,70 +1902,64 @@ namespace Katabasis
 					break;
 				}
 
-				case SDL_EventType.SDL_CONTROLLERDEVICEADDED:
+				case SDL_CONTROLLERDEVICEADDED:
 					INTERNAL_AddInstance(evt.cdevice.which);
 					break;
 				// Text Input
-				case SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
+				case SDL_CONTROLLERDEVICEREMOVED:
 					INTERNAL_RemoveInstance(evt.cdevice.which);
 					break;
-				case SDL_EventType.SDL_TEXTINPUT when !textInputSuppress:
+				case SDL_TEXTINPUT when !textInputSuppress:
 					// Based on the SDL2# LPUtf8StrMarshaler
-					unsafe
+					fixed (byte* p = evt.text._text)
 					{
-						fixed (byte* p = evt.text.text)
+						var bytes = MeasureStringLength(p);
+						if (bytes > 0)
 						{
-							var bytes = MeasureStringLength(p);
-							if (bytes > 0)
-							{
-								/* UTF8 will never encode more characters
+							/* UTF8 will never encode more characters
 							 * than bytes in a string, so bytes is a
 							 * suitable upper estimate of size needed
 							 */
-								var charsBuffer = stackalloc char[bytes];
-								var chars = Encoding.UTF8.GetChars(
-									p,
-									bytes,
-									charsBuffer,
-									bytes);
+							var charsBuffer = stackalloc char[bytes];
+							var chars = Encoding.UTF8.GetChars(
+								p,
+								bytes,
+								charsBuffer,
+								bytes);
 
-								for (var i = 0; i < chars; i += 1)
-								{
-									TextInputEXT.OnTextInput(charsBuffer[i]);
-								}
+							for (var i = 0; i < chars; i += 1)
+							{
+								TextInputEXT.OnTextInput(charsBuffer[i]);
 							}
 						}
 					}
 
 					break;
 				// Quit
-				case SDL_EventType.SDL_TEXTEDITING:
-					unsafe
+				case SDL_TEXTEDITING:
+					fixed (byte* p = evt.edit._text)
 					{
-						fixed (byte* p = evt.edit.text)
+						var bytes = MeasureStringLength(p);
+						if (bytes > 0)
 						{
-							var bytes = MeasureStringLength(p);
-							if (bytes > 0)
-							{
-								var charsBuffer = stackalloc char[bytes];
-								var chars = Encoding.UTF8.GetChars(
-									p,
-									bytes,
-									charsBuffer,
-									bytes);
+							var charsBuffer = stackalloc char[bytes];
+							var chars = Encoding.UTF8.GetChars(
+								p,
+								bytes,
+								charsBuffer,
+								bytes);
 
-								string text = new(charsBuffer, 0, chars);
-								TextInputEXT.OnTextEditing(text, evt.edit.start, evt.edit.length);
-							}
-							else
-							{
-								TextInputEXT.OnTextEditing(string.Empty, 0, 0);
-							}
+							string text = new(charsBuffer, 0, chars);
+							TextInputEXT.OnTextEditing(text, evt.edit.start, evt.edit.length);
+						}
+						else
+						{
+							TextInputEXT.OnTextEditing(string.Empty, 0, 0);
 						}
 					}
 
 					break;
-				case SDL_EventType.SDL_QUIT:
+				case SDL_QUIT:
 					game.RunApplication = false;
 					return true;
 			}
@@ -1932,7 +1967,7 @@ namespace Katabasis
 			return false;
 		}
 
-		private static void INTERNAL_SetIcon(IntPtr window, string title)
+		private static void INTERNAL_SetIcon(SDL_Window* window, string title)
 		{
 			string fileIn;
 
@@ -1945,17 +1980,18 @@ namespace Katabasis
 				fileIn = INTERNAL_GetIconName(title + ".png");
 				if (!string.IsNullOrEmpty(fileIn))
 				{
-					IntPtr pixels, icon;
+					IntPtr pixels;
+					SDL_Surface* icon;
 					using (Stream stream = TitleContainer.OpenStream(fileIn))
 					{
-						pixels = FNA3D.ReadImageStream(
+						pixels = FNA.ReadImageStream(
 							stream,
 							out var w,
 							out var h,
 							out _);
 
 						icon = SDL_CreateRGBSurfaceFrom(
-							pixels,
+							(void*)pixels,
 							w,
 							h,
 							8 * 4,
@@ -1968,7 +2004,7 @@ namespace Katabasis
 
 					SDL_SetWindowIcon(window, icon);
 					SDL_FreeSurface(icon);
-					FNA3D.FNA3D_Image_Free(pixels);
+					FNA3D_Image.FNA3D_Image_Free((byte*)pixels);
 					return;
 				}
 			}
@@ -1980,9 +2016,10 @@ namespace Katabasis
 			fileIn = INTERNAL_GetIconName(title + ".bmp");
 			if (!string.IsNullOrEmpty(fileIn))
 			{
-				var icon = SDL_LoadBMP(fileIn);
-				SDL_SetWindowIcon(window, icon);
-				SDL_FreeSurface(icon);
+				throw new NotImplementedException("SDL_image not yet supported. If you come here upvote a ticket!");
+				// var icon = SDL_LoadBMP(fileIn);
+				// SDL_SetWindowIcon(window, icon);
+				// SDL_FreeSurface(icon);
 			}
 		}
 
@@ -2092,17 +2129,20 @@ namespace Katabasis
 			return drive >= 0 ? drives[drive] : Path.GetPathRoot(storageRoot);
 		}
 
-		public static IntPtr ReadToPointer(string path, out IntPtr size)
+		public static IntPtr ReadToPointer(string path, out ulong size)
 		{
-			return SDL.SDL_LoadFile(path, out size);
+			ulong size2;
+			var result = SDL_LoadFile(path, &size2);
+			size = size2;
+			return (IntPtr)result;
 		}
 
 		public static void FreeFilePointer(IntPtr file)
 		{
-			SDL.SDL_free(file);
+			SDL_free((void*)file);
 		}
 
-		private static unsafe int MeasureStringLength(byte* ptr)
+		private static int MeasureStringLength(byte* ptr)
 		{
 			int bytes;
 			for (bytes = 0; *ptr != 0; ptr += 1, bytes += 1)
@@ -2260,10 +2300,10 @@ namespace Katabasis
 			SDL_ClearError();
 
 			// Open the device!
-			_devices[which] = SDL_GameControllerOpen(dev);
+			_devices[which] = (IntPtr)SDL_GameControllerOpen(dev);
 
 			// We use this when dealing with GUID initialization.
-			var thisJoystick = SDL_GameControllerGetJoystick(_devices[which]);
+			var thisJoystick = SDL_GameControllerGetJoystick((SDL_GameController*)_devices[which]);
 
 			// Pair up the instance ID to the player index.
 			// FIXME: Remove check after 2.0.4? -flibit
@@ -2283,13 +2323,13 @@ namespace Katabasis
 
 			// Initialize the haptics for the joystick, if applicable.
 			var hasRumble = SDL_GameControllerRumble(
-				_devices[which],
+				(SDL_GameController*)_devices[which],
 				0,
 				0,
 				0) == 0;
 
 			var hasTriggerRumble = SDL_GameControllerRumbleTriggers(
-				_devices[which],
+				(SDL_GameController*)_devices[which],
 				0,
 				0,
 				0) == 0;
@@ -2298,137 +2338,138 @@ namespace Katabasis
 			var caps = default(GamePadCapabilities);
 			caps.IsConnected = true;
 			caps.GamePadType = _gamepadType[(int)SDL_JoystickGetType(thisJoystick)];
+			var gameController = (SDL_GameController*)_devices[which];
 			caps.HasAButton = SDL_GameControllerGetBindForButton(
-				                  _devices[which],
+				                  gameController,
 				                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A).bindType !=
 			                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasBButton = SDL_GameControllerGetBindForButton(
-				                  _devices[which],
+				                  gameController,
 				                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B).bindType !=
 			                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasXButton = SDL_GameControllerGetBindForButton(
-				                  _devices[which],
+				                  gameController,
 				                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X).bindType !=
 			                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasYButton = SDL_GameControllerGetBindForButton(
-				                  _devices[which],
+				                  gameController,
 				                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y).bindType !=
 			                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasBackButton = SDL_GameControllerGetBindForButton(
-				                     _devices[which],
+				                     gameController,
 				                     SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK).bindType !=
 			                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasBigButton = SDL_GameControllerGetBindForButton(
-				                    _devices[which],
+				                    gameController,
 				                    SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE).bindType !=
 			                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasStartButton = SDL_GameControllerGetBindForButton(
-				                      _devices[which],
+				                      gameController,
 				                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START).bindType !=
 			                      SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasLeftStickButton = SDL_GameControllerGetBindForButton(
-				                          _devices[which],
+				                          gameController,
 				                          SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK).bindType !=
 			                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasRightStickButton = SDL_GameControllerGetBindForButton(
-				                           _devices[which],
+				                           gameController,
 				                           SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK).bindType !=
 			                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasLeftShoulderButton = SDL_GameControllerGetBindForButton(
-				                             _devices[which],
+				                             gameController,
 				                             SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER).bindType !=
 			                             SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasRightShoulderButton = SDL_GameControllerGetBindForButton(
-				                              _devices[which],
+				                              gameController,
 				                              SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER).bindType !=
 			                              SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasDPadUpButton = SDL_GameControllerGetBindForButton(
-				                       _devices[which],
+				                       gameController,
 				                       SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP).bindType !=
 			                       SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasDPadDownButton = SDL_GameControllerGetBindForButton(
-				                         _devices[which],
+				                         gameController,
 				                         SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN).bindType !=
 			                         SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasDPadLeftButton = SDL_GameControllerGetBindForButton(
-				                         _devices[which],
+				                         gameController,
 				                         SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT).bindType !=
 			                         SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasDPadRightButton = SDL_GameControllerGetBindForButton(
-				                          _devices[which],
+				                          gameController,
 				                          SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT).bindType !=
 			                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasLeftXThumbStick = SDL_GameControllerGetBindForAxis(
-				                          _devices[which],
+				                          gameController,
 				                          SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX).bindType !=
 			                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasLeftYThumbStick = SDL_GameControllerGetBindForAxis(
-				                          _devices[which],
+				                          gameController,
 				                          SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY).bindType !=
 			                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasRightXThumbStick = SDL_GameControllerGetBindForAxis(
-				                           _devices[which],
+				                           gameController,
 				                           SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX).bindType !=
 			                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasRightYThumbStick = SDL_GameControllerGetBindForAxis(
-				                           _devices[which],
+				                           gameController,
 				                           SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY).bindType !=
 			                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasLeftTrigger = SDL_GameControllerGetBindForAxis(
-				                      _devices[which],
+				                      gameController,
 				                      SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT).bindType !=
 			                      SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasRightTrigger = SDL_GameControllerGetBindForAxis(
-					_devices[which],
+					gameController,
 					SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
 				.bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasLeftVibrationMotor = hasRumble;
 			caps.HasRightVibrationMotor = hasRumble;
 			caps.HasVoiceSupport = false;
-			caps.HasLightBarEXT = SDL_GameControllerHasLED(_devices[which]) == SDL_bool.SDL_TRUE;
+			caps.HasLightBarEXT = SDL_GameControllerHasLED(gameController) == true;
 			caps.HasTriggerVibrationMotorsEXT = hasTriggerRumble;
-			caps.HasMisc1EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1).bindType !=
+			caps.HasMisc1EXT = SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1).bindType !=
 			                   SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-			caps.HasPaddle1EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1).bindType !=
+			caps.HasPaddle1EXT = SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1).bindType !=
 			                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-			caps.HasPaddle2EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2).bindType !=
+			caps.HasPaddle2EXT = SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2).bindType !=
 			                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-			caps.HasPaddle3EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3).bindType !=
+			caps.HasPaddle3EXT = SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3).bindType !=
 			                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-			caps.HasPaddle4EXT = SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4).bindType !=
+			caps.HasPaddle4EXT = SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4).bindType !=
 			                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
 			caps.HasTouchPadEXT =
-				SDL_GameControllerGetBindForButton(_devices[which], SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD).bindType !=
+				SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD).bindType !=
 				SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-			caps.HasGyroEXT = SDL_GameControllerHasSensor(_devices[which], SDL_SensorType.SDL_SENSOR_GYRO) == SDL_bool.SDL_TRUE;
-			caps.HasAccelerometerEXT = SDL_GameControllerHasSensor(_devices[which], SDL_SensorType.SDL_SENSOR_ACCEL) == SDL_bool.SDL_TRUE;
+			caps.HasGyroEXT = SDL_GameControllerHasSensor(gameController, SDL_SensorType.SDL_SENSOR_GYRO) == true;
+			caps.HasAccelerometerEXT = SDL_GameControllerHasSensor(gameController, SDL_SensorType.SDL_SENSOR_ACCEL) == true;
 			_capabilities[which] = caps;
 
 			// ReSharper disable once CommentTypo
@@ -2447,7 +2488,7 @@ namespace Katabasis
 			}
 
 			// Print controller information to stdout.
-			FNALoggerEXT.LogInfo!("Controller " + which + ": " + SDL_GameControllerName(_devices[which]));
+			FNALoggerEXT.LogInfo!("Controller " + which + ": " + SDL_GameControllerName((SDL_GameController*)_devices[which]));
 		}
 
 		private static void INTERNAL_RemoveInstance(int dev)
@@ -2459,7 +2500,7 @@ namespace Katabasis
 			}
 
 			_instanceList.Remove(dev);
-			SDL_GameControllerClose(_devices[output]);
+			SDL_GameControllerClose((SDL_GameController*)_devices[output]);
 			_devices[output] = IntPtr.Zero;
 			_states[output] = default;
 			_guids[output] = string.Empty;
@@ -2535,16 +2576,14 @@ namespace Katabasis
 			return Keys.None;
 		}
 
-		private static unsafe int Win32OnPaint(IntPtr userdata, IntPtr evtPtr)
+		[UnmanagedCallersOnly]
+		private static int Win32OnPaint(void* userdata, SDL_Event* evt)
 		{
-			var evt = (SDL_Event*)evtPtr;
-			if (evt->type == SDL_EventType.SDL_WINDOWEVENT &&
-			    evt->window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED)
+			if (evt->type == SDL_WINDOWEVENT && evt->window.@event == SDL_WINDOWEVENT_EXPOSED)
 			{
 				foreach (Game game in _activeGames)
 				{
-					if (game.Window != null &&
-					    evt->window.windowID == SDL_GetWindowID(game.Window.Handle))
+					if (game.Window != null && evt->window.windowID == SDL_GetWindowID((SDL_Window*)game.Window.Handle))
 					{
 						game.RedrawWindow();
 						return 0;
@@ -2554,7 +2593,7 @@ namespace Katabasis
 
 			if (_prevEventFilter != null)
 			{
-				return _prevEventFilter(userdata, evtPtr);
+				return _prevEventFilter.Value.Pointer(userdata, evt);
 			}
 
 			return 1;
@@ -2563,5 +2602,10 @@ namespace Katabasis
 		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
 		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
 		private delegate void em_callback_func();
+
+		public static void GetMousePosition(IntPtr window, int x, int y)
+		{
+			SDL_WarpMouseInWindow((SDL_Window*)window, x, y);
+		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics;
@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class IndexBuffer : GraphicsResource
+	public unsafe class IndexBuffer : GraphicsResource
 	{
-		internal IntPtr _buffer;
+		internal IntPtr Buffer;
 
 		public IndexBuffer(
 			IndexElementSize indexElementSize,
@@ -36,7 +36,7 @@ namespace Katabasis
 		{
 		}
 
-		protected IndexBuffer(
+		public IndexBuffer(
 			Type indexType,
 			int indexCount,
 			BufferUsage usage,
@@ -49,7 +49,7 @@ namespace Katabasis
 		{
 		}
 
-		protected IndexBuffer(
+		public IndexBuffer(
 			IndexElementSize indexElementSize,
 			int indexCount,
 			BufferUsage usage,
@@ -62,10 +62,10 @@ namespace Katabasis
 
 			var stride = indexElementSize == IndexElementSize.ThirtyTwoBits ? 4 : 2;
 
-			_buffer = FNA3D.FNA3D_GenIndexBuffer(
-				GraphicsDevice.GLDevice,
+			Buffer = (IntPtr)FNA3D.FNA3D_GenIndexBuffer(
+				GraphicsDevice.Device,
 				(byte)(dynamic ? 1 : 0),
-				usage,
+				(FNA3D.FNA3D_BufferUsage)usage,
 				IndexCount * stride);
 		}
 
@@ -81,15 +81,15 @@ namespace Katabasis
 			int dataLength,
 			SetDataOptions options) =>
 			FNA3D.FNA3D_SetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				data,
+				(void*)data,
 				dataLength,
-				options);
+				(FNA3D.FNA3D_SetDataOptions)options);
 
 		[Conditional("DEBUG")]
-		internal void ErrorCheck<T>(
+		internal static void ErrorCheck<T>(
 			T[] data,
 			int startIndex,
 			int elementCount)
@@ -117,8 +117,8 @@ namespace Katabasis
 			if (!IsDisposed)
 			{
 				FNA3D.FNA3D_AddDisposeIndexBuffer(
-					GraphicsDevice.GLDevice,
-					_buffer);
+					GraphicsDevice.Device,
+					(FNA3D.FNA3D_Buffer*)Buffer);
 			}
 
 			base.Dispose(disposing);
@@ -188,10 +188,10 @@ namespace Katabasis
 			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_GetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount * elementSizeInBytes);
 
 			handle.Free();
@@ -202,12 +202,12 @@ namespace Katabasis
 		{
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				0,
-				handle.AddrOfPinnedObject(),
+				(void*)handle.AddrOfPinnedObject(),
 				data.Length * Marshal.SizeOf(typeof(T)),
-				SetDataOptions.None);
+				(FNA3D.FNA3D_SetDataOptions)SetDataOptions.None);
 
 			handle.Free();
 		}
@@ -222,12 +222,12 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				0,
-				handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T))),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T)))),
 				elementCount * Marshal.SizeOf(typeof(T)),
-				SetDataOptions.None);
+				(FNA3D.FNA3D_SetDataOptions)SetDataOptions.None);
 
 			handle.Free();
 		}
@@ -243,12 +243,12 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetIndexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T))),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * Marshal.SizeOf(typeof(T)))),
 				elementCount * Marshal.SizeOf(typeof(T)),
-				SetDataOptions.None);
+				(FNA3D.FNA3D_SetDataOptions)SetDataOptions.None);
 
 			handle.Free();
 		}

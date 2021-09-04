@@ -1,15 +1,16 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
-	public sealed class VideoPlayer : IDisposable
+	public sealed unsafe class VideoPlayer : IDisposable
 	{
 		private const int AudioBufferSize = 4096 * 2;
 		private static readonly float[] _audioData = new float[AudioBufferSize];
@@ -428,15 +429,15 @@ namespace Katabasis
 		{
 			// Prepare YUV GL textures with our current frame data
 			FNA3D.FNA3D_SetTextureDataYUV(
-				_currentDevice!.GLDevice,
-				_yuvTextures[0]!._texture,
-				_yuvTextures[1]!._texture,
-				_yuvTextures[2]!._texture,
+				_currentDevice!.Device,
+				(FNA3D.FNA3D_Texture*)_yuvTextures[0]!._texture,
+				(FNA3D.FNA3D_Texture*)_yuvTextures[1]!._texture,
+				(FNA3D.FNA3D_Texture*)_yuvTextures[2]!._texture,
 				Video!._yWidth,
 				Video._yHeight,
 				Video._uvWidth,
 				Video._uvHeight,
-				_yuvData,
+				(void*)_yuvData,
 				_yuvDataLen);
 
 			// Draw the YUV textures to the framebuffer with our shader.
@@ -564,9 +565,9 @@ namespace Katabasis
 		{
 			// Begin the effect, flagging to restore previous state on end
 			FNA3D.FNA3D_BeginPassRestore(
-				_currentDevice!.GLDevice,
-				_shaderProgram!._glEffect,
-				_stateChangesPtr);
+				_currentDevice!.Device,
+				(FNA3D.FNA3D_Effect*)_shaderProgram!._glEffect,
+				(FNA3D.MOJOSHADER_effectStateChanges*)_stateChangesPtr);
 
 			// Prep our samplers
 			for (var i = 0; i < 3; i += 1)
@@ -590,11 +591,11 @@ namespace Katabasis
 				{
 					GraphicsDevice.PrepareRenderTargetBindings(rt, _videoTexture);
 					FNA3D.FNA3D_SetRenderTargets(
-						_currentDevice.GLDevice,
+						_currentDevice.Device,
 						rt,
 						_videoTexture.Length,
-						IntPtr.Zero,
-						DepthFormat.None,
+						(FNA3D.FNA3D_Renderbuffer*)IntPtr.Zero,
+						(FNA3D.FNA3D_DepthFormat)DepthFormat.None,
 						0);
 				}
 			}
@@ -609,13 +610,13 @@ namespace Katabasis
 
 			// Prep viewport
 			_prevViewport = _currentDevice.Viewport;
-			FNA3D.FNA3D_SetViewport(_currentDevice.GLDevice, ref _viewport._viewport);
+			FNA3D.FNA3D_SetViewport(_currentDevice.Device, (FNA3D.FNA3D_Viewport*)Unsafe.AsPointer(ref _viewport._viewport));
 		}
 
 		private void GL_popState()
 		{
 			// End the effect, restoring the previous shader state
-			FNA3D.FNA3D_EndPassRestore(_currentDevice!.GLDevice, _shaderProgram!._glEffect);
+			FNA3D.FNA3D_EndPassRestore(_currentDevice!.Device, (FNA3D.FNA3D_Effect*)_shaderProgram!._glEffect);
 
 			// Restore GL state
 			_currentDevice.BlendState = _prevBlend;
@@ -631,11 +632,11 @@ namespace Katabasis
 			if (_oldTargets == null || _oldTargets.Length == 0)
 			{
 				FNA3D.FNA3D_SetRenderTargets(
-					_currentDevice.GLDevice,
-					IntPtr.Zero,
+					_currentDevice.Device,
+					(FNA3D.FNA3D_RenderTargetBinding*)IntPtr.Zero,
 					0,
-					IntPtr.Zero,
-					DepthFormat.None,
+					(FNA3D.FNA3D_Renderbuffer*)IntPtr.Zero,
+					(FNA3D.FNA3D_DepthFormat)DepthFormat.None,
 					0);
 			}
 			else
@@ -648,11 +649,11 @@ namespace Katabasis
 					{
 						GraphicsDevice.PrepareRenderTargetBindings(rt, _oldTargets);
 						FNA3D.FNA3D_SetRenderTargets(
-							_currentDevice.GLDevice,
+							_currentDevice.Device,
 							rt,
 							_oldTargets.Length,
-							oldTarget!.DepthStencilBuffer,
-							oldTarget.DepthStencilFormat,
+							(FNA3D.FNA3D_Renderbuffer*)oldTarget!.DepthStencilBuffer,
+							(FNA3D.FNA3D_DepthFormat)oldTarget.DepthStencilFormat,
 							(byte)(oldTarget.RenderTargetUsage != RenderTargetUsage.DiscardContents ? 1 : 0));
 					}
 				}
@@ -661,7 +662,7 @@ namespace Katabasis
 			_oldTargets = null;
 
 			// Set viewport AFTER setting targets!
-			FNA3D.FNA3D_SetViewport(_currentDevice.GLDevice, ref _prevViewport._viewport);
+			FNA3D.FNA3D_SetViewport(_currentDevice.Device, (FNA3D.FNA3D_Viewport*)Unsafe.AsPointer(ref _prevViewport._viewport));
 
 			// Restore buffers
 			_currentDevice.SetVertexBuffers(_oldBuffers);

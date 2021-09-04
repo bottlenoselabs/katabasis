@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -14,47 +14,47 @@ namespace Katabasis
 
 		public int Height
 		{
-			get => _viewport.H;
-			set => _viewport.H = value;
+			get => _viewport.h;
+			set => _viewport.h = value;
 		}
 
 		public float MaxDepth
 		{
-			get => _viewport.MaxDepth;
-			set => _viewport.MaxDepth = value;
+			get => _viewport.maxDepth;
+			set => _viewport.maxDepth = value;
 		}
 
 		public float MinDepth
 		{
-			get => _viewport.MinDepth;
-			set => _viewport.MinDepth = value;
+			get => _viewport.minDepth;
+			set => _viewport.minDepth = value;
 		}
 
 		public int Width
 		{
-			get => _viewport.W;
-			set => _viewport.W = value;
+			get => _viewport.w;
+			set => _viewport.w = value;
 		}
 
 		public int Y
 		{
-			get => _viewport.Y;
-			set => _viewport.Y = value;
+			get => _viewport.y;
+			set => _viewport.y = value;
 		}
 
 		public int X
 		{
-			get => _viewport.X;
-			set => _viewport.X = value;
+			get => _viewport.x;
+			set => _viewport.x = value;
 		}
 
 		public float AspectRatio
 		{
 			get
 			{
-				if (_viewport.H != 0 && _viewport.W != 0)
+				if (_viewport.h != 0 && _viewport.w != 0)
 				{
-					return _viewport.W / (float)_viewport.H;
+					return _viewport.w / (float)_viewport.h;
 				}
 
 				return 0.0f;
@@ -65,17 +65,17 @@ namespace Katabasis
 		{
 			get =>
 				new(
-					_viewport.X,
-					_viewport.Y,
-					_viewport.W,
-					_viewport.H);
+					_viewport.x,
+					_viewport.y,
+					_viewport.w,
+					_viewport.h);
 
 			set
 			{
-				_viewport.X = value.X;
-				_viewport.Y = value.Y;
-				_viewport.W = value.Width;
-				_viewport.H = value.Height;
+				_viewport.x = value.X;
+				_viewport.y = value.Y;
+				_viewport.w = value.Width;
+				_viewport.h = value.Height;
 			}
 		}
 
@@ -83,22 +83,22 @@ namespace Katabasis
 
 		public Viewport(int x, int y, int width, int height)
 		{
-			_viewport.X = x;
-			_viewport.Y = y;
-			_viewport.W = width;
-			_viewport.H = height;
-			_viewport.MinDepth = 0.0f;
-			_viewport.MaxDepth = 1.0f;
+			_viewport.x = x;
+			_viewport.y = y;
+			_viewport.w = width;
+			_viewport.h = height;
+			_viewport.minDepth = 0.0f;
+			_viewport.maxDepth = 1.0f;
 		}
 
 		public Viewport(Rectangle bounds)
 		{
-			_viewport.X = bounds.X;
-			_viewport.Y = bounds.Y;
-			_viewport.W = bounds.Width;
-			_viewport.H = bounds.Height;
-			_viewport.MinDepth = 0.0f;
-			_viewport.MaxDepth = 1.0f;
+			_viewport.x = bounds.X;
+			_viewport.y = bounds.Y;
+			_viewport.w = bounds.Width;
+			_viewport.h = bounds.Height;
+			_viewport.minDepth = 0.0f;
+			_viewport.maxDepth = 1.0f;
 		}
 
 		public Vector3 Project(
@@ -145,12 +145,12 @@ namespace Katabasis
 
 		public override string ToString() =>
 			"{" +
-			"X:" + _viewport.X +
-			" Y:" + _viewport.Y +
-			" Width:" + _viewport.W +
-			" Height:" + _viewport.H +
-			" MinDepth:" + _viewport.MinDepth +
-			" MaxDepth:" + _viewport.MaxDepth +
+			"X:" + _viewport.x +
+			" Y:" + _viewport.y +
+			" Width:" + _viewport.w +
+			" Height:" + _viewport.h +
+			" MinDepth:" + _viewport.minDepth +
+			" MaxDepth:" + _viewport.maxDepth +
 			"}";
 	}
 }

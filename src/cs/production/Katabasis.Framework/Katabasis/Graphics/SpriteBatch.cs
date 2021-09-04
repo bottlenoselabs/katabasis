@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Katabasis
 	 * http://gamedev.stackexchange.com/questions/21220/how-exactly-does-xnas-spritebatch-work
 	 */
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class SpriteBatch : GraphicsResource
+	public unsafe class SpriteBatch : GraphicsResource
 	{
 		// As defined by the HiDef profile spec
 		private const int MaxSprites = 2048;
@@ -115,7 +115,7 @@ namespace Katabasis
 
 			_beginCalled = false;
 			_numSprites = 0;
-			_supportsNoOverwrite = FNA3D.FNA3D_SupportsNoOverwrite(GraphicsDevice.GLDevice) == 1;
+			_supportsNoOverwrite = FNA3D.FNA3D_SupportsNoOverwrite(GraphicsDevice.Device) == 1;
 		}
 
 		public void End()

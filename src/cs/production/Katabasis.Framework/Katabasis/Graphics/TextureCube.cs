@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
-	public class TextureCube : Texture
+	public unsafe class TextureCube : Texture
 	{
 		public TextureCube(int size, bool mipMap, SurfaceFormat format)
 		{
@@ -37,9 +37,9 @@ namespace Katabasis
 				Format = format;
 			}
 
-			_texture = FNA3D.FNA3D_CreateTextureCube(
-				GraphicsDevice.GLDevice,
-				Format,
+			_texture = (IntPtr)FNA3D.FNA3D_CreateTextureCube(
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_SurfaceFormat)Format,
 				Size,
 				LevelCount,
 				(byte)(this is IRenderTarget ? 1 : 0));
@@ -47,6 +47,7 @@ namespace Katabasis
 
 		public int Size { get; }
 
+		// ReSharper disable once InconsistentNaming
 		public static TextureCube DDSFromStreamEXT(Stream stream)
 		{
 			// Begin BinaryReader, ignoring a tab!
@@ -176,20 +177,21 @@ namespace Katabasis
 			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetTextureDataCube(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				xOffset,
 				yOffset,
 				width,
 				height,
-				cubeMapFace,
+				(FNA3D.FNA3D_CubeMapFace)cubeMapFace,
 				level,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount * elementSizeInBytes);
 
 			handle.Free();
 		}
 
+		// ReSharper disable once InconsistentNaming
 		public void SetDataPointerEXT(
 			CubeMapFace cubeMapFace,
 			int level,
@@ -219,15 +221,15 @@ namespace Katabasis
 			}
 
 			FNA3D.FNA3D_SetTextureDataCube(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				xOffset,
 				yOffset,
 				width,
 				height,
-				cubeMapFace,
+				(FNA3D.FNA3D_CubeMapFace)cubeMapFace,
 				level,
-				data,
+				(void*)data,
 				dataLength);
 		}
 
@@ -299,15 +301,15 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_GetTextureDataCube(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				subX,
 				subY,
 				subW,
 				subH,
-				cubeMapFace,
+				(FNA3D.FNA3D_CubeMapFace)cubeMapFace,
 				level,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount * elementSizeInBytes);
 
 			handle.Free();

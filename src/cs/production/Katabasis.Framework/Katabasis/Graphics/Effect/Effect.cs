@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Katabasis
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Local", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("Microsoft.Naming", "CA1712", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Will gut Mojo shader soon.")]
-	public class Effect : GraphicsResource
+	public unsafe class Effect : GraphicsResource
 	{
 		private static readonly EffectParameterType[] XNAType =
 		{
@@ -156,48 +156,56 @@ namespace Katabasis
 		{
 			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
 
-			// Send the blob to the GLDevice to be parsed/compiled
-			FNA3D.FNA3D_CreateEffect(
-				GraphicsDevice.GLDevice,
-				effectCode,
-				effectCode.Length,
-				out _glEffect,
-				out var effectData);
+			FNA3D.FNA3D_Effect* effect;
+			FNA3D.MOJOSHADER_effect* effectData;
+			fixed (byte* p = effectCode)
+			{
+				// Send the blob to the GLDevice to be parsed/compiled
+				FNA3D.FNA3D_CreateEffect(
+					GraphicsDevice.Device,
+					p,
+					(uint)effectCode.Length,
+					&effect,
+					&effectData);
+			}
+
+			_glEffect = (IntPtr)effect;
 
 			// This is where it gets ugly...
-			INTERNAL_parseEffectStruct(effectData);
+			INTERNAL_parseEffectStruct((IntPtr)effectData);
 
 			// The default technique is the first technique.
 			CurrentTechnique = Techniques![0];
 
 			// Use native memory for changes, .NET loves moving this around
-			unsafe
-			{
-				_stateChangesPtr = Marshal.AllocHGlobal(
-					sizeof(MOJOSHADER_effectStateChanges));
+			_stateChangesPtr = Marshal.AllocHGlobal(
+				sizeof(MOJOSHADER_effectStateChanges));
 
-				var stateChanges =
-					(MOJOSHADER_effectStateChanges*)_stateChangesPtr;
+			var stateChanges =
+				(MOJOSHADER_effectStateChanges*)_stateChangesPtr;
 
-				stateChanges->render_state_change_count = 0;
-				stateChanges->sampler_state_change_count = 0;
-				stateChanges->vertex_sampler_state_change_count = 0;
-			}
+			stateChanges->render_state_change_count = 0;
+			stateChanges->sampler_state_change_count = 0;
+			stateChanges->vertex_sampler_state_change_count = 0;
 		}
 
 		protected Effect(Effect cloneSource)
 		{
 			GraphicsDevice = cloneSource.GraphicsDevice;
 
+			FNA3D.FNA3D_Effect* effect;
+			FNA3D.MOJOSHADER_effect* effectData;
 			// Send the parsed data to be cloned and recompiled by MojoShader
 			FNA3D.FNA3D_CloneEffect(
-				GraphicsDevice.GLDevice,
-				cloneSource._glEffect,
-				out _glEffect,
-				out var effectData);
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Effect*)cloneSource._glEffect,
+				&effect,
+				&effectData);
 
 			// Double the ugly, double the fun!
-			INTERNAL_parseEffectStruct(effectData);
+			INTERNAL_parseEffectStruct((IntPtr)effectData);
+
+			_glEffect = (IntPtr)effect;
 
 			var parameters = cloneSource.Parameters!;
 			// Copy texture parameters, if applicable
@@ -236,9 +244,9 @@ namespace Katabasis
 			set
 			{
 				FNA3D.FNA3D_SetEffectTechnique(
-					GraphicsDevice.GLDevice,
-					_glEffect,
-					value!.TechniquePointer);
+					GraphicsDevice.Device,
+					(FNA3D.FNA3D_Effect*)_glEffect,
+					(FNA3D.MOJOSHADER_effectTechnique*)value!.TechniquePointer);
 
 				_currentTechnique = value;
 			}
@@ -261,8 +269,8 @@ namespace Katabasis
 				if (_glEffect != IntPtr.Zero)
 				{
 					FNA3D.FNA3D_AddDisposeEffect(
-						GraphicsDevice.GLDevice,
-						_glEffect);
+						GraphicsDevice.Device,
+						(FNA3D.FNA3D_Effect*)_glEffect);
 				}
 
 				if (_stateChangesPtr != IntPtr.Zero)
@@ -279,13 +287,13 @@ namespace Katabasis
 		{
 		}
 
-		internal unsafe void INTERNAL_applyEffect(uint pass)
+		internal void INTERNAL_applyEffect(uint pass)
 		{
 			FNA3D.FNA3D_ApplyEffect(
-				GraphicsDevice.GLDevice,
-				_glEffect,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Effect*)_glEffect,
 				pass,
-				_stateChangesPtr);
+				(FNA3D.MOJOSHADER_effectStateChanges*)_stateChangesPtr);
 
 			var stateChanges =
 				(MOJOSHADER_effectStateChanges*)_stateChangesPtr;
@@ -690,7 +698,7 @@ namespace Katabasis
 			}
 		}
 
-		private unsafe void INTERNAL_updateSamplers(
+		private void INTERNAL_updateSamplers(
 			uint changeCount,
 			MOJOSHADER_samplerStateRegister* registers,
 			TextureCollection textures,
@@ -925,7 +933,7 @@ namespace Katabasis
 			}
 		}
 
-		private unsafe void INTERNAL_parseEffectStruct(IntPtr effectData)
+		private void INTERNAL_parseEffectStruct(IntPtr effectData)
 		{
 			var effectPtr = (MOJOSHADER_effect*)effectData;
 

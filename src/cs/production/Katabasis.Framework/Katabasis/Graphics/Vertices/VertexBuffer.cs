@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics;
@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class VertexBuffer : GraphicsResource
+	public unsafe class VertexBuffer : GraphicsResource
 	{
-		internal IntPtr _buffer;
+		internal IntPtr Buffer;
 
 		public VertexBuffer(
 			VertexDeclaration vertexDeclaration,
@@ -53,10 +53,10 @@ namespace Katabasis
 				vertexDeclaration.GraphicsDevice = GraphicsDevice;
 			}
 
-			_buffer = FNA3D.FNA3D_GenVertexBuffer(
-				GraphicsDevice.GLDevice,
+			Buffer = (IntPtr)FNA3D.FNA3D_GenVertexBuffer(
+				GraphicsDevice.Device,
 				(byte)(dynamic ? 1 : 0),
-				bufferUsage,
+				(FNA3D.FNA3D_BufferUsage)bufferUsage,
 				VertexCount * VertexDeclaration.VertexStride);
 		}
 
@@ -134,10 +134,10 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_GetVertexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount,
 				elementSizeInBytes,
 				vertexStride);
@@ -179,14 +179,14 @@ namespace Katabasis
 			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetVertexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount,
 				elementSizeInBytes,
 				vertexStride,
-				SetDataOptions.None);
+				(FNA3D.FNA3D_SetDataOptions)SetDataOptions.None);
 
 			handle.Free();
 		}
@@ -197,14 +197,14 @@ namespace Katabasis
 			int dataLength,
 			SetDataOptions options) =>
 			FNA3D.FNA3D_SetVertexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				data,
+				(void*)data,
 				dataLength,
 				1,
 				1,
-				options);
+				(FNA3D.FNA3D_SetDataOptions)options);
 
 		[Conditional("DEBUG")]
 		internal void ErrorCheck<T>(
@@ -255,8 +255,8 @@ namespace Katabasis
 			if (!IsDisposed)
 			{
 				FNA3D.FNA3D_AddDisposeVertexBuffer(
-					GraphicsDevice.GLDevice,
-					_buffer);
+					GraphicsDevice.Device,
+					(FNA3D.FNA3D_Buffer*)Buffer);
 			}
 
 			base.Dispose(disposing);

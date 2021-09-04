@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
-	public class DynamicVertexBuffer : VertexBuffer
+	public unsafe class DynamicVertexBuffer : VertexBuffer
 	{
 		public DynamicVertexBuffer(
 			VertexDeclaration vertexDeclaration,
@@ -54,14 +54,14 @@ namespace Katabasis
 			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetVertexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				offsetInBytes,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount,
 				elementSizeInBytes,
 				vertexStride,
-				options);
+				(FNA3D.FNA3D_SetDataOptions)options);
 
 			handle.Free();
 		}
@@ -78,14 +78,14 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetVertexBufferData(
-				GraphicsDevice.GLDevice,
-				_buffer,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Buffer*)Buffer,
 				0,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount,
 				elementSizeInBytes,
 				elementSizeInBytes,
-				options);
+				(FNA3D.FNA3D_SetDataOptions)options);
 
 			handle.Free();
 		}

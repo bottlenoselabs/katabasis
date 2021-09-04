@@ -1,8 +1,11 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
+
+using System.Runtime.CompilerServices;
+
 namespace Katabasis
 {
-	public class BlendState : GraphicsResource
+	public unsafe class BlendState : GraphicsResource
 	{
 		public static readonly BlendState Additive = new(
 			"BlendState.Additive",
@@ -67,74 +70,74 @@ namespace Katabasis
 
 		public BlendFunction AlphaBlendFunction
 		{
-			get => _state.AlphaBlendFunction;
-			set => _state.AlphaBlendFunction = value;
+			get => (BlendFunction)_state.alphaBlendFunction;
+			set => _state.alphaBlendFunction = (FNA3D.FNA3D_BlendFunction)value;
 		}
 
 		public Blend AlphaDestinationBlend
 		{
-			get => _state.AlphaDestinationBlend;
-			set => _state.AlphaDestinationBlend = value;
+			get => (Blend)_state.alphaDestinationBlend;
+			set => _state.alphaDestinationBlend = (FNA3D.FNA3D_Blend)value;
 		}
 
 		public Blend AlphaSourceBlend
 		{
-			get => _state.AlphaSourceBlend;
-			set => _state.AlphaSourceBlend = value;
+			get => (Blend)_state.alphaSourceBlend;
+			set => _state.alphaSourceBlend = (FNA3D.FNA3D_Blend)value;
 		}
 
 		public BlendFunction ColorBlendFunction
 		{
-			get => _state.ColorBlendFunction;
-			set => _state.ColorBlendFunction = value;
+			get => (BlendFunction)_state.colorBlendFunction;
+			set => _state.colorBlendFunction = (FNA3D.FNA3D_BlendFunction)value;
 		}
 
 		public Blend ColorDestinationBlend
 		{
-			get => _state.ColorDestinationBlend;
-			set => _state.ColorDestinationBlend = value;
+			get => (Blend)_state.colorDestinationBlend;
+			set => _state.colorDestinationBlend = (FNA3D.FNA3D_Blend)value;
 		}
 
 		public Blend ColorSourceBlend
 		{
-			get => _state.ColorSourceBlend;
-			set => _state.ColorSourceBlend = value;
+			get => (Blend)_state.colorSourceBlend;
+			set => _state.colorSourceBlend = (FNA3D.FNA3D_Blend)value;
 		}
 
 		public ColorWriteChannels ColorWriteChannels
 		{
-			get => _state.ColorWriteEnable;
-			set => _state.ColorWriteEnable = value;
+			get => (ColorWriteChannels)_state.colorWriteEnable;
+			set => _state.colorWriteEnable = (FNA3D.FNA3D_ColorWriteChannels)value;
 		}
 
 		public ColorWriteChannels ColorWriteChannels1
 		{
-			get => _state.ColorWriteEnable1;
-			set => _state.ColorWriteEnable1 = value;
+			get => (ColorWriteChannels)_state.colorWriteEnable1;
+			set => _state.colorWriteEnable1 = (FNA3D.FNA3D_ColorWriteChannels)value;
 		}
 
 		public ColorWriteChannels ColorWriteChannels2
 		{
-			get => _state.ColorWriteEnable2;
-			set => _state.ColorWriteEnable2 = value;
+			get => (ColorWriteChannels)_state.colorWriteEnable2;
+			set => _state.colorWriteEnable2 = (FNA3D.FNA3D_ColorWriteChannels)value;
 		}
 
 		public ColorWriteChannels ColorWriteChannels3
 		{
-			get => _state.ColorWriteEnable3;
-			set => _state.ColorWriteEnable3 = value;
+			get => (ColorWriteChannels)_state.colorWriteEnable3;
+			set => _state.colorWriteEnable3 = (FNA3D.FNA3D_ColorWriteChannels)value;
 		}
 
 		public Color BlendFactor
 		{
-			get => _state.BlendFactor;
-			set => _state.BlendFactor = value;
+			get => Unsafe.ReadUnaligned<Color>(Unsafe.AsPointer(ref _state.blendFactor));
+			set => _state.blendFactor = Unsafe.ReadUnaligned<FNA3D.FNA3D_Color>(Unsafe.AsPointer(ref _state.blendFactor));
 		}
 
 		public int MultiSampleMask
 		{
-			get => _state.MultiSampleMask;
-			set => _state.MultiSampleMask = value;
+			get => _state.multiSampleMask;
+			set => _state.multiSampleMask = value;
 		}
 	}
 }

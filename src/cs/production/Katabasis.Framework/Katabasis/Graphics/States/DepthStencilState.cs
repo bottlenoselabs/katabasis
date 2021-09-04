@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 namespace Katabasis
 {
@@ -54,98 +54,98 @@ namespace Katabasis
 
 		public bool DepthBufferEnable
 		{
-			get => _state.DepthBufferEnable == 1;
-			set => _state.DepthBufferEnable = (byte)(value ? 1 : 0);
+			get => _state.depthBufferEnable == 1;
+			set => _state.depthBufferEnable = (byte)(value ? 1 : 0);
 		}
 
 		public bool DepthBufferWriteEnable
 		{
-			get => _state.DepthBufferWriteEnable == 1;
-			set => _state.DepthBufferWriteEnable = (byte)(value ? 1 : 0);
+			get => _state.depthBufferWriteEnable == 1;
+			set => _state.depthBufferWriteEnable = (byte)(value ? 1 : 0);
 		}
 
 		public StencilOperation CounterClockwiseStencilDepthBufferFail
 		{
-			get => _state.CounterClockwiseStencilDepthBufferFail;
-			set => _state.CounterClockwiseStencilDepthBufferFail = value;
+			get => (StencilOperation)_state.ccwStencilDepthBufferFail;
+			set => _state.ccwStencilDepthBufferFail = (FNA3D.FNA3D_StencilOperation)value;
 		}
 
 		public StencilOperation CounterClockwiseStencilFail
 		{
-			get => _state.CounterClockwiseStencilFail;
-			set => _state.CounterClockwiseStencilFail = value;
+			get => (StencilOperation)_state.ccwStencilFail;
+			set => _state.ccwStencilFail = (FNA3D.FNA3D_StencilOperation)value;
 		}
 
 		public CompareFunction CounterClockwiseStencilFunction
 		{
-			get => _state.CounterClockwiseStencilFunction;
-			set => _state.CounterClockwiseStencilFunction = value;
+			get => (CompareFunction)_state.ccwStencilFunction;
+			set => _state.ccwStencilFunction = (FNA3D.FNA3D_CompareFunction)value;
 		}
 
 		public StencilOperation CounterClockwiseStencilPass
 		{
-			get => _state.CounterClockwiseStencilPass;
-			set => _state.CounterClockwiseStencilPass = value;
+			get => (StencilOperation)_state.ccwStencilPass;
+			set => _state.ccwStencilPass = (FNA3D.FNA3D_StencilOperation)value;
 		}
 
 		public CompareFunction DepthBufferFunction
 		{
-			get => _state.DepthBufferFunction;
-			set => _state.DepthBufferFunction = value;
+			get => (CompareFunction)_state.depthBufferFunction;
+			set => _state.depthBufferFunction = (FNA3D.FNA3D_CompareFunction)value;
 		}
 
 		public int ReferenceStencil
 		{
-			get => _state.ReferenceStencil;
-			set => _state.ReferenceStencil = value;
+			get => _state.referenceStencil;
+			set => _state.referenceStencil = value;
 		}
 
 		public StencilOperation StencilDepthBufferFail
 		{
-			get => _state.StencilDepthBufferFail;
-			set => _state.StencilDepthBufferFail = value;
+			get => (StencilOperation)_state.stencilDepthBufferFail;
+			set => _state.stencilDepthBufferFail = (FNA3D.FNA3D_StencilOperation)value;
 		}
 
 		public bool StencilEnable
 		{
-			get => _state.StencilEnable == 1;
-			set => _state.StencilEnable = (byte)(value ? 1 : 0);
+			get => _state.stencilEnable == 1;
+			set => _state.stencilEnable = (byte)(value ? 1 : 0);
 		}
 
 		public StencilOperation StencilFail
 		{
-			get => _state.StencilFail;
-			set => _state.StencilFail = value;
+			get => (StencilOperation)_state.stencilFail;
+			set => _state.stencilFail = (FNA3D.FNA3D_StencilOperation)value;
 		}
 
 		public CompareFunction StencilFunction
 		{
-			get => _state.StencilFunction;
-			set => _state.StencilFunction = value;
+			get => (CompareFunction)_state.stencilFunction;
+			set => _state.stencilFunction = (FNA3D.FNA3D_CompareFunction)value;
 		}
 
 		public int StencilMask
 		{
-			get => _state.StencilMask;
-			set => _state.StencilMask = value;
+			get => _state.stencilMask;
+			set => _state.stencilMask = value;
 		}
 
 		public StencilOperation StencilPass
 		{
-			get => _state.StencilPass;
-			set => _state.StencilPass = value;
+			get => (StencilOperation)_state.stencilPass;
+			set => _state.stencilPass = (FNA3D.FNA3D_StencilOperation)value;
 		}
 
 		public int StencilWriteMask
 		{
-			get => _state.StencilWriteMask;
-			set => _state.StencilWriteMask = value;
+			get => _state.stencilWriteMask;
+			set => _state.stencilWriteMask = value;
 		}
 
 		public bool TwoSidedStencilMode
 		{
-			get => _state.TwoSidedStencilMode == 1;
-			set => _state.TwoSidedStencilMode = (byte)(value ? 1 : 0);
+			get => _state.twoSidedStencilMode == 1;
+			set => _state.twoSidedStencilMode = (byte)(value ? 1 : 0);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System.Diagnostics.CodeAnalysis;
 
@@ -42,38 +42,38 @@ namespace Katabasis
 
 		public CullMode CullMode
 		{
-			get => _state.CullMode;
-			set => _state.CullMode = value;
+			get => (CullMode)_state.cullMode;
+			set => _state.cullMode = (FNA3D.FNA3D_CullMode)value;
 		}
 
 		public float DepthBias
 		{
-			get => _state.DepthBias;
-			set => _state.DepthBias = value;
+			get => _state.depthBias;
+			set => _state.depthBias = value;
 		}
 
 		public FillMode FillMode
 		{
-			get => _state.FillMode;
-			set => _state.FillMode = value;
+			get => (FillMode)_state.fillMode;
+			set => _state.fillMode = (FNA3D.FNA3D_FillMode)value;
 		}
 
 		public bool MultiSampleAntiAlias
 		{
-			get => _state.MultiSampleAntiAlias == 1;
-			set => _state.MultiSampleAntiAlias = (byte)(value ? 1 : 0);
+			get => _state.multiSampleAntiAlias == 1;
+			set => _state.multiSampleAntiAlias = (byte)(value ? 1 : 0);
 		}
 
 		public bool ScissorTestEnable
 		{
-			get => _state.ScissorTestEnable == 1;
-			set => _state.ScissorTestEnable = (byte)(value ? 1 : 0);
+			get => _state.scissorTestEnable == 1;
+			set => _state.scissorTestEnable = (byte)(value ? 1 : 0);
 		}
 
 		public float SlopeScaleDepthBias
 		{
-			get => _state.SlopeScaleDepthBias;
-			set => _state.SlopeScaleDepthBias = value;
+			get => _state.slopeScaleDepthBias;
+			set => _state.slopeScaleDepthBias = value;
 		}
 	}
 }

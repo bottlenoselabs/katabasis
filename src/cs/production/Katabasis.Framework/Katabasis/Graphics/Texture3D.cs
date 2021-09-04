@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class Texture3D : Texture
+	public unsafe class Texture3D : Texture
 	{
 		public Texture3D(
 			int width,
@@ -23,9 +23,9 @@ namespace Katabasis
 			LevelCount = mipMap ? CalculateMipLevels(width, height) : 1;
 			Format = format;
 
-			_texture = FNA3D.FNA3D_CreateTexture3D(
-				GraphicsDevice.GLDevice,
-				Format,
+			_texture = (IntPtr)FNA3D.FNA3D_CreateTexture3D(
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_SurfaceFormat)Format,
 				Width,
 				Height,
 				Depth,
@@ -78,8 +78,8 @@ namespace Katabasis
 			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_SetTextureData3D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				left,
 				top,
 				front,
@@ -87,7 +87,7 @@ namespace Katabasis
 				bottom - top,
 				back - front,
 				level,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount * elementSizeInBytes);
 
 			handle.Free();
@@ -110,8 +110,8 @@ namespace Katabasis
 			}
 
 			FNA3D.FNA3D_SetTextureData3D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				left,
 				top,
 				front,
@@ -119,7 +119,7 @@ namespace Katabasis
 				bottom - top,
 				back - front,
 				level,
-				data,
+				(void*)data,
 				dataLength);
 		}
 
@@ -177,8 +177,8 @@ namespace Katabasis
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			FNA3D.FNA3D_GetTextureData3D(
-				GraphicsDevice.GLDevice,
-				_texture,
+				GraphicsDevice.Device,
+				(FNA3D.FNA3D_Texture*)_texture,
 				left,
 				top,
 				front,
@@ -186,7 +186,7 @@ namespace Katabasis
 				bottom - top,
 				back - front,
 				level,
-				handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes),
+				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
 				elementCount * elementSizeInBytes);
 
 			handle.Free();

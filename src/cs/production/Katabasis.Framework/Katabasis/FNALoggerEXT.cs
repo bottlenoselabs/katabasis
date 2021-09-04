@@ -1,14 +1,14 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using ObjCRuntime;
+using System.Runtime.InteropServices;
+using C2CS;
 
 namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "CA2211", Justification = "Hooks.")]
-	public static class FNALoggerEXT
+	public static unsafe class FNALoggerEXT
 	{
 		/* Use to spit out useful information to the player/dev */
 		public static Action<string>? LogInfo;
@@ -19,9 +19,9 @@ namespace Katabasis
 		/* Use when something has gone horribly, horribly wrong */
 		public static Action<string>? LogError;
 
-		private static readonly FNA3D.FNA3D_LogFunc LogInfoFunc = FNA3DLogInfo;
-		private static readonly FNA3D.FNA3D_LogFunc LogWarnFunc = FNA3DLogWarn;
-		private static readonly FNA3D.FNA3D_LogFunc LogErrorFunc = FNA3DLogError;
+		private static readonly FNA3D.FNA3D_LogFunc LogInfoFunc = new() { Pointer = &FNA3DLogInfo };
+		private static readonly FNA3D.FNA3D_LogFunc LogWarnFunc = new() { Pointer = &FNA3DLogWarn };
+		private static readonly FNA3D.FNA3D_LogFunc LogErrorFunc = new() { Pointer = &FNA3DLogError };
 
 		internal static void Initialize()
 		{
@@ -44,34 +44,17 @@ namespace Katabasis
 			}
 		}
 
-		[MonoPInvokeCallback(typeof(FNA3D.FNA3D_LogFunc))]
-		private static void FNA3DLogInfo(IntPtr msg) => LogInfo!(UTF8_ToManaged(msg));
+		[UnmanagedCallersOnly]
+		private static void FNA3DLogInfo(CString8U msg) => LogInfo!(msg);
 
-		[MonoPInvokeCallback(typeof(FNA3D.FNA3D_LogFunc))]
-		private static void FNA3DLogWarn(IntPtr msg) => LogWarn!(UTF8_ToManaged(msg));
+		[UnmanagedCallersOnly]
+		private static void FNA3DLogWarn(CString8U msg) => LogWarn!(msg);
 
-		[MonoPInvokeCallback(typeof(FNA3D.FNA3D_LogFunc))]
-		private static void FNA3DLogError(IntPtr msg)
+		[UnmanagedCallersOnly]
+		private static void FNA3DLogError(CString8U msg)
 		{
-			string err = UTF8_ToManaged(msg);
-			LogError!(err);
-			throw new InvalidOperationException(err);
-		}
-
-		private static unsafe string UTF8_ToManaged(IntPtr s)
-		{
-			/* We get to do str len ourselves! */
-			var ptr = (byte*)s;
-			while (*ptr != 0)
-			{
-				ptr++;
-			}
-
-			string result = Encoding.UTF8.GetString(
-				(byte*)s,
-				(int)(ptr - (byte*)s));
-
-			return result;
+			LogError!(msg);
+			throw new InvalidOperationException(msg);
 		}
 	}
 }

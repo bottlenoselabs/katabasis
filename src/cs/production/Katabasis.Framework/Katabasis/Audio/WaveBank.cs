@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -16,7 +16,7 @@ namespace Katabasis
 		private IntPtr _handle;
 
 		private IntPtr _bankData;
-		private IntPtr _bankDataLen; // Non-zero for in-memory WaveBanks
+		private ulong _bankDataLen; // Non-zero for in-memory WaveBanks
 
 		private WeakReference? _selfReference;
 
@@ -138,10 +138,10 @@ namespace Katabasis
 			IsDisposed = true;
 			if (_bankData != IntPtr.Zero)
 			{
-				if (_bankDataLen != IntPtr.Zero)
+				if (_bankDataLen != 0)
 				{
 					FNAPlatform.FreeFilePointer(_bankData);
-					_bankDataLen = IntPtr.Zero;
+					_bankDataLen = 0;
 				}
 				else
 				{

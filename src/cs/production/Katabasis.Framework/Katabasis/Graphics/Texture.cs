@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +8,7 @@ namespace Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
 	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
-	public abstract class Texture : GraphicsResource
+	public abstract unsafe class Texture : GraphicsResource
 	{
 		internal IntPtr _texture;
 
@@ -251,7 +251,7 @@ namespace Katabasis
 			{
 				GraphicsDevice.Textures.RemoveDisposedTexture(this);
 				GraphicsDevice.VertexTextures.RemoveDisposedTexture(this);
-				FNA3D.FNA3D_AddDisposeTexture(GraphicsDevice.GLDevice, _texture);
+				FNA3D.FNA3D_AddDisposeTexture(GraphicsDevice.Device, (FNA3D.FNA3D_Texture*)_texture);
 			}
 
 			base.Dispose(disposing);

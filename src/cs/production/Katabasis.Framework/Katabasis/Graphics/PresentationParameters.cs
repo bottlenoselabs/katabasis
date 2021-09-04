@@ -1,13 +1,14 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
+using static FNA3D;
 
 namespace Katabasis
 {
 	[Serializable]
-	public class PresentationParameters
+	public unsafe class PresentationParameters
 	{
-		internal FNA3D.FNA3D_PresentationParameters _parameters;
+		internal FNA3D_PresentationParameters Parameters;
 
 		public PresentationParameters()
 		{
@@ -25,64 +26,64 @@ namespace Katabasis
 
 		public SurfaceFormat BackBufferFormat
 		{
-			get => _parameters.BackBufferFormat;
-			set => _parameters.BackBufferFormat = value;
+			get => (SurfaceFormat)Parameters.backBufferFormat;
+			set => Parameters.backBufferFormat = (FNA3D_SurfaceFormat)value;
 		}
 
 		public int BackBufferHeight
 		{
-			get => _parameters.BackBufferHeight;
-			set => _parameters.BackBufferHeight = value;
+			get => Parameters.backBufferHeight;
+			set => Parameters.backBufferHeight = value;
 		}
 
 		public int BackBufferWidth
 		{
-			get => _parameters.BackBufferWidth;
-			set => _parameters.BackBufferWidth = value;
+			get => Parameters.backBufferWidth;
+			set => Parameters.backBufferWidth = value;
 		}
 
 		public Rectangle Bounds => new(0, 0, BackBufferWidth, BackBufferHeight);
 
 		public IntPtr DeviceWindowHandle
 		{
-			get => _parameters.DeviceWindowHandle;
-			set => _parameters.DeviceWindowHandle = value;
+			get => (IntPtr)Parameters.deviceWindowHandle;
+			set => Parameters.deviceWindowHandle = (void*)value;
 		}
 
 		public DepthFormat DepthStencilFormat
 		{
-			get => _parameters.DepthStencilFormat;
-			set => _parameters.DepthStencilFormat = value;
+			get => (DepthFormat)Parameters.depthStencilFormat;
+			set => Parameters.depthStencilFormat = (FNA3D_DepthFormat)value;
 		}
 
 		public bool IsFullScreen
 		{
-			get => _parameters.IsFullScreen == 1;
-			set => _parameters.IsFullScreen = (byte)(value ? 1 : 0);
+			get => Parameters.isFullScreen == 1;
+			set => Parameters.isFullScreen = (byte)(value ? 1 : 0);
 		}
 
 		public int MultiSampleCount
 		{
-			get => _parameters.MultiSampleCount;
-			set => _parameters.MultiSampleCount = value;
+			get => Parameters.multiSampleCount;
+			set => Parameters.multiSampleCount = value;
 		}
 
 		public PresentInterval PresentationInterval
 		{
-			get => _parameters.PresentationInterval;
-			set => _parameters.PresentationInterval = value;
+			get => (PresentInterval)Parameters.presentationInterval;
+			set => Parameters.presentationInterval = (FNA3D_PresentInterval)value;
 		}
 
 		public DisplayOrientation DisplayOrientation
 		{
-			get => _parameters.DisplayOrientation;
-			set => _parameters.DisplayOrientation = value;
+			get => (DisplayOrientation)Parameters.displayOrientation;
+			set => Parameters.displayOrientation = (FNA3D_DisplayOrientation)value;
 		}
 
 		public RenderTargetUsage RenderTargetUsage
 		{
-			get => _parameters.RenderTargetUsage;
-			set => _parameters.RenderTargetUsage = value;
+			get => (RenderTargetUsage)Parameters.renderTargetUsage;
+			set => Parameters.renderTargetUsage = (FNA3D_RenderTargetUsage)value;
 		}
 
 		public PresentationParameters Clone()

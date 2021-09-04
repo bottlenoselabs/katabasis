@@ -1,11 +1,10 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Numerics;
-using SDL2;
 
 namespace Katabasis
 {
@@ -27,7 +26,7 @@ namespace Katabasis
 
 		public delegate DriveInfo? GetDriveInfoFunc(string storageRoot);
 
-		public delegate IntPtr ReadFileToPointerFunc(string path, out IntPtr size);
+		public delegate IntPtr ReadFileToPointerFunc(string path, out ulong size);
 
 		public delegate void FreeFilePointerFunc(IntPtr file);
 
@@ -338,7 +337,7 @@ namespace Katabasis
 			StopTextInput = SDL.SDL_StopTextInput;
 			SetTextInputRectangle = SDL2_FNAPlatform.SetTextInputRectangle;
 			GetMouseState = SDL2_FNAPlatform.GetMouseState;
-			SetMousePosition = SDL.SDL_WarpMouseInWindow;
+			SetMousePosition = SDL2_FNAPlatform.GetMousePosition;
 			OnIsMouseVisibleChanged = SDL2_FNAPlatform.OnIsMouseVisibleChanged;
 			GetRelativeMouseMode = SDL2_FNAPlatform.GetRelativeMouseMode;
 			SetRelativeMouseMode = SDL2_FNAPlatform.SetRelativeMouseMode;

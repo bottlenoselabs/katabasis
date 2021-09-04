@@ -1,4 +1,4 @@
-// Copyright (c) Craftworkgames (https://github.com/craftworkgames). All rights reserved.
+// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
@@ -14,7 +14,7 @@ namespace Katabasis
 			return File.OpenRead(Path.IsPathRooted(safeName) ? safeName : Path.Combine(TitleLocation.Path, safeName));
 		}
 
-		internal static IntPtr ReadToPointer(string name, out IntPtr size)
+		internal static IntPtr ReadToPointer(string name, out ulong size)
 		{
 			string safeName = FileHelpers.NormalizeFilePathSeparators(name);
 			return FNAPlatform.ReadFileToPointer(Path.IsPathRooted(safeName) ? safeName : Path.Combine(TitleLocation.Path, safeName), out size);

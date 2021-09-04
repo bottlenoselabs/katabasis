@@ -1,12 +1,19 @@
 #!/bin/bash
 
 # Get the directory of this script
-MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-FNA_LIBS_DIR=$MY_DIR/fnalibs
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+FNA_LIBS_DIR=$DIR/fnalibs
 
- # Downloading
+# SDL
+$DIR/ext/sdl-cs/library.sh
+
+# FNA3D
+echo "Building FNA3D"
+$DIR/ext/FNA3D-cs/library.sh /Users/lstranks/Programming/FNA3D-cs/lib/libSDL2-2.0.dylib $DIR/SDL/include
+
+# Downloading
 echo "Downloading latest FNA libraries ..."
-curl -L https://github.com/deccer/FNA-libs/archive/refs/heads/main.zip > "$MY_DIR/fnalibs.zip"
+curl -L https://github.com/deccer/FNA-libs/archive/refs/heads/main.zip > "$DIR/fnalibs.zip"
 if [ $? -eq 0 ]; then
     echo "Finished downloading!"
 else
@@ -17,62 +24,34 @@ fi
 # Decompressing
 echo "Decompressing FNA libraries ..."
 mkdir -p $FNA_LIBS_DIR
-unzip $MY_DIR/fnalibs.zip -d $FNA_LIBS_DIR
+unzip $DIR/fnalibs.zip -d $FNA_LIBS_DIR
 if [ $? -eq 0 ]; then
     echo "Finished decompressing!"
-    rm $MY_DIR/fnalibs.zip
+    rm $DIR/fnalibs.zip
 else
     >&2 echo "ERROR: Unable to decompress successfully."
     exit 1
 fi
 
-FNA_LIBS_DIR=$MY_DIR/fnalibs/FNA-libs-main
-mkdir -p $MY_DIR/lib
+FNA_LIBS_DIR=$DIR/fnalibs/FNA-libs-main
+LIB_DIR=$DIR/lib
+mkdir -p $LIB_DIR
 
 # Move files to specific places...
 echo "Moving files ..."
 # FAudio
-FAUDIO_LIB_DIR=$MY_DIR/lib/FAudio
-mkdir -p $FAUDIO_LIB_DIR/linux-x64
-mkdir -p $FAUDIO_LIB_DIR/osx-x64
-mkdir -p $FAUDIO_LIB_DIR/win-x64
-mkdir -p $FAUDIO_LIB_DIR/win-x86
-mv $FNA_LIBS_DIR/lib64/libFAudio.so.0 $FAUDIO_LIB_DIR/linux-x64/libFAudio.so.0
-mv $FNA_LIBS_DIR/osx/libFAudio.0.dylib $FAUDIO_LIB_DIR/osx-x64/libFAudio.0.dylib
-mv $FNA_LIBS_DIR/x64/FAudio.dll $FAUDIO_LIB_DIR/win-x64/FAudio.dll
-mv $FNA_LIBS_DIR/x86/FAudio.dll $FAUDIO_LIB_DIR/win-x86/FAudio.dll
+mv $FNA_LIBS_DIR/lib64/libFAudio.so.0 $LIB_DIR/libFAudio.so
+mv $FNA_LIBS_DIR/osx/libFAudio.0.dylib $LIB_DIR/libFAudio.dylib
+mv $FNA_LIBS_DIR/x64/FAudio.dll $LIB_DIR/FAudio.dll
 # FNA3D
-FNA3D_LIB_DIR=$MY_DIR/lib/FNA3D
-mkdir -p $FNA3D_LIB_DIR/linux-x64
-mkdir -p $FNA3D_LIB_DIR/osx-x64
-mkdir -p $FNA3D_LIB_DIR/win-x64
-mkdir -p $FNA3D_LIB_DIR/win-x86
-mv $FNA_LIBS_DIR/lib64/libFNA3D.so.0 $FNA3D_LIB_DIR/linux-x64/libFNA3D.so.0
-mv $FNA_LIBS_DIR/osx/libFNA3D.0.dylib $FNA3D_LIB_DIR/osx-x64/libFNA3D.0.dylib
-mv $FNA_LIBS_DIR/osx/libMoltenVK.dylib $FNA3D_LIB_DIR/osx-x64/libMoltenVK.dylib
-mv $FNA_LIBS_DIR/osx/libvulkan.1.dylib $FNA3D_LIB_DIR/osx-x64/libvulkan.1.dylib
-mv $FNA_LIBS_DIR/x64/FNA3D.dll $FNA3D_LIB_DIR/win-x64/FNA3D.dll
-mv $FNA_LIBS_DIR/x86/FNA3D.dll $FNA3D_LIB_DIR/win-x86/FNA3D.dll
-# SDL2
-SDL2_LIB_DIR=$MY_DIR/lib/SDL2
-mkdir -p $SDL2_LIB_DIR/linux-x64
-mkdir -p $SDL2_LIB_DIR/osx-x64
-mkdir -p $SDL2_LIB_DIR/win-x64
-mkdir -p $SDL2_LIB_DIR/win-x86
-mv $FNA_LIBS_DIR/lib64/libSDL2-2.0.so.0 $SDL2_LIB_DIR/linux-x64/libSDL2-2.0.so.0
-mv $FNA_LIBS_DIR/osx/libSDL2-2.0.0.dylib $SDL2_LIB_DIR/osx-x64/libSDL2-2.0.0.dylib
-mv $FNA_LIBS_DIR/x64/SDL2.dll $SDL2_LIB_DIR/win-x64/SDL2.dll
-mv $FNA_LIBS_DIR/x86/SDL2.dll $SDL2_LIB_DIR/win-x86/SDL2.dll
+mv $FNA_LIBS_DIR/lib64/libFNA3D.so.0 $LIB_DIR/libFNA3D.so
+mv $FNA_LIBS_DIR/osx/libFNA3D.0.dylib $LIB_DIR/libFNA3D.dylib
+mv $FNA_LIBS_DIR/osx/libMoltenVK.dylib $LIB_DIR/libMoltenVK.dylib
+mv $FNA_LIBS_DIR/osx/libvulkan.1.dylib $LIB_DIR/libvulkan.dylib
 # theorafile
-THEORAFILE_LIB_DIR=$MY_DIR/lib/theorafile
-mkdir -p $THEORAFILE_LIB_DIR/linux-x64
-mkdir -p $THEORAFILE_LIB_DIR/osx-x64
-mkdir -p $THEORAFILE_LIB_DIR/win-x64
-mkdir -p $THEORAFILE_LIB_DIR/win-x86
-mv $FNA_LIBS_DIR/lib64/libtheorafile.so $THEORAFILE_LIB_DIR/linux-x64/libtheorafile.so
-mv $FNA_LIBS_DIR/osx/libtheorafile.dylib $THEORAFILE_LIB_DIR/osx-x64/libtheorafile.dylib
-mv $FNA_LIBS_DIR/x64/libtheorafile.dll $THEORAFILE_LIB_DIR/win-x64/libtheorafile.dll
-mv $FNA_LIBS_DIR/x86/libtheorafile.dll $THEORAFILE_LIB_DIR/win-x86/libtheorafile.dll
+mv $FNA_LIBS_DIR/lib64/libtheorafile.so $LIB_DIR/libtheorafile.so
+mv $FNA_LIBS_DIR/osx/libtheorafile.dylib $LIB_DIR/libtheorafile.dylib
+mv $FNA_LIBS_DIR/x64/libtheorafile.dll $LIB_DIR/libtheorafile.dll
 echo "Finished moving files!"
 
 ## Delete uncompressed folder
