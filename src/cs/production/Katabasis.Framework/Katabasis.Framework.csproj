@@ -18,6 +18,7 @@
 	<ItemGroup>
 		<ProjectReference Include="$(GitRepositoryPath)/ext/FNA3D-cs/src/cs/production/FNA3D-cs/FNA3D-cs.csproj" />
 		<ProjectReference Include="$(GitRepositoryPath)/ext/sdl-cs/src/cs/production/SDL-cs/SDL-cs.csproj" />
+		<ProjectReference Include="$(GitRepositoryPath)/src/cs/platforms/Katabasis.Platform/Katabasis.Platform.csproj" />
 	</ItemGroup>
 
 	<!-- NuGet references -->
@@ -28,28 +29,6 @@
 	<!-- Stock effects files emedded into assembly -->
 	<ItemGroup>
 		<EmbeddedResource Include="Katabasis/Graphics/Effect/StockEffects/FXB/*.fxb" />
-	</ItemGroup>
-
-	<!-- Native libraries -->
-	<ItemGroup>
-		<Content Include="$(GitRepositoryPath)lib/*.dll" Condition="'$(IsWindows)' == 'true'">
-			<Link>%(Filename)%(Extension)</Link>
-			<PackagePath>runtimes/$(RuntimeIdentifier)\native\%(Filename)%(Extension)</PackagePath>
-			<Pack>true</Pack>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="$(GitRepositoryPath)lib/*.dylib" Condition="'$(IsMacOS)' == 'true'">
-			<Link>%(Filename)%(Extension)</Link>
-			<PackagePath>runtimes/$(RuntimeIdentifier)/native/%(Filename)%(Extension)</PackagePath>
-			<Pack>true</Pack>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="$(GitRepositoryPath)lib/*.so" Condition="'$(IsLinux)' == 'true'">
-			<Link>%(Filename)%(Extension)</Link>
-			<PackagePath>runtimes/$(RuntimeIdentifier)/native/%(Filename)%(Extension)</PackagePath>
-			<Pack>true</Pack>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
 	</ItemGroup>
 
 </Project>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Reference all platforms -->
+  <ItemGroup>
+    <ProjectReference Include="..\Katabasis.Platform.linux-x64\Katabasis.Platform.linux-x64.csproj" />
+    <ProjectReference Include="..\Katabasis.Platform.osx-x64\Katabasis.Platform.osx-x64.csproj" />
+    <ProjectReference Include="..\Katabasis.Platform.win-x64\Katabasis.Platform.win-x64.csproj" />
+  </ItemGroup>
+  
+</Project>

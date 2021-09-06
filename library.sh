@@ -45,6 +45,7 @@ set_target_build_platform
 # Build SDL
 echo "Building SDL from source..."
 $DIR/ext/sdl-cs/library.sh
+mv -v $DIR/ext/sdl-cs/lib/* $DIR/lib/
 echo "Building SDL from source finished!"
 
 # FNA3D
@@ -57,7 +58,14 @@ elif [[ "$TARGET_BUILD_PLATFORM" == "microsoft" ]]; then
     SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/SDL2.dll"
 fi
 $DIR/ext/FNA3D-cs/library.sh $TARGET_BUILD_PLATFORM $SDL_LIBRARY_FILE_PATH $DIR/ext/sdl-cs/ext/SDL/include
+mv -v $DIR/ext/FNA3D-cs/lib/* $DIR/lib/
 echo "Building FNA3D from source finished!"
+
+# Build cimgui
+echo "Building imgui from source..."
+$DIR/ext/imgui-cs/library.sh
+mv -v $DIR/ext/imgui-cs/lib/* $DIR/lib/
+echo "Building imgui from source finished!"
 
 # Downloading
 echo "Downloading latest FNA libraries ..."

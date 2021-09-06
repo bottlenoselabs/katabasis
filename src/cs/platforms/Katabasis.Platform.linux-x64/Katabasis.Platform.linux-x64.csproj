@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- Dynamic link libraries -->
+    <ItemGroup>
+        <Content Include="$(GitRepositoryPath)lib/*.so">
+            <Link>%(Filename)%(Extension)</Link>
+            <PackagePath>runtimes/$(RuntimeIdentifier)/native/%(Filename)%(Extension)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
