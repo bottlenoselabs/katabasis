@@ -124,11 +124,8 @@ jobs:
       run: |
         echo $VERSION
 
-    - name: "Restore solution"
-      run: dotnet restore --nologo
-
     - name: "Build solution"
-      run: dotnet build --nologo --configuration Release /p:Version='${{ env.VERSION }}' --no-restore
+      run: dotnet build --nologo --configuration Release /p:Version='${{ env.VERSION }}'
 
     - name: "Test solution"
       run: dotnet test --nologo --configuration Release --no-build
