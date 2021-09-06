@@ -95,7 +95,7 @@ jobs:
       uses: actions/checkout@master
       with:
         ref: ${{ env.GITHUB_REF }}
-        submodules: 'true'
+        submodules: 'recursive'
 
     - name: "Install .NET"
       uses: actions/setup-dotnet@v1
