@@ -124,11 +124,14 @@ jobs:
       run: |
         echo $VERSION
 
+    - name: "Restore solution"
+      run: dotnet restore --nologo --configuration Release
+
     - name: "Build solution"
-      run: dotnet build --nologo --verbosity minimal --configuration Release /p:Version='${{ env.VERSION }}'
+      run: dotnet build --nologo --configuration Release /p:Version='${{ env.VERSION }}' --no-restore
 
     - name: "Test solution"
-      run: dotnet test --nologo --verbosity normal --configuration Release --no-build
+      run: dotnet test --nologo --configuration Release --no-build
 
     - name: "Pack solution"
       if: matrix.os == 'ubuntu-latest'
