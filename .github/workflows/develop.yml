@@ -14,7 +14,7 @@ on:
 
 jobs:
 
-  gitversion-job:
+  version-job:
     name: "GitVersion"
     runs-on: ubuntu-latest
 
@@ -45,15 +45,68 @@ jobs:
         name: nuget-version
         path: nuget-version.txt
 
-  build-test-pack-job:
-    name: "Build"
-    needs: [gitversion-job]
-    runs-on: ${{ matrix.os }}
+  build-native-job:
+    name: "Build native libraries ${{ matrix.platform.rid }}"
+    needs: [version-job]
+    runs-on: ${{ matrix.platform.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-
+        platform:
+        - { name: Windows (x64), os: ubuntu-latest, rid: win-x64 }
+        - { name: Linux (x64), os: ubuntu-latest, rid: linux-x64 }
+        - { name: macOS (x64), os: macos-latest, rid: osx-x64 }
     steps:
+
+    - name: "Clone Git repository"
+      uses: actions/checkout@master
+      with:
+        ref: ${{ env.GITHUB_REF }}
+        submodules: 'recursive'
+
+    - name: "Build native libraries (Windows)"
+      if: ${{ startsWith(matrix.platform.rid, 'win') }}
+      shell: bash
+      run: sudo apt-get update -y && sudo apt-get install -y mingw-w64 && ./library.sh microsoft
+
+    - name: "Build native libraries (Unix)"
+      if: ${{ !(startsWith(matrix.platform.rid, 'win')) }}
+      shell: bash
+      run: ./library.sh
+
+    - name: "Upload native libraries"
+      uses: actions/upload-artifact@v2
+      with:
+        name: "native-libraries-${{ matrix.platform.rid }}"
+        path: './lib'
+
+  build-dotnet-job:
+    name: "Build .NET solution ${{ matrix.platform.rid }}"
+    needs: [build-native-job]
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      matrix:
+        platform:
+        - { name: Windows (x64), os: windows-latest, rid: win-x64 }
+        - { name: Linux (x64), os: ubuntu-latest, rid: linux-x64 }
+        - { name: macOS (x64), os: macos-latest, rid: osx-x64 }
+    steps:
+
+    - name: "Clone Git repository"
+      uses: actions/checkout@master
+      with:
+        ref: ${{ env.GITHUB_REF }}
+        submodules: 'true'
+
+    - name: "Install .NET"
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '${{ env.DOTNET_SDK_VERSION }}'
+
+    - name: "Download native libraries"
+      uses: actions/download-artifact@v1
+      with:
+        name: "native-libraries-${{ matrix.platform.rid }}"
+        path: './lib'
 
     - name: "Download version artifact"
       uses: actions/download-artifact@v2
@@ -70,20 +123,6 @@ jobs:
       shell: bash
       run: |
         echo $VERSION
-
-    - name: "Checkout repository"
-      uses: actions/checkout@master
-      with:
-        submodules: 'recursive'
-        ref: ${{ env.GITHUB_REF }}
-
-    - name: "Setup .NET Core CLI"
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
-
-    - name: "Build or download native libraries"
-      run: bash ./library.sh
 
     - name: "Build solution"
       run: dotnet build --nologo --verbosity minimal --configuration Release /p:Version='${{ env.VERSION }}'
@@ -104,7 +143,7 @@ jobs:
 
   deploy-job:
     name: "Deploy"
-    needs: [build-test-pack-job]
+    needs: [build-dotnet-job]
     runs-on: ubuntu-latest
     steps:
 
@@ -127,3 +166,16 @@ jobs:
  
     - name: "Upload Packages: MyGet"
       run: dotnet nuget push "./**/*.nupkg" --source "MyGet" --skip-duplicate --api-key $MYGET_ACCESS_TOKEN
+
+
+
+
+
+
+
+
+
+
+
+
+
