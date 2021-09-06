@@ -1,15 +1,63 @@
 #!/bin/bash
 
-# Get the directory of this script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 FNA_LIBS_DIR=$DIR/fnalibs
 
-# SDL
+if [[ ! -z "$1" ]]; then
+    TARGET_BUILD_PLATFORM="$1"
+fi
+
+function set_target_build_platform_host() {
+    uname_str="$(uname -a)"
+    case "${uname_str}" in
+        *Microsoft*)    TARGET_BUILD_PLATFORM="microsoft";;
+        *microsoft*)    TARGET_BUILD_PLATFORM="microsoft";;
+        Linux*)         TARGET_BUILD_PLATFORM="linux";;
+        Darwin*)        TARGET_BUILD_PLATFORM="apple";;
+        CYGWIN*)        TARGET_BUILD_PLATFORM="linux";;
+        MINGW*)         TARGET_BUILD_PLATFORM="microsoft";;
+        *Msys)          TARGET_BUILD_PLATFORM="microsoft";;
+        *)              TARGET_BUILD_PLATFORM="UNKNOWN:${uname_str}"
+    esac
+}
+
+function set_target_build_platform {
+    if [[ ! -z "$TARGET_BUILD_PLATFORM" ]]; then
+        if [[ $TARGET_BUILD_PLATFORM == "default" ]]; then
+            set_target_build_platform_host
+            echo "Build platform: '$TARGET_BUILD_PLATFORM' (host default)"
+        else
+            if [[ "$TARGET_BUILD_PLATFORM" == "microsoft" || "$TARGET_BUILD_PLATFORM" == "linux" || "$TARGET_BUILD_PLATFORM" == "apple" ]]; then
+                echo "Build platform: '$TARGET_BUILD_PLATFORM' (cross-compile override)"
+            else
+                echo "Unknown '$TARGET_BUILD_PLATFORM' passed as first argument. Use 'default' to use the host build platform or use either: 'microsoft', 'linux', 'apple'."
+                exit 1
+            fi
+        fi
+    else
+        set_target_build_platform_host
+        echo "Build platform: '$TARGET_BUILD_PLATFORM' (host default)"
+    fi
+}
+
+set_target_build_platform
+
+# Build SDL
+echo "Building SDL from source..."
 $DIR/ext/sdl-cs/library.sh
+echo "Building SDL from source finished!"
 
 # FNA3D
-echo "Building FNA3D"
-$DIR/ext/FNA3D-cs/library.sh /Users/lstranks/Programming/FNA3D-cs/lib/libSDL2-2.0.dylib $DIR/SDL/include
+echo "Building FNA3D from source..."
+if [[ "$TARGET_BUILD_PLATFORM" == "linux" ]]; then
+    SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/libSDL2.so"
+elif [[ "$TARGET_BUILD_PLATFORM" == "apple" ]]; then
+    SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/libSDL2.dylib"
+elif [[ "$TARGET_BUILD_PLATFORM" == "microsoft" ]]; then
+    SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/SDL2.dll"
+fi
+$DIR/ext/FNA3D-cs/library.sh $TARGET_BUILD_PLATFORM $SDL_LIBRARY_FILE_PATH $DIR/ext/sdl-cs/ext/SDL/include
+echo "Building FNA3D from source finished!"
 
 # Downloading
 echo "Downloading latest FNA libraries ..."
@@ -44,8 +92,6 @@ mv $FNA_LIBS_DIR/lib64/libFAudio.so.0 $LIB_DIR/libFAudio.so
 mv $FNA_LIBS_DIR/osx/libFAudio.0.dylib $LIB_DIR/libFAudio.dylib
 mv $FNA_LIBS_DIR/x64/FAudio.dll $LIB_DIR/FAudio.dll
 # FNA3D
-mv $FNA_LIBS_DIR/lib64/libFNA3D.so.0 $LIB_DIR/libFNA3D.so
-mv $FNA_LIBS_DIR/osx/libFNA3D.0.dylib $LIB_DIR/libFNA3D.dylib
 mv $FNA_LIBS_DIR/osx/libMoltenVK.dylib $LIB_DIR/libMoltenVK.dylib
 mv $FNA_LIBS_DIR/osx/libvulkan.1.dylib $LIB_DIR/libvulkan.dylib
 # theorafile
