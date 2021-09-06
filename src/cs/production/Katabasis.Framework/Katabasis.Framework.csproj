@@ -16,8 +16,8 @@
 	
 	<!-- Project referneces -->
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\ext\FNA3D-cs\src\cs\production\FNA3D-cs\FNA3D-cs.csproj" />
-		<ProjectReference Include="..\..\..\..\ext\sdl-cs\src\cs\production\SDL-cs\SDL-cs.csproj" />
+		<ProjectReference Include="$(GitRepositoryPath)/ext/FNA3D-cs/src/cs/production/FNA3D-cs/FNA3D-cs.csproj" />
+		<ProjectReference Include="$(GitRepositoryPath)/ext/sdl-cs/src/cs/production/SDL-cs/SDL-cs.csproj" />
 	</ItemGroup>
 
 	<!-- NuGet references -->
