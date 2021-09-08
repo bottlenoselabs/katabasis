@@ -36,6 +36,8 @@ To make this vision come alive, the some knowledge, skills, and tools are necess
 
 ### Zig
 
+(For now C is actually being used, but I have full intention to re-write everything in Zig.)
+
 Why? Because it's open-source and there is growing movement amoung game-dev circles for:
 
 1. Statically linked libraries.
@@ -63,18 +65,18 @@ Is it not sufficient to have great tools and libraries, to make this vision come
 - https://www.thegreatcourses.com
 - https://www.audible.com
 
-I plan to write down the ideas I learned in various dev logs as a form of teaching to solidify my learning as well as to share knowledge. I'm planning to comb through [Will Wright's master class on Game Design and Theory](https://www.masterclass.com/classes/will-wright-teaches-game-design-and-theory) again soon with a dev log by this summer.
+I plan to write down the ideas I learned in various dev logs as a form of teaching to solidify my learning as well as to share knowledge. I'm planning to comb through [Will Wright's master class on Game Design and Theory](https://www.masterclass.com/classes/will-wright-teaches-game-design-and-theory) again soon with a dev log sometime in the near future.
 
 ## Coincidence?
 
-The meaning of the word *katabasis* as a atrip to the underworld can be compared to the Valley of Despair from the Dunning-Kruger effect. To be considered a a true *katabasis* it must be followed by an *anabasis* which can be compared to the the Slope of Enlightenment. Once the cycle is complete it may start again. This also shares similarties with the psycology of [fixed vs growth mindset](https://en.wikipedia.org/wiki/Mindset#Fixed_and_growth_mindset):
+The meaning of the word *katabasis* as a trip to the underworld can be compared to the Valley of Despair from the Dunning-Kruger effect. To be considered a a true *katabasis* it must be followed by an *anabasis* which can be compared to the the Slope of Enlightenment. Once the cycle is complete it may start again. This also shares similarties with the psycology of [fixed vs growth mindset](https://en.wikipedia.org/wiki/Mindset#Fixed_and_growth_mindset):
 
-1. People can continue to learn and get smarter.
-2. IQ is not a fixed thing and can constantly be improved by anyone.
-3. Anyone who believes otherwise or that they are special are in a "fixed mindset".
-4. Anyone who believes they can improve their intelligence/skills/knowledge is in a "growth mindset".
+- The **belief** that intelligence, knowledge, and skills, or rather the lack thereof, is not a fixed thing and can constantly be improved upon, especially in times of failure or hardship.
+
+People who don't have such a belief are in a "fixed mindset".
+Anyone who has such a belief is in a "growth mindset".
 
 ## The Future
 
-It's not 100% clear yet how game-dev fits into the picture of making the world a better place. To me it's just this hunch, a feeling of intuition. It is clear that game-dev can be a portal to Computer Science. It's not clear how video games can be used to advance science and culture. Some others have started discussing this possibility space such as Jonathan Blow's talk on [Video Games and the Future of Education](https://www.youtube.com/watch?v=qWFScmtiC44).
+It's not 100% clear yet how game-dev fits into the picture of making the world a better place. To me it's just this hunch, a feeling of intuition. But this is pretty cheesy and typical of technoligsts. It is clear that game-dev can be a portal to Computer Science. It's not clear how video games can be used to advance science and culture. Some others have started discussing this possibility space such as Jonathan Blow's talk on [Video Games and the Future of Education](https://www.youtube.com/watch?v=qWFScmtiC44). More to think about and explore.
 
