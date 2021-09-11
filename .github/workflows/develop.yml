@@ -93,7 +93,19 @@ jobs:
     - name: "Download native libraries"
       uses: actions/download-artifact@v1
       with:
-        name: "native-libraries-${{ matrix.platform.rid }}"
+        name: "native-libraries-win-x64"
+        path: './lib'
+
+    - name: "Download native libraries"
+      uses: actions/download-artifact@v1
+      with:
+        name: "native-libraries-linux-x64"
+        path: './lib'
+
+    - name: "Download native libraries"
+      uses: actions/download-artifact@v1
+      with:
+        name: "native-libraries-osx-x64"
         path: './lib'
 
     - name: "Download version artifact"
