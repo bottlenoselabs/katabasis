@@ -89,7 +89,7 @@ jobs:
       uses: actions/checkout@master
       with:
         ref: ${{ env.GITHUB_REF }}
-        submodules: 'true'
+        submodules: 'recursive'
 
     - name: "Setup .NET CLI"
       uses: actions/setup-dotnet@v1
