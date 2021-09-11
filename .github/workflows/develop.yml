@@ -80,7 +80,7 @@ jobs:
         path: './lib'
 
   dotnet-build-deploy-job:
-    name: "Deploy"
+    name: "Build & deploy"
     needs: [build-native-job]
     runs-on: ubuntu-latest
     steps:
