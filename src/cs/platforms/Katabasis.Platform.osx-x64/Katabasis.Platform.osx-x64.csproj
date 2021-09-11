@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <!-- MSBuild Settings -->
+    <PropertyGroup>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    </PropertyGroup>
+
     <!-- Dynamic link libraries -->
     <ItemGroup>
         <Content Include="$(GitRepositoryPath)lib/*.dylib">
