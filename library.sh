@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-LIBS_DIR=$DIR/lib/
+LIBS_DIR=$DIR/lib
 mkdir -p $LIBS_DIR
 
 if [[ ! -z "$1" ]]; then
@@ -45,7 +45,7 @@ set_target_build_platform
 
 # Build SDL
 echo "Building SDL from source..."
-$DIR/ext/sdl-cs/library.sh
+$DIR/ext/sdl-cs/library.sh $TARGET_BUILD_PLATFORM
 mv -v $DIR/ext/sdl-cs/lib/* $LIBS_DIR
 echo "Building SDL from source finished!"
 
