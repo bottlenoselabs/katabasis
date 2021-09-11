@@ -64,7 +64,7 @@ echo "Building FNA3D from source finished!"
 
 # Build cimgui
 echo "Building imgui from source..."
-$DIR/ext/imgui-cs/library.sh
+$DIR/ext/imgui-cs/library.sh $TARGET_BUILD_PLATFORM
 mv -v $DIR/ext/imgui-cs/lib/* $LIBS_DIR
 echo "Building imgui from source finished!"
 
