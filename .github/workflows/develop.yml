@@ -37,13 +37,13 @@ jobs:
     - name: "Use GitVersion"
       uses: gittools/actions/gitversion/execute@v0.9.6
 
-    - run: echo "$GitVersion_NuGetVersionV2" >> nuget-version.txt
+    - run: echo "$GitVersion_NuGetVersionV2" >> version.txt
 
-    - name: 'Upload NuGetVersion version artifact'
+    - name: "Upload version artifact"
       uses: actions/upload-artifact@v2
       with:
-        name: nuget-version
-        path: nuget-version.txt
+        name: version
+        path: version.txt
 
   build-native-job:
     name: "Build native libraries ${{ matrix.platform.rid }}"
@@ -79,28 +79,16 @@ jobs:
         name: "native-libraries-${{ matrix.platform.rid }}"
         path: './lib'
 
-  build-dotnet-job:
-    name: "Build .NET solution ${{ matrix.platform.rid }}"
+  dotnet-build-deploy-job:
+    name: "Deploy"
     needs: [build-native-job]
-    runs-on: ${{ matrix.platform.os }}
-    strategy:
-      matrix:
-        platform:
-        - { name: Windows (x64), os: windows-latest, rid: win-x64 }
-        - { name: Linux (x64), os: ubuntu-latest, rid: linux-x64 }
-        - { name: macOS (x64), os: macos-latest, rid: osx-x64 }
+    runs-on: ubuntu-latest
     steps:
 
-    - name: "Clone Git repository"
-      uses: actions/checkout@master
-      with:
-        ref: ${{ env.GITHUB_REF }}
-        submodules: 'recursive'
-
-    - name: "Install .NET"
+    - name: "Setup .NET CLI"
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '${{ env.DOTNET_SDK_VERSION }}'
+        dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
 
     - name: "Download native libraries"
       uses: actions/download-artifact@v1
@@ -111,18 +99,13 @@ jobs:
     - name: "Download version artifact"
       uses: actions/download-artifact@v2
       with:
-        name: nuget-version
+        name: version
 
     - name: "Read Version"
       id: version
       shell: bash
       run: |
         echo "VERSION=$(cat nuget-version.txt)" >> $GITHUB_ENV
-
-    - name: "Print Version"
-      shell: bash
-      run: |
-        echo $VERSION
 
     - name: "Build solution"
       run: dotnet build --nologo --configuration Release /p:Version='${{ env.VERSION }}'
@@ -131,32 +114,7 @@ jobs:
       run: dotnet test --nologo --configuration Release --no-build
 
     - name: "Pack solution"
-      if: matrix.os == 'ubuntu-latest'
       run: dotnet pack --nologo --output "./nuget-packages-packed" --verbosity minimal --configuration Release --no-build -p:PackageVersion='${{ env.VERSION }}'
-
-    - name: "Upload packages"
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v2
-      with:
-        name: nuget-packages-packed
-        path: './nuget-packages-packed/*/**'
-
-  deploy-job:
-    name: "Deploy"
-    needs: [build-dotnet-job]
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: "Setup .NET Core CLI"
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
-
-    - name: "Download NuGet Packages"
-      uses: actions/download-artifact@v1
-      with:
-        name: nuget-packages-packed
-        path: './nuget-packages-packed'
 
     - name: "Echo Packages"
       run: find ./nuget-packages-packed/ -not -type d -exec basename {} \;
