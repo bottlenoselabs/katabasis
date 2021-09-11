@@ -1,11 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- MSBuild settings -->
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace />
-  </PropertyGroup>
-
   <!-- Reference all platforms -->
   <ItemGroup>
     <ProjectReference Include="..\Katabasis.Platform.linux-x64\Katabasis.Platform.linux-x64.csproj" />
