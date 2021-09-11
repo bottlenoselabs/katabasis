@@ -52,11 +52,11 @@ echo "Building SDL from source finished!"
 # Build FNA3D
 echo "Building FNA3D from source..."
 if [[ "$TARGET_BUILD_PLATFORM" == "linux" ]]; then
-    SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/libSDL2.so"
+    SDL_LIBRARY_FILE_PATH="$LIBS_DIR/libSDL2.so"
 elif [[ "$TARGET_BUILD_PLATFORM" == "apple" ]]; then
-    SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/libSDL2.dylib"
+    SDL_LIBRARY_FILE_PATH="$LIBS_DIR/libSDL2.dylib"
 elif [[ "$TARGET_BUILD_PLATFORM" == "microsoft" ]]; then
-    SDL_LIBRARY_FILE_PATH="$DIR/ext/sdl-cs/lib/SDL2.dll"
+    SDL_LIBRARY_FILE_PATH="$LIBS_DIR/SDL2.dll"
 fi
 $DIR/ext/FNA3D-cs/library.sh $TARGET_BUILD_PLATFORM $SDL_LIBRARY_FILE_PATH $DIR/ext/sdl-cs/ext/SDL/include
 mv -v $DIR/ext/FNA3D-cs/lib/* $LIBS_DIR
