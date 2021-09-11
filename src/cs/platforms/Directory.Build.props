@@ -4,8 +4,6 @@
 
     <!-- MSBuild settings -->
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace />
         <IsPackable>true</IsPackable>
         <IncludeContentInPack>true</IncludeContentInPack>
         <IncludeBuildOutput>false</IncludeBuildOutput>
