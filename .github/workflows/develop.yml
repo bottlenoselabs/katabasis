@@ -135,12 +135,9 @@ jobs:
 
     - name: "Echo Packages"
       run: find ./nuget-packages-packed/ -not -type d -exec basename {} \;
-      
-    - name: "Add Packages Source: MyGet"
-      run: dotnet nuget add source $MYGET_SOURCE_URL --name "MyGet"
  
     - name: "Upload Packages: MyGet"
-      run: dotnet nuget push "./**/*.nupkg" --source "MyGet" --skip-duplicate --api-key $MYGET_ACCESS_TOKEN
+      run: dotnet nuget push "./**/*.nupkg" --source "lithiumtoast" --skip-duplicate --api-key $MYGET_ACCESS_TOKEN
 
 
 
