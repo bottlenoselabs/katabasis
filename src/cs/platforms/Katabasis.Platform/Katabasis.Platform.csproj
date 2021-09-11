@@ -6,5 +6,14 @@
     <ProjectReference Include="..\Katabasis.Platform.osx-x64\Katabasis.Platform.osx-x64.csproj" />
     <ProjectReference Include="..\Katabasis.Platform.win-x64\Katabasis.Platform.win-x64.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="_._">
+      <Link>%(Filename)%(Extension)</Link>
+      <PackagePath>lib/$(TargetFramework)/%(Filename)%(Extension)</PackagePath>
+      <Pack>true</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   
 </Project>
