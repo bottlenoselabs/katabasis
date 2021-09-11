@@ -90,19 +90,19 @@ jobs:
       with:
         dotnet-version: '${{ env.DOTNET_CORE_SDK_VERSION }}'
 
-    - name: "Download native libraries"
+    - name: "Download native libraries (win-x64)"
       uses: actions/download-artifact@v1
       with:
         name: "native-libraries-win-x64"
         path: './lib'
 
-    - name: "Download native libraries"
+    - name: "Download native libraries (linux-x64)"
       uses: actions/download-artifact@v1
       with:
         name: "native-libraries-linux-x64"
         path: './lib'
 
-    - name: "Download native libraries"
+    - name: "Download native libraries (osx-x64)"
       uses: actions/download-artifact@v1
       with:
         name: "native-libraries-osx-x64"
@@ -116,8 +116,7 @@ jobs:
     - name: "Read Version"
       id: version
       shell: bash
-      run: |
-        echo "VERSION=$(cat nuget-version.txt)" >> $GITHUB_ENV
+      run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
 
     - name: "Build solution"
       run: dotnet build --nologo --configuration Release /p:Version='${{ env.VERSION }}'
