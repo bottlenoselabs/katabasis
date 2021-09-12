@@ -10,7 +10,7 @@ Katabasis is built for [programmers](https://en.wikipedia.org/wiki/Programmer) t
 ## News
 
 To see what's new, check the development log! [docs/dev/LOG.md](docs/dev/LOG.md)  
-Lastest update: - [2021-09-06: FNA3D](docs/dev/2021-09-06_FNA3D-and-other-native-libraries.md)
+Lastest update: - [2021-12-06: FAudio](docs/dev/2021-09-12-FAudio.md)
 
 ## Background: Why?
 
