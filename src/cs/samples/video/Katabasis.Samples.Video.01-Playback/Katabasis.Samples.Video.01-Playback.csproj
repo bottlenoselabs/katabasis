@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- MSBuild project settings -->
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <PublishReadyToRun>false</PublishReadyToRun>
+        <TieredCompilation>false</TieredCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RootNamespace>Katabasis.Samples</RootNamespace>
+        <AssemblyName>Katabasis.Samples.Input.Mouse</AssemblyName>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
+
+    <!-- Custom project settings -->
+    <PropertyGroup>
+        <EnableCodeCoverage>false</EnableCodeCoverage>
+        <EnableAnalyzers>true</EnableAnalyzers>
+        <IncludeAnalyzersStyleCop>true</IncludeAnalyzersStyleCop>
+    </PropertyGroup>
+
+    <!-- Project references -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
+    </ItemGroup>
+    
+    <!-- Poor man's asset handling -->
+    <ItemGroup>
+      <None Update="Assets\**\*.*">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

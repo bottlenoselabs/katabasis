@@ -16,7 +16,7 @@ namespace Katabasis
 		internal int _yHeight;
 		internal int _yWidth;
 
-		internal Video(string fileName)
+		public Video(string fileName)
 		{
 			Theorafile.tf_fopen(fileName, out _theora);
 			Theorafile.tf_videoinfo(_theora, out _yWidth, out _yHeight, out _fps, out var pixelFormat);

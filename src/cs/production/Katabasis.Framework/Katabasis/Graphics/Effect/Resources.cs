@@ -9,15 +9,15 @@ namespace Katabasis
 		private static byte[]? _spriteEffect;
 		private static byte[]? _yuvToRGBAEffect;
 
-		public static byte[] SpriteEffect => _spriteEffect ??= GetResource("SpriteEffect");
+		public static byte[] SpriteEffect => _spriteEffect ??= GetResource("Sprite.SpriteEffect");
 
 		/* This Effect is used by the Xiph VideoPlayer. */
-		public static byte[] YUVToRGBAEffect => _yuvToRGBAEffect ??= GetResource("YUVToRGBAEffect");
+		public static byte[] YUVToRGBAEffect => _yuvToRGBAEffect ??= GetResource("YUVToRGBA.YUVToRGBAEffect");
 
 		private static byte[] GetResource(string name)
 		{
 			var stream = typeof(Resources).Assembly.GetManifestResourceStream(
-				$"Katabasis.Graphics.Effect.StockEffects.FXB.{name}.fxb");
+				$"Katabasis.Graphics.Effect.{name}.fxb");
 
 			using MemoryStream ms = new();
 			stream!.CopyTo(ms);
