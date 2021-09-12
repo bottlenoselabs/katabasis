@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.audioemitter.aspx
-	public class AudioEmitter
+	public unsafe class AudioEmitter
 	{
 		private static readonly float[] StereoAzimuth = {0.0f, 0.0f};
 
 		private static readonly GCHandle StereoAzimuthHandle = GCHandle.Alloc(StereoAzimuth, GCHandleType.Pinned);
-		internal FAudio.F3DAUDIO_EMITTER _emitterData;
+		internal _FAudio.F3DAUDIO_EMITTER _emitterData;
 
 		public AudioEmitter()
 		{
@@ -24,16 +24,16 @@ namespace Katabasis
 			Velocity = Vector3.Zero;
 
 			/* Unused variables, defaults based on XNA behavior */
-			_emitterData.pCone = IntPtr.Zero;
+			_emitterData.pCone = (_FAudio.F3DAUDIO_CONE*)IntPtr.Zero;
 			_emitterData.ChannelCount = 1;
 			_emitterData.ChannelRadius = 1.0f;
 			// ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
-			_emitterData.pChannelAzimuths = StereoAzimuthHandle.AddrOfPinnedObject();
-			_emitterData.pVolumeCurve = IntPtr.Zero;
-			_emitterData.pLFECurve = IntPtr.Zero;
-			_emitterData.pLPFDirectCurve = IntPtr.Zero;
-			_emitterData.pLPFReverbCurve = IntPtr.Zero;
-			_emitterData.pReverbCurve = IntPtr.Zero;
+			_emitterData.pChannelAzimuths = (float*)StereoAzimuthHandle.AddrOfPinnedObject();
+			_emitterData.pVolumeCurve = (_FAudio.F3DAUDIO_DISTANCE_CURVE*)IntPtr.Zero;
+			_emitterData.pLFECurve = (_FAudio.F3DAUDIO_DISTANCE_CURVE*)IntPtr.Zero;
+			_emitterData.pLPFDirectCurve = (_FAudio.F3DAUDIO_DISTANCE_CURVE*)IntPtr.Zero;
+			_emitterData.pLPFReverbCurve = (_FAudio.F3DAUDIO_DISTANCE_CURVE*)IntPtr.Zero;
+			_emitterData.pReverbCurve = (_FAudio.F3DAUDIO_DISTANCE_CURVE*)IntPtr.Zero;
 			_emitterData.CurveDistanceScaler = 1.0f;
 		}
 

@@ -3,13 +3,14 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.wavebank.aspx
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public class WaveBank : IDisposable
+	public unsafe class WaveBank : IDisposable
 	{
 		private readonly AudioEngine _engine;
 
@@ -34,13 +35,15 @@ namespace Katabasis
 
 			_bankData = TitleContainer.ReadToPointer(nonStreamingWaveBankFilename, out _bankDataLen);
 
-			FAudio.FACTAudioEngine_CreateInMemoryWaveBank(
-				audioEngine._handle,
-				_bankData,
+			_FAudio.FACTWaveBank* waveBank;
+			_FAudio.FACTAudioEngine_CreateInMemoryWaveBank(
+				(_FAudio.FACTAudioEngine*)audioEngine._handle,
+				(void*)_bankData,
 				(uint)_bankDataLen,
 				0,
 				0,
-				out _handle);
+				&waveBank);
+			_handle = (IntPtr)waveBank;
 
 			_engine = audioEngine;
 			_selfReference = new WeakReference(this, true);
@@ -73,14 +76,16 @@ namespace Katabasis
 					safeName);
 			}
 
-			_bankData = FAudio.FAudio_fopen(safeName);
+			_bankData = (IntPtr)_FAudio.FAudio_fopen(safeName);
 
-			var settings = default(FAudio.FACTStreamingParameters);
-			settings.file = _bankData;
-			FAudio.FACTAudioEngine_CreateStreamingWaveBank(
-				audioEngine._handle,
-				ref settings,
-				out _handle);
+			_FAudio.FACTWaveBank* waveBank;
+			var settings = default(_FAudio.FACTStreamingParameters);
+			settings.file = (void*)_bankData;
+			_FAudio.FACTAudioEngine_CreateStreamingWaveBank(
+				(_FAudio.FACTAudioEngine*)audioEngine._handle,
+				(_FAudio.FACTStreamingParameters*)Unsafe.AsPointer(ref settings),
+				&waveBank);
+			_handle = (IntPtr)waveBank;
 
 			_engine = audioEngine;
 			_selfReference = new WeakReference(this, true);
@@ -94,8 +99,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTWaveBank_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_PREPARED) != 0;
+				uint state;
+				_FAudio.FACTWaveBank_GetState((_FAudio.FACTWaveBank*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_PREPARED) != 0;
 			}
 		}
 
@@ -103,8 +109,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTWaveBank_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_INUSE) != 0;
+				uint state;
+				_FAudio.FACTWaveBank_GetState((_FAudio.FACTWaveBank*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_INUSE) != 0;
 			}
 		}
 
@@ -145,7 +152,7 @@ namespace Katabasis
 				}
 				else
 				{
-					FAudio.FAudio_close(_bankData);
+					_FAudio.FAudio_close((_FAudio.FAudioIOStream*)_bankData);
 				}
 
 				_bankData = IntPtr.Zero;
@@ -167,7 +174,7 @@ namespace Katabasis
 					if (!_engine.IsDisposed)
 					{
 						_engine.UnregisterWaveBank(_handle);
-						FAudio.FACTWaveBank_Destroy(_handle);
+						_FAudio.FACTWaveBank_Destroy((_FAudio.FACTWaveBank*)_handle);
 					}
 
 					OnWaveBankDestroyed();

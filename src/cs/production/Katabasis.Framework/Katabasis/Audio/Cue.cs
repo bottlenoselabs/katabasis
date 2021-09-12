@@ -2,12 +2,13 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.cue.aspx
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
-	public sealed class Cue : IDisposable
+	public sealed unsafe class Cue : IDisposable
 	{
 		private readonly SoundBank _bank;
 		private IntPtr _handle;
@@ -27,8 +28,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_CREATED) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_CREATED) != 0;
 			}
 		}
 
@@ -38,8 +40,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_PAUSED) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_PAUSED) != 0;
 			}
 		}
 
@@ -47,8 +50,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_PLAYING) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_PLAYING) != 0;
 			}
 		}
 
@@ -56,8 +60,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_PREPARED) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_PREPARED) != 0;
 			}
 		}
 
@@ -65,8 +70,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_PREPARING) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_PREPARING) != 0;
 			}
 		}
 
@@ -74,8 +80,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_STOPPED) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_STOPPED) != 0;
 			}
 		}
 
@@ -83,8 +90,9 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FACTCue_GetState(_handle, out var state);
-				return (state & FAudio.FACT_STATE_STOPPING) != 0;
+				uint state;
+				_FAudio.FACTCue_GetState((_FAudio.FACTCue*)_handle, &state);
+				return (state & _FAudio.FACT_STATE_STOPPING) != 0;
 			}
 		}
 
@@ -119,13 +127,13 @@ namespace Katabasis
 		{
 			emitter._emitterData.ChannelCount = _bank._dspSettings.SrcChannelCount;
 			emitter._emitterData.CurveDistanceScaler = float.MaxValue;
-			FAudio.FACT3DCalculate(
+			_FAudio.FACT3DCalculate(
 				_bank._engine._handle3D,
-				ref listener._listenerData,
-				ref emitter._emitterData,
-				ref _bank._dspSettings);
+				(_FAudio.F3DAUDIO_LISTENER*)Unsafe.AsPointer(ref listener._listenerData),
+				(_FAudio.F3DAUDIO_EMITTER*)Unsafe.AsPointer(ref emitter._emitterData),
+				(_FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _bank._dspSettings));
 
-			FAudio.FACT3DApply(ref _bank._dspSettings, _handle);
+			_FAudio.FACT3DApply((_FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _bank._dspSettings), (_FAudio.FACTCue*)_handle);
 		}
 
 		public float GetVariable(string name)
@@ -135,22 +143,23 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var variable = FAudio.FACTCue_GetVariableIndex(_handle, name);
+			var variable = _FAudio.FACTCue_GetVariableIndex((_FAudio.FACTCue*)_handle, name);
 
-			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
+			if (variable == _FAudio.FACTVARIABLEINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid variable name!");
 			}
 
-			FAudio.FACTCue_GetVariable(_handle, variable, out var result);
+			float result;
+			_FAudio.FACTCue_GetVariable((_FAudio.FACTCue*)_handle, variable, &result);
 			return result;
 		}
 
-		public void Pause() => FAudio.FACTCue_Pause(_handle, 1);
+		public void Pause() => _FAudio.FACTCue_Pause((_FAudio.FACTCue*)_handle, 1);
 
-		public void Play() => FAudio.FACTCue_Play(_handle);
+		public void Play() => _FAudio.FACTCue_Play((_FAudio.FACTCue*)_handle);
 
-		public void Resume() => FAudio.FACTCue_Pause(_handle, 0);
+		public void Resume() => _FAudio.FACTCue_Pause((_FAudio.FACTCue*)_handle, 0);
 
 		public void SetVariable(string name, float value)
 		{
@@ -159,23 +168,23 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var variable = FAudio.FACTCue_GetVariableIndex(_handle, name);
+			var variable = _FAudio.FACTCue_GetVariableIndex((_FAudio.FACTCue*)_handle, name);
 
-			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
+			if (variable == _FAudio.FACTVARIABLEINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid variable name!");
 			}
 
-			FAudio.FACTCue_SetVariable(
-				_handle,
+			_FAudio.FACTCue_SetVariable(
+				(_FAudio.FACTCue*)_handle,
 				variable,
 				value);
 		}
 
 		public void Stop(AudioStopOptions options) =>
-			FAudio.FACTCue_Stop(
-				_handle,
-				options == AudioStopOptions.Immediate ? FAudio.FACT_FLAG_STOP_IMMEDIATE : FAudio.FACT_FLAG_STOP_RELEASE);
+			_FAudio.FACTCue_Stop(
+				(_FAudio.FACTCue*)_handle,
+				options == AudioStopOptions.Immediate ? _FAudio.FACT_FLAG_STOP_IMMEDIATE : _FAudio.FACT_FLAG_STOP_RELEASE);
 
 		internal void OnCueDestroyed()
 		{
@@ -196,7 +205,7 @@ namespace Katabasis
 					if (!_bank._engine.IsDisposed)
 					{
 						_bank._engine.UnregisterCue(_handle);
-						FAudio.FACTCue_Destroy(_handle);
+						_FAudio.FACTCue_Destroy((_FAudio.FACTCue*)_handle);
 					}
 
 					OnCueDestroyed();

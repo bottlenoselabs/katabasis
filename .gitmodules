@@ -10,3 +10,6 @@
 [submodule "ext/FNA3D-cs"]
 	path = ext/FNA3D-cs
 	url = https://github.com/lithiumtoast/FNA3D-cs.git
+[submodule "ext/FAudio-cs"]
+	path = ext/FAudio-cs
+	url = https://github.com/lithiumtoast/FAudio-cs.git

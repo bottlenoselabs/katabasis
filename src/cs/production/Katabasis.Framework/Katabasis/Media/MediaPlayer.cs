@@ -47,7 +47,7 @@ namespace Katabasis
 			set
 			{
 				_isMuted = value;
-				FAudio.XNA_SetSongVolume(_isMuted ? 0.0f : _volume);
+				_FAudio.XNA_SetSongVolume(_isMuted ? 0.0f : _volume);
 			}
 		}
 
@@ -83,14 +83,14 @@ namespace Katabasis
 					0.0f,
 					1.0f);
 
-				FAudio.XNA_SetSongVolume(IsMuted ? 0.0f : _volume);
+				_FAudio.XNA_SetSongVolume(IsMuted ? 0.0f : _volume);
 			}
 		}
 
 		public static bool IsVisualizationEnabled
 		{
-			get => FAudio.XNA_VisualizationEnabled() == 1;
-			set => FAudio.XNA_EnableVisualization((byte)(value ? 1 : 0));
+			get => _FAudio.XNA_VisualizationEnabled() == 1;
+			set => _FAudio.XNA_EnableVisualization((byte)(value ? 1 : 0));
 		}
 
 		public static event EventHandler<EventArgs>? ActiveSongChanged;
@@ -108,7 +108,7 @@ namespace Katabasis
 				return;
 			}
 
-			FAudio.XNA_PauseSong();
+			_FAudio.XNA_PauseSong();
 			_timer.Stop();
 
 			State = MediaState.Paused;
@@ -116,7 +116,7 @@ namespace Katabasis
 
 		public static void Play(Song song)
 		{
-			var previousSong = Queue.Count > 0 ? Queue[0] : null;
+			Song? previousSong = Queue.Count > 0 ? Queue[0] : null;
 
 			Queue.Clear();
 			_songsCountInQueuePlayed = 0;
@@ -124,6 +124,8 @@ namespace Katabasis
 			Queue.ActiveSongIndex = 0;
 
 			PlaySong(song);
+
+			Queue[0].Duration = song.Duration;
 
 			if (previousSong != song)
 			{
@@ -155,7 +157,7 @@ namespace Katabasis
 				return;
 			}
 
-			FAudio.XNA_ResumeSong();
+			_FAudio.XNA_ResumeSong();
 			_timer.Start();
 			State = MediaState.Playing;
 		}
@@ -167,7 +169,7 @@ namespace Katabasis
 				return;
 			}
 
-			FAudio.XNA_StopSong();
+			_FAudio.XNA_StopSong();
 			_timer.Stop();
 			_timer.Reset();
 
@@ -180,7 +182,7 @@ namespace Katabasis
 		}
 
 		public static void GetVisualizationData(VisualizationData data) =>
-			FAudio.XNA_GetSongVisualizationData(
+			_FAudio.XNA_GetSongVisualizationData(
 				data._frequencies,
 				data._samples,
 				VisualizationData.Size);
@@ -189,7 +191,7 @@ namespace Katabasis
 		{
 			if (Queue.ActiveSong == null ||
 			    State != MediaState.Playing ||
-			    FAudio.XNA_GetSongEnded() == 0)
+			    _FAudio.XNA_GetSongEnded() == 0)
 			{
 				// Nothing to do... yet...
 				return;
@@ -217,7 +219,7 @@ namespace Katabasis
 		{
 			if (_initialized)
 			{
-				FAudio.XNA_SongQuit();
+				_FAudio.XNA_SongQuit();
 				_initialized = false;
 			}
 		}
@@ -273,7 +275,7 @@ namespace Katabasis
 		{
 			if (!_initialized)
 			{
-				FAudio.XNA_SongInit();
+				_FAudio.XNA_SongInit();
 				_initialized = true;
 			}
 
@@ -282,8 +284,9 @@ namespace Katabasis
 				return;
 			}
 
-			song.Duration = TimeSpan.FromSeconds(FAudio.XNA_PlaySong(song._handle));
-			_timer.Start();
+			var durationSeconds = _FAudio.XNA_PlaySong(song._handle);
+			song.Duration = TimeSpan.FromSeconds(durationSeconds);
+			_timer.Restart();
 			State = MediaState.Playing;
 		}
 	}

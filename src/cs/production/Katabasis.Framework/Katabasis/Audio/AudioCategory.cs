@@ -7,7 +7,7 @@ namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.audiocategory.aspx
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
-	public readonly struct AudioCategory : IEquatable<AudioCategory>
+	public readonly unsafe struct AudioCategory : IEquatable<AudioCategory>
 	{
 		private readonly AudioEngine _parent;
 		private readonly ushort _index;
@@ -33,7 +33,7 @@ namespace Katabasis
 					return;
 				}
 
-				FAudio.FACTAudioEngine_Pause(_parent._handle, _index, 1);
+				_FAudio.FACTAudioEngine_Pause((_FAudio.FACTAudioEngine*)_parent._handle, _index, 1);
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace Katabasis
 					return;
 				}
 
-				FAudio.FACTAudioEngine_Pause(_parent._handle, _index, 0);
+				_FAudio.FACTAudioEngine_Pause((_FAudio.FACTAudioEngine*)_parent._handle, _index, 0);
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace Katabasis
 					return;
 				}
 
-				FAudio.FACTAudioEngine_SetVolume(_parent._handle, _index, volume);
+				_FAudio.FACTAudioEngine_SetVolume((_FAudio.FACTAudioEngine*)_parent._handle, _index, volume);
 			}
 		}
 
@@ -72,10 +72,10 @@ namespace Katabasis
 					return;
 				}
 
-				FAudio.FACTAudioEngine_Stop(
-					_parent._handle,
+				_FAudio.FACTAudioEngine_Stop(
+					(_FAudio.FACTAudioEngine*)_parent._handle,
 					_index,
-					options == AudioStopOptions.Immediate ? FAudio.FACT_FLAG_STOP_IMMEDIATE : FAudio.FACT_FLAG_STOP_RELEASE);
+					options == AudioStopOptions.Immediate ? _FAudio.FACT_FLAG_STOP_IMMEDIATE : _FAudio.FACT_FLAG_STOP_RELEASE);
 			}
 		}
 

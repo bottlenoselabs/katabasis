@@ -3,13 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.dynamicsoundeffectinstance.aspx
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
-	public sealed class DynamicSoundEffectInstance : SoundEffectInstance
+	public sealed unsafe class DynamicSoundEffectInstance : SoundEffectInstance
 	{
 		private const int MinimumBufferCheck = 3;
 		private readonly AudioChannels _channels;
@@ -18,7 +19,7 @@ namespace Katabasis
 		private readonly List<uint> _queuedSizes;
 
 		private readonly int _sampleRate;
-		internal FAudio.FAudioWaveFormatEx _format;
+		internal _FAudio.FAudioWaveFormatEx _format;
 
 		public DynamicSoundEffectInstance(int sampleRate, AudioChannels channels)
 		{
@@ -87,14 +88,14 @@ namespace Katabasis
 				_queuedBuffers.Add(next);
 				if (State != SoundState.Stopped)
 				{
-					var buf = default(FAudio.FAudioBuffer);
+					var buf = default(_FAudio.FAudioBuffer);
 					buf.AudioBytes = (uint)count;
-					buf.pAudioData = next;
+					buf.pAudioData = (byte*)next;
 					buf.PlayLength = buf.AudioBytes /
 					                 (uint)_channels /
 					                 (uint)(_format.wBitsPerSample / 8);
 
-					FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buf, IntPtr.Zero);
+					_FAudio.FAudioSourceVoice_SubmitSourceBuffer((_FAudio.FAudioSourceVoice*)_handle, (_FAudio.FAudioBuffer*)Unsafe.AsPointer(ref buf), (_FAudio.FAudioBufferWMA*)IntPtr.Zero);
 				}
 				else
 				{
@@ -128,14 +129,14 @@ namespace Katabasis
 				_queuedBuffers.Add(next);
 				if (State != SoundState.Stopped)
 				{
-					var buf = default(FAudio.FAudioBuffer);
+					var buf = default(_FAudio.FAudioBuffer);
 					buf.AudioBytes = (uint)count * sizeof(float);
-					buf.pAudioData = next;
+					buf.pAudioData = (byte*)next;
 					buf.PlayLength = buf.AudioBytes /
 					                 (uint)_channels /
 					                 (uint)(_format.wBitsPerSample / 8);
 
-					FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buf, IntPtr.Zero);
+					_FAudio.FAudioSourceVoice_SubmitSourceBuffer((_FAudio.FAudioSourceVoice*)_handle, (_FAudio.FAudioBuffer*)Unsafe.AsPointer(ref buf), (_FAudio.FAudioBufferWMA*)IntPtr.Zero);
 				}
 				else
 				{
@@ -146,18 +147,18 @@ namespace Katabasis
 
 		internal void QueueInitialBuffers()
 		{
-			var buffer = default(FAudio.FAudioBuffer);
+			var buffer = default(_FAudio.FAudioBuffer);
 			lock (_queuedBuffers)
 			{
 				for (var i = 0; i < _queuedBuffers.Count; i += 1)
 				{
 					buffer.AudioBytes = _queuedSizes[i];
-					buffer.pAudioData = _queuedBuffers[i];
+					buffer.pAudioData = (byte*)_queuedBuffers[i];
 					buffer.PlayLength = buffer.AudioBytes /
 					                    (uint)_channels /
 					                    (uint)(_format.wBitsPerSample / 8);
 
-					FAudio.FAudioSourceVoice_SubmitSourceBuffer(_handle, ref buffer, IntPtr.Zero);
+					_FAudio.FAudioSourceVoice_SubmitSourceBuffer((_FAudio.FAudioSourceVoice*)_handle, (_FAudio.FAudioBuffer*)Unsafe.AsPointer(ref buffer), (_FAudio.FAudioBufferWMA*)IntPtr.Zero);
 				}
 
 				_queuedSizes.Clear();
@@ -188,7 +189,8 @@ namespace Katabasis
 
 			if (_handle != IntPtr.Zero)
 			{
-				FAudio.FAudioSourceVoice_GetState(_handle, out var state, FAudio.FAUDIO_VOICE_NOSAMPLESPLAYED);
+				_FAudio.FAudioVoiceState state;
+				_FAudio.FAudioSourceVoice_GetState((_FAudio.FAudioSourceVoice*)_handle, &state, _FAudio.FAUDIO_VOICE_NOSAMPLESPLAYED);
 				while (PendingBufferCount > state.BuffersQueued)
 				{
 					lock (_queuedBuffers)

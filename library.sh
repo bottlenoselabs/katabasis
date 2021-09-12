@@ -47,10 +47,6 @@ set_target_build_platform
 echo "Building SDL from source..."
 $DIR/ext/sdl-cs/library.sh $TARGET_BUILD_PLATFORM
 mv -v $DIR/ext/sdl-cs/lib/* $LIBS_DIR
-echo "Building SDL from source finished!"
-
-# Build FNA3D
-echo "Building FNA3D from source..."
 if [[ "$TARGET_BUILD_PLATFORM" == "linux" ]]; then
     SDL_LIBRARY_FILE_PATH="$LIBS_DIR/libSDL2.so"
 elif [[ "$TARGET_BUILD_PLATFORM" == "apple" ]]; then
@@ -58,9 +54,19 @@ elif [[ "$TARGET_BUILD_PLATFORM" == "apple" ]]; then
 elif [[ "$TARGET_BUILD_PLATFORM" == "microsoft" ]]; then
     SDL_LIBRARY_FILE_PATH="$LIBS_DIR/SDL2.dll"
 fi
+echo "Building SDL from source finished!"
+
+# Build FNA3D
+echo "Building FNA3D from source..."
 $DIR/ext/FNA3D-cs/library.sh $TARGET_BUILD_PLATFORM $SDL_LIBRARY_FILE_PATH $DIR/ext/sdl-cs/ext/SDL/include
 mv -v $DIR/ext/FNA3D-cs/lib/* $LIBS_DIR
 echo "Building FNA3D from source finished!"
+
+# Build FAudio
+echo "Building FAudio from source..."
+$DIR/ext/FAudio-cs/library.sh $TARGET_BUILD_PLATFORM $SDL_LIBRARY_FILE_PATH $DIR/ext/sdl-cs/ext/SDL/include
+mv -v $DIR/ext/FAudio-cs/lib/* $LIBS_DIR
+echo "Building FAudio from source finished!"
 
 # Build cimgui
 echo "Building imgui from source..."
@@ -96,15 +102,12 @@ function download_fna_libraries() {
     # Move files to specific places...
     echo "Moving files ..."
     if [[ "$TARGET_BUILD_PLATFORM" == "linux" ]]; then
-        mv $FNA_LIBS_DIR/lib64/libFAudio.so.0 $LIBS_DIR/libFAudio.so
         mv $FNA_LIBS_DIR/lib64/libtheorafile.so $LIBS_DIR/libtheorafile.so
     elif [[ "$TARGET_BUILD_PLATFORM" == "apple" ]]; then
-        mv $FNA_LIBS_DIR/osx/libFAudio.0.dylib $LIBS_DIR/libFAudio.dylib
         mv $FNA_LIBS_DIR/osx/libMoltenVK.dylib $LIBS_DIR/libMoltenVK.dylib #FNA3D
         mv $FNA_LIBS_DIR/osx/libvulkan.1.dylib $LIBS_DIR/libvulkan.dylib #FNA3D
         mv $FNA_LIBS_DIR/osx/libtheorafile.dylib $LIBS_DIR/libtheorafile.dylib
     elif [[ "$TARGET_BUILD_PLATFORM" == "microsoft" ]]; then
-        mv $FNA_LIBS_DIR/x64/FAudio.dll $LIBS_DIR/FAudio.dll
         mv $FNA_LIBS_DIR/x64/libtheorafile.dll $LIBS_DIR/libtheorafile.dll
     fi
     echo "Finished moving files!"

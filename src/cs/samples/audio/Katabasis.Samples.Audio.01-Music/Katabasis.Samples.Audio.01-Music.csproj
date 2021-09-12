@@ -24,5 +24,12 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\production\Katabasis.Framework\Katabasis.Framework.csproj" />
     </ItemGroup>
+    
+    <!-- Poor man's asset handling -->
+    <ItemGroup>
+      <None Update="Assets\Music\**\*">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
 </Project>

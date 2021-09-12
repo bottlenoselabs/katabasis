@@ -143,6 +143,8 @@ namespace Katabasis.Samples
 			ref var offset = ref _offset;
 			offset.X = (float)(0.1 * Math.Sin(_rotationX));
 			offset.Y = (float)(0.1 * Math.Sin(_rotationY));
+			
+			base.Update(gameTime); // important to call the base.Update for updating internal stuff!
 		}
 
 		private static Effect CreateShaderOffScreen() => Effect.FromStream(File.OpenRead("Assets/Shaders/OffScreen.fxb"));

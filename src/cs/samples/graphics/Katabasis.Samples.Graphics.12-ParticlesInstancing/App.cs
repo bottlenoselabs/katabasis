@@ -78,6 +78,8 @@ namespace Katabasis.Samples
 			EmitNewParticles();
 			MoveParticles();
 			RotateModel(gameTime);
+			
+			base.Update(gameTime); // important to call the base.Update for updating internal stuff!
 		}
 
 		private void MoveParticles()

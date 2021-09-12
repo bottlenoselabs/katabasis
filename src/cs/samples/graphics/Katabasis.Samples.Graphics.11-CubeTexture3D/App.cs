@@ -71,6 +71,8 @@ namespace Katabasis.Samples
 			CreateViewProjectionMatrix();
 			RotateModel(gameTime);
 			CalculateTextureCoordinatesScale(gameTime);
+			
+			base.Update(gameTime); // important to call the base.Update for updating internal stuff!
 		}
 
 		private static Effect CreateShader() => Effect.FromStream(File.OpenRead("Assets/Shaders/Main.fxb"));

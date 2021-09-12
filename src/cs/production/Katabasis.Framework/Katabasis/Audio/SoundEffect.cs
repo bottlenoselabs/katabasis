@@ -4,15 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.soundeffect.aspx
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
-	public sealed class SoundEffect : IDisposable
+	public sealed unsafe class SoundEffect : IDisposable
 	{
-		internal FAudio.FAudioBuffer _handle;
+		internal _FAudio.FAudioBuffer _handle;
 		internal IntPtr _formatPtr;
 		internal ushort _channels;
 		internal uint _sampleRate;
@@ -45,19 +46,19 @@ namespace Katabasis
 			/* Buffer format */
 			if (extraData == null)
 			{
-				_formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(FAudio.FAudioWaveFormatEx)));
+				_formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(_FAudio.FAudioWaveFormatEx)));
 			}
 			else
 			{
-				_formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(FAudio.FAudioWaveFormatEx)) + extraData.Length);
+				_formatPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(_FAudio.FAudioWaveFormatEx)) + extraData.Length);
 				Marshal.Copy(
 					extraData,
 					0,
-					_formatPtr + Marshal.SizeOf(typeof(FAudio.FAudioWaveFormatEx)),
+					_formatPtr + Marshal.SizeOf(typeof(_FAudio.FAudioWaveFormatEx)),
 					extraData.Length);
 			}
 
-			FAudio.FAudioWaveFormatEx* pcm = (FAudio.FAudioWaveFormatEx*) _formatPtr;
+			_FAudio.FAudioWaveFormatEx* pcm = (_FAudio.FAudioWaveFormatEx*) _formatPtr;
 			pcm->wFormatTag = wFormatTag;
 			pcm->nChannels = nChannels;
 			pcm->nSamplesPerSec = nSamplesPerSec;
@@ -68,16 +69,16 @@ namespace Katabasis
 
 			/* Easy stuff */
 			_handle = default;
-			_handle.Flags = FAudio.FAUDIO_END_OF_STREAM;
-			_handle.pContext = IntPtr.Zero;
+			_handle.Flags = _FAudio.FAUDIO_END_OF_STREAM;
+			_handle.pContext = (void*)IntPtr.Zero;
 
 			/* Buffer data */
 			_handle.AudioBytes = (uint)count;
-			_handle.pAudioData = Marshal.AllocHGlobal(count);
+			_handle.pAudioData = (byte*)Marshal.AllocHGlobal(count);
 			Marshal.Copy(
 				buffer,
 				offset,
-				_handle.pAudioData,
+				(IntPtr)_handle.pAudioData,
 				count);
 
 			/* Play regions */
@@ -95,7 +96,7 @@ namespace Katabasis
 			}
 			else if (wFormatTag == 0x166)
 			{
-				var xma2 = (FAudio.FAudioXMA2WaveFormatEx*) _formatPtr;
+				var xma2 = (_FAudio.FAudioXMA2WaveFormatEx*) _formatPtr;
 				// dwSamplesEncoded / nChannels / (wBitsPerSample / 8) doesn't always (if ever?) match up.
 				_handle.PlayLength = xma2->dwPlayLength;
 			}
@@ -162,11 +163,12 @@ namespace Katabasis
 		{
 			get
 			{
-				FAudio.FAudioVoice_GetVolume(Device().MasterVoice, out var result);
+				float result;
+				_FAudio.FAudioVoice_GetVolume((_FAudio.FAudioVoice*)Device().MasterVoice, &result);
 				return result;
 			}
 			set =>
-				FAudio.FAudioVoice_SetVolume(Device().MasterVoice, value, 0);
+				_FAudio.FAudioVoice_SetVolume((_FAudio.FAudioVoice*)Device().MasterVoice, value, 0);
 		}
 
 		public static float DistanceScale
@@ -204,7 +206,7 @@ namespace Katabasis
 			{
 				FAudioContext dev = Device();
 				dev.SpeedOfSoundAudioContext = value;
-				FAudio.F3DAudioInitialize(
+				_FAudio.F3DAudioInitialize(
 					dev.DeviceDetails.OutputFormat.dwChannelMask,
 					dev.SpeedOfSoundAudioContext,
 					dev.Handle3D);
@@ -234,7 +236,7 @@ namespace Katabasis
 
 			Instances.Clear();
 			Marshal.FreeHGlobal(_formatPtr);
-			Marshal.FreeHGlobal(_handle.pAudioData);
+			Marshal.FreeHGlobal((IntPtr)_handle.pAudioData);
 			IsDisposed = true;
 			GC.SuppressFinalize(this);
 		}
@@ -463,13 +465,13 @@ namespace Katabasis
 		internal class FAudioContext
 		{
 			public static FAudioContext? Context;
-			public readonly FAudio.FAudioDeviceDetails DeviceDetails;
+			public readonly _FAudio.FAudioDeviceDetails DeviceDetails;
 
 			public readonly IntPtr Handle;
-			public readonly byte[]? Handle3D;
+			public readonly _FAudio.F3DAUDIO_HANDLE Handle3D;
 			public readonly IntPtr MasterVoice;
 
-			private FAudio.FAudioVoiceSends _reverbSends;
+			private _FAudio.FAudioVoiceSends _reverbSends;
 
 			public float CurveDistanceScaler;
 			public float DopplerScaleAudioContext;
@@ -484,9 +486,11 @@ namespace Katabasis
 				uint i;
 				for (i = 0; i < devices; i += 1)
 				{
-					FAudio.FAudio_GetDeviceDetails(Handle, i, out DeviceDetails);
-					if ((DeviceDetails.Role & FAudio.FAudioDeviceRole.FAudioDefaultGameDevice) ==
-					    FAudio.FAudioDeviceRole.FAudioDefaultGameDevice)
+					_FAudio.FAudioDeviceDetails result;
+					_FAudio.FAudio_GetDeviceDetails((_FAudio.FAudio*)Handle, i, &result);
+					DeviceDetails = result;
+					if ((DeviceDetails.Role & _FAudio.FAudioDeviceRole.FAudioDefaultGameDevice) ==
+					    _FAudio.FAudioDeviceRole.FAudioDefaultGameDevice)
 					{
 						break;
 					}
@@ -495,29 +499,34 @@ namespace Katabasis
 				if (i == devices)
 				{
 					i = 0; /* Oh well. */
-					FAudio.FAudio_GetDeviceDetails(Handle, i, out DeviceDetails);
+					_FAudio.FAudioDeviceDetails result;
+					_FAudio.FAudio_GetDeviceDetails((_FAudio.FAudio*)Handle, i, &result);
+					DeviceDetails = result;
 				}
 
-				if (FAudio.FAudio_CreateMasteringVoice(
-					Handle,
-					out MasterVoice,
-					FAudio.FAUDIO_DEFAULT_CHANNELS,
-					FAudio.FAUDIO_DEFAULT_SAMPLERATE,
+				_FAudio.FAudioMasteringVoice* masterVoice;
+				if (_FAudio.FAudio_CreateMasteringVoice(
+					(_FAudio.FAudio*)Handle,
+					&masterVoice,
+					_FAudio.FAUDIO_DEFAULT_CHANNELS,
+					_FAudio.FAUDIO_DEFAULT_SAMPLERATE,
 					0,
 					i,
-					IntPtr.Zero) != 0)
+					(_FAudio.FAudioEffectChain*)IntPtr.Zero) != 0)
 				{
-					FAudio.FAudio_Release(ctx);
+					_FAudio.FAudio_Release((_FAudio.FAudio*)ctx);
 					Handle = IntPtr.Zero;
 					FNALoggerEXT.LogError!("Failed to create mastering voice!");
 					return;
 				}
 
+				MasterVoice = (IntPtr)masterVoice;
+
 				CurveDistanceScaler = 1.0f;
 				DopplerScaleAudioContext = 1.0f;
 				SpeedOfSoundAudioContext = 343.5f;
-				Handle3D = new byte[FAudio.F3DAUDIO_HANDLE_BYTESIZE];
-				FAudio.F3DAudioInitialize(
+				Handle3D.Data = (byte*)Marshal.AllocHGlobal(_FAudio.F3DAUDIO_HANDLE_BYTESIZE);
+				_FAudio.F3DAudioInitialize(
 					DeviceDetails.OutputFormat.dwChannelMask,
 					SpeedOfSoundAudioContext,
 					Handle3D);
@@ -529,73 +538,75 @@ namespace Katabasis
 			{
 				if (ReverbVoice != IntPtr.Zero)
 				{
-					FAudio.FAudioVoice_DestroyVoice(ReverbVoice);
+					_FAudio.FAudioVoice_DestroyVoice((_FAudio.FAudioVoice*)ReverbVoice);
 					ReverbVoice = IntPtr.Zero;
-					Marshal.FreeHGlobal(_reverbSends.pSends);
+					Marshal.FreeHGlobal((IntPtr)_reverbSends.pSends);
 				}
 
 				if (MasterVoice != IntPtr.Zero)
 				{
-					FAudio.FAudioVoice_DestroyVoice(MasterVoice);
+					_FAudio.FAudioVoice_DestroyVoice((_FAudio.FAudioVoice*)MasterVoice);
 				}
 
 				if (Handle != IntPtr.Zero)
 				{
-					FAudio.FAudio_Release(Handle);
+					_FAudio.FAudio_Release((_FAudio.FAudio*)Handle);
 				}
 
 				Context = null;
 			}
 
-			public unsafe void AttachReverb(IntPtr voice)
+			public void AttachReverb(IntPtr voice)
 			{
 				// Only create a reverb voice if they ask for it!
 				if (ReverbVoice == IntPtr.Zero)
 				{
-					FAudio.FAudioCreateReverb(out var reverb, 0);
+					_FAudio.FAPO* reverb;
+					_FAudio.FAudioCreateReverb(&reverb, 0);
 
 					var chainPtr = Marshal.AllocHGlobal(
-						Marshal.SizeOf(typeof(FAudio.FAudioEffectChain)));
+						Marshal.SizeOf(typeof(_FAudio.FAudioEffectChain)));
 
-					var reverbChain = (FAudio.FAudioEffectChain*)chainPtr;
+					var reverbChain = (_FAudio.FAudioEffectChain*)chainPtr;
 					reverbChain->EffectCount = 1;
-					reverbChain->pEffectDescriptors = Marshal.AllocHGlobal(
-						Marshal.SizeOf(typeof(FAudio.FAudioEffectDescriptor)));
+					reverbChain->pEffectDescriptors = (_FAudio.FAudioEffectDescriptor*)Marshal.AllocHGlobal(
+						Marshal.SizeOf(typeof(_FAudio.FAudioEffectDescriptor)));
 
-					var reverbDesc =
-						(FAudio.FAudioEffectDescriptor*)reverbChain->pEffectDescriptors;
+					var reverbDesc = reverbChain->pEffectDescriptors;
 
 					reverbDesc->InitialState = 1;
 					reverbDesc->OutputChannels = (uint)(DeviceDetails.OutputFormat.Format.nChannels == 6 ? 6 : 1);
 					reverbDesc->pEffect = reverb;
 
-					FAudio.FAudio_CreateSubmixVoice(
-						Handle,
-						out ReverbVoice,
+					_FAudio.FAudioSubmixVoice* reverbVoice;
+					_FAudio.FAudio_CreateSubmixVoice(
+						(_FAudio.FAudio*)Handle,
+						&reverbVoice,
 						1, /* Reverb will be omnidirectional */
 						DeviceDetails.OutputFormat.Format.nSamplesPerSec,
 						0,
 						0,
-						IntPtr.Zero,
-						chainPtr);
+						(_FAudio.FAudioVoiceSends*)IntPtr.Zero,
+						(_FAudio.FAudioEffectChain*)chainPtr);
+					ReverbVoice = (IntPtr)reverbVoice;
 
-					FAudio.FAPOBase_Release(reverb);
+					_FAudio.FAPOBase_Release((_FAudio.FAPOBase*)reverb);
 
-					Marshal.FreeHGlobal(reverbChain->pEffectDescriptors);
+					Marshal.FreeHGlobal((IntPtr)reverbChain->pEffectDescriptors);
 					Marshal.FreeHGlobal(chainPtr);
 
 					// ReSharper disable once CommentTypo
 					// Defaults based on FAUDIOFX_I3DL2_PRESET_GENERIC
-					var rvbParamsPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(FAudio.FAudioFXReverbParameters)));
-					var rvbParams = (FAudio.FAudioFXReverbParameters*)rvbParamsPtr;
+					var rvbParamsPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(_FAudio.FAudioFXReverbParameters)));
+					var rvbParams = (_FAudio.FAudioFXReverbParameters*)rvbParamsPtr;
 					rvbParams->WetDryMix = 100.0f;
 					rvbParams->ReflectionsDelay = 7;
 					rvbParams->ReverbDelay = 11;
-					rvbParams->RearDelay = FAudio.FAUDIOFX_REVERB_DEFAULT_REAR_DELAY;
-					rvbParams->PositionLeft = FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION;
-					rvbParams->PositionRight = FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION;
-					rvbParams->PositionMatrixLeft = FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION_MATRIX;
-					rvbParams->PositionMatrixRight = FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION_MATRIX;
+					rvbParams->RearDelay = _FAudio.FAUDIOFX_REVERB_DEFAULT_REAR_DELAY;
+					rvbParams->PositionLeft = _FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION;
+					rvbParams->PositionRight = _FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION;
+					rvbParams->PositionMatrixLeft = _FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION_MATRIX;
+					rvbParams->PositionMatrixRight = _FAudio.FAUDIOFX_REVERB_DEFAULT_POSITION_MATRIX;
 					rvbParams->EarlyDiffusion = 15;
 					rvbParams->LateDiffusion = 15;
 					rvbParams->LowEQGain = 8;
@@ -609,38 +620,38 @@ namespace Katabasis
 					rvbParams->ReverbGain = 10.0f;
 					rvbParams->DecayTime = 1.49000001f;
 					rvbParams->Density = 100.0f;
-					rvbParams->RoomSize = FAudio.FAUDIOFX_REVERB_DEFAULT_ROOM_SIZE;
-					FAudio.FAudioVoice_SetEffectParameters(
-						ReverbVoice,
+					rvbParams->RoomSize = _FAudio.FAUDIOFX_REVERB_DEFAULT_ROOM_SIZE;
+					_FAudio.FAudioVoice_SetEffectParameters(
+						(_FAudio.FAudioVoice*)ReverbVoice,
 						0,
-						rvbParamsPtr,
-						(uint)Marshal.SizeOf(typeof(FAudio.FAudioFXReverbParameters)),
+						(void*)rvbParamsPtr,
+						(uint)Marshal.SizeOf(typeof(_FAudio.FAudioFXReverbParameters)),
 						0);
 
 					Marshal.FreeHGlobal(rvbParamsPtr);
 
 					_reverbSends = default;
 					_reverbSends.SendCount = 2;
-					_reverbSends.pSends = Marshal.AllocHGlobal(
-						2 * Marshal.SizeOf(typeof(FAudio.FAudioSendDescriptor)));
+					_reverbSends.pSends = (_FAudio.FAudioSendDescriptor*)Marshal.AllocHGlobal(
+						2 * Marshal.SizeOf(typeof(_FAudio.FAudioSendDescriptor)));
 
-					var sendDesc = (FAudio.FAudioSendDescriptor*)_reverbSends.pSends;
+					var sendDesc = (_FAudio.FAudioSendDescriptor*)_reverbSends.pSends;
 					sendDesc[0].Flags = 0;
-					sendDesc[0].pOutputVoice = MasterVoice;
+					sendDesc[0].pOutputVoice = (_FAudio.FAudioVoice*)MasterVoice;
 					sendDesc[1].Flags = 0;
-					sendDesc[1].pOutputVoice = ReverbVoice;
+					sendDesc[1].pOutputVoice = (_FAudio.FAudioVoice*)ReverbVoice;
 				}
 
 				// Oh hey here's where we actually attach it
-				FAudio.FAudioVoice_SetOutputVoices(voice, ref _reverbSends);
+				_FAudio.FAudioVoice_SetOutputVoices((_FAudio.FAudioVoice*)voice, (_FAudio.FAudioVoiceSends*)Unsafe.AsPointer(ref _reverbSends));
 			}
 
 			public static void Create()
 			{
-				IntPtr ctx;
+				_FAudio.FAudio* ctx;
 				try
 				{
-					FAudio.FAudioCreate(out ctx, 0, FAudio.FAUDIO_DEFAULT_PROCESSOR);
+					_FAudio.FAudioCreate(&ctx, 0, _FAudio.FAUDIO_DEFAULT_PROCESSOR);
 				}
 				catch
 				{
@@ -648,15 +659,16 @@ namespace Katabasis
 					return;
 				}
 
-				FAudio.FAudio_GetDeviceCount(ctx, out var devices);
+				uint devices;
+				_FAudio.FAudio_GetDeviceCount(ctx, &devices);
 				if (devices == 0)
 				{
 					/* No sound cards, bail! */
-					FAudio.FAudio_Release(ctx);
+					_FAudio.FAudio_Release(ctx);
 					return;
 				}
 
-				FAudioContext context = new(ctx, devices);
+				FAudioContext context = new((IntPtr)ctx, devices);
 
 				if (context.Handle == IntPtr.Zero)
 				{

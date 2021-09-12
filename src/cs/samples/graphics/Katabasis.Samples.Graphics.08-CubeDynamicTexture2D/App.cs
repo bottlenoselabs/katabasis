@@ -81,6 +81,7 @@ namespace Katabasis.Samples
 			CreateViewProjectionMatrix();
 			RotateModel(gameTime);
 			UpdateGameOfLife();
+			base.Update(gameTime); // important to call the base.Update for updating internal stuff!
 		}
 
 		private void UpdateGameOfLife()
