@@ -4,7 +4,7 @@ Developer notes about the latest news and changes to Katabasis
 
 ## Septemeber 2021
 
-- [2021-12-06: FAudio](2021-09-12-FAudio.md)
+- [2021-09-12: FAudio](2021-09-12-FAudio.md)
 - [2021-09-06: FNA3D](2021-09-06_FNA3D-and-other-native-libraries.md)
 
 ## Feburary 2021
