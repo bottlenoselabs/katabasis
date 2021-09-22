@@ -2065,7 +2065,7 @@ namespace Katabasis
 				throw new ArgumentException("The specified path is not of a legal form.");
 			}
 
-			if (!Path.IsPathRooted(storageRoot))
+			if (!Path.IsPathRooted(storageRoot) && !storageRoot.Contains(":"))
 			{
 				return string.Empty;
 			}
