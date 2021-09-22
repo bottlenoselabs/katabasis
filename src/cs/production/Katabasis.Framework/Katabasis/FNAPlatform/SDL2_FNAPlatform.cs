@@ -1698,7 +1698,7 @@ namespace Katabasis
 						{
 							textInputControlDown[value] = false;
 						}
-						else if ((!Keyboard._keys.Contains(Keys.LeftControl) && textInputControlDown[3]) || key == Keys.V)
+						else if ((!Keyboard._keys.Contains(Keys.LeftControl) && textInputControlDown[6]) || key == Keys.V)
 						{
 							textInputControlDown[6] = false;
 							textInputSuppress = false;
