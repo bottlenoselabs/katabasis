@@ -2200,7 +2200,7 @@ namespace Katabasis
 			window.INTERNAL_OnOrientationChanged();
 		}
 
-		[DllImport("emscripten", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("__Native", CallingConvention = CallingConvention.Cdecl)]
 		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
 		[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
 		private static extern void emscripten_set_main_loop(
@@ -2208,7 +2208,7 @@ namespace Katabasis
 			int fps,
 			int simulate_infinite_loop);
 
-		[DllImport("emscripten", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("__Native", CallingConvention = CallingConvention.Cdecl)]
 		[SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
 		private static extern void emscripten_cancel_main_loop();
 
