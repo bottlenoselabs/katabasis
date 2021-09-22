@@ -516,23 +516,6 @@ namespace Katabasis
 			 */
 			SDL_SetMainReady();
 
-			/* A number of platforms don't support global mouse, but
-			 * this really only matters on desktop where the game
-			 * screen may not be covering the whole display.
-			 */
-			if (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
-			    _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
-			    _osVersion.Equals("Linux", StringComparison.Ordinal) ||
-			    _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
-			    _osVersion.Equals("OpenBSD", StringComparison.Ordinal))
-			{
-				_supportsGlobalMouse = true;
-			}
-			else
-			{
-				_supportsGlobalMouse = false;
-			}
-
 			// Also, Windows is an idiot. -flibit
 			if (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
 			    _osVersion.Equals("WinRT", StringComparison.Ordinal))
@@ -595,6 +578,23 @@ namespace Katabasis
 
 			// This _should_ be the first real SDL call we make...
 			SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC);
+
+			/* A number of platforms don't support global mouse, but
+			 * this really only matters on desktop where the game
+			 * screen may not be covering the whole display.
+			 */
+			if (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
+			    _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
+			    _osVersion.Equals("Linux", StringComparison.Ordinal) ||
+			    _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
+			    _osVersion.Equals("OpenBSD", StringComparison.Ordinal))
+			{
+				_supportsGlobalMouse = true;
+			}
+			else
+			{
+				_supportsGlobalMouse = false;
+			}
 
 			// Set any hints to match XNA4 behavior...
 			string hint = SDL_GetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS);
