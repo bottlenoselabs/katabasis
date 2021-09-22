@@ -10,9 +10,8 @@ Adding Katabasis to your project by cloning the source code instead of using NuG
 
 1. Download and install [.NET 5](https://dotnet.microsoft.com/download).
 2. If you are on Windows, [install Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-3. Optional: If you are on Windows, [install Windows terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started).
-4. Clone the repository wiht submodules: `git clone --recurse-submodules git@github.com:craftworkgames/Katabasis.git`.
-5. Run `bash ./get-fna-libs.sh` in terminal / powershell / command prompt from the root of the repository.
+3. Clone the repository with submodules: `git clone --recurse-submodules git@github.com:lithiumtoast/Katabasis.git`.
+4. Run `bash ./library.sh` in terminal / powershell / command prompt from the root of the repository to download/build the native library dependencies.
 
 ## Visual Studio / Rider / MonoDevelop
 

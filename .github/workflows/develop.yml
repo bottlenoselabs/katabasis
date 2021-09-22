@@ -4,8 +4,6 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CORE_SDK_VERSION: 5.0.400
-  MYGET_ACCESS_TOKEN: ${{ secrets.MYGET_ACCESS_TOKEN }}
-  MYGET_SOURCE_URL: 'https://www.myget.org/F/lithiumtoast/api/v3/index.json'
 
 on:
   push:
@@ -79,8 +77,8 @@ jobs:
         name: "native-libraries-${{ matrix.platform.rid }}"
         path: './lib'
 
-  dotnet-build-deploy-job:
-    name: "Build & deploy"
+  dotnet-build-job:
+    name: ".NET build"
     needs: [build-native-job]
     runs-on: ubuntu-latest
     steps:
@@ -129,15 +127,6 @@ jobs:
 
     - name: "Test solution"
       run: dotnet test --nologo --configuration Release --no-build
-
-    - name: "Pack solution"
-      run: dotnet pack --nologo --output "./nuget-packages-packed" --verbosity minimal --configuration Release --no-build -p:PackageVersion='${{ env.VERSION }}'
-
-    - name: "Echo Packages"
-      run: find ./nuget-packages-packed/ -not -type d -exec basename {} \;
- 
-    - name: "Upload Packages: MyGet"
-      run: dotnet nuget push "./**/*.nupkg" --source "lithiumtoast" --skip-duplicate --api-key $MYGET_ACCESS_TOKEN
 
 
 
