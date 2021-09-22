@@ -89,5 +89,16 @@ namespace Katabasis
 				Theorafile.tf_close(ref _theora);
 			}
 		}
+
+		// ReSharper disable once InconsistentNaming
+		public void SetAudioTrackEXT(int track)
+		{
+			if (_theora == IntPtr.Zero)
+			{
+				return;
+			}
+
+			Theorafile.tf_setaudiotrack(_theora, track);
+		}
 	}
 }
