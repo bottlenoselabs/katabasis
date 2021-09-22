@@ -30,7 +30,7 @@ namespace Katabasis
 		internal readonly IntPtr _handle;
 		internal readonly _FAudio.F3DAUDIO_HANDLE _handle3D;
 
-		private readonly RendererDetail[] _rendererDetails;
+		private RendererDetail[]? _rendererDetails;
 
 		private _FAudio.FACTNotificationDescription _notificationDesc;
 
@@ -61,7 +61,7 @@ namespace Katabasis
 				&rendererCount);
 			if (rendererCount == 0)
 			{
-				_FAudio.FACTAudioEngine_ShutDown(handle);
+				_FAudio.FACTAudioEngine_Release(handle);
 				throw new NoAudioHardwareException();
 			}
 
@@ -88,7 +88,7 @@ namespace Katabasis
 			var settings = default(_FAudio.FACTRuntimeParameters);
 			settings.pGlobalSettingsBuffer = (void*)buffer;
 			settings.globalSettingsBufferSize = (uint)bufferLen;
-			settings.fnNotificationCallback = new() { Pointer = &OnXACTNotification };
+			settings.fnNotificationCallback = new _FAudio.FACTNotificationCallback { Pointer = &OnXACTNotification };
 
 			// Special parameters from constructor
 			settings.lookAheadTime = (uint)lookAheadTime.Milliseconds;
@@ -123,7 +123,7 @@ namespace Katabasis
 			_notificationDesc = default;
 		}
 
-		public ReadOnlyCollection<RendererDetail> RendererDetails => new(_rendererDetails);
+		public ReadOnlyCollection<RendererDetail> RendererDetails => new(_rendererDetails!);
 
 		public bool IsDisposed { get; private set; }
 
@@ -148,6 +148,8 @@ namespace Katabasis
 
 				Disposing?.Invoke(this, EventArgs.Empty);
 				_FAudio.FACTAudioEngine_ShutDown((_FAudio.FACTAudioEngine*)_handle);
+				_FAudio.FACTAudioEngine_Release((_FAudio.FACTAudioEngine*)_handle);
+				_rendererDetails = null;
 				IsDisposed = true;
 			}
 		}
