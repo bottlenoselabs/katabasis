@@ -20,6 +20,13 @@ namespace Katabasis
 		private bool _forceElapsedTimeToZero;
 		private bool _hasInitialized;
 
+		// must be a power of 2 so we can do a bitmask optimization when checking worst case
+		private const int PreviousSleepTimeCount = 128;
+		private const int SleepTimeMask = PreviousSleepTimeCount - 1;
+		private TimeSpan[] _previousSleepTimes = new TimeSpan[PreviousSleepTimeCount];
+		private int _sleepTimeIndex = 0;
+		private TimeSpan _worstCaseSleepPrecision = TimeSpan.FromMilliseconds(1);
+
 		private TimeSpan _inactiveSleepTime;
 		private bool _isActive;
 		private bool _isDisposed;
@@ -43,6 +50,11 @@ namespace Katabasis
 			IsFixedTimeStep = true;
 			TargetElapsedTime = TimeSpan.FromTicks(166667); // 60fps
 			InactiveSleepTime = TimeSpan.FromSeconds(0.02);
+
+			for (var i = 0; i < _previousSleepTimes.Length; i += 1)
+			{
+				_previousSleepTimes[i] = TimeSpan.FromMilliseconds(1);
+			}
 
 			_textInputControlDown = new bool[FNAPlatform.TextInputCharacters.Length];
 			_textInputControlRepeat = new int[FNAPlatform.TextInputCharacters.Length];
@@ -188,13 +200,6 @@ namespace Katabasis
 				_hasInitialized = true;
 			}
 
-			FNAPlatform.PollEvents(
-				this,
-				ref _currentAdapter!,
-				_textInputControlDown,
-				_textInputControlRepeat,
-				ref _textInputSuppress);
-
 			Tick();
 		}
 
@@ -226,29 +231,41 @@ namespace Katabasis
 			 * modes across multiple devices and platforms.
 			 */
 
-			RetryTick:
+			AdvanceElapsedTime();
 
-			// Advance the accumulated elapsed time.
-			var currentTicks = _gameTimer.Elapsed.Ticks;
-			_accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks - _previousTicks);
-			_previousTicks = currentTicks;
-
-			/* If we're in the fixed time step mode and not enough time has elapsed
-			 * to perform an update we sleep off the the remaining time to save battery
-			 * life and/or release CPU time to other threads and processes.
-			 */
-			if (IsFixedTimeStep && _accumulatedElapsedTime < TargetElapsedTime)
+			if (IsFixedTimeStep)
 			{
-				var sleepTime = (int)(TargetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+				/* If we are in fixed timestep, we want to wait until the next frame,
+ 				 * but we don't want to oversleep. Requesting repeated 1ms sleeps and
+ 				 * seeing how long we actually slept for lets us estimate the worst case
+ 				 * sleep precision so we don't oversleep the next frame.
+ 				 */
+				while (_accumulatedElapsedTime + _worstCaseSleepPrecision < TargetElapsedTime)
+				{
+					Thread.Sleep(1);
+					TimeSpan timeAdvancedSinceSleeping = AdvanceElapsedTime();
+					UpdateEstimatedSleepPrecision(timeAdvancedSinceSleeping);
+				}
 
-				/* NOTE: While sleep can be inaccurate in general it is
-				 * accurate enough for frame limiting purposes if some
-				 * fluctuation is an acceptable result.
-				 */
-				Thread.Sleep(sleepTime);
-
-				goto RetryTick;
+				/* Now that we have slept into the sleep precision threshold, we need to wait
+ 				 * for just a little bit longer until the target elapsed time has been reached.
+ 				 * SpinWait(1) works by pausing the thread for very short intervals, so it is
+ 				 * an efficient and time-accurate way to wait out the rest of the time.
+ 				 */
+				while (_accumulatedElapsedTime < TargetElapsedTime)
+				{
+					Thread.SpinWait(1);
+					AdvanceElapsedTime();
+				}
 			}
+
+			// Now that we are going to perform an update, let's poll events.
+			FNAPlatform.PollEvents(
+				this,
+				ref _currentAdapter!,
+				_textInputControlDown,
+				_textInputControlRepeat,
+				ref _textInputSuppress);
 
 			// Do not allow any update to take longer than our maximum.
 			if (_accumulatedElapsedTime > MaxElapsedTime)
@@ -516,17 +533,62 @@ namespace Katabasis
 
 			while (RunApplication)
 			{
-				FNAPlatform.PollEvents(
-					this,
-					ref _currentAdapter!,
-					_textInputControlDown,
-					_textInputControlRepeat,
-					ref _textInputSuppress);
-
 				Tick();
 			}
 
 			OnExiting(this, EventArgs.Empty);
+		}
+
+		private TimeSpan AdvanceElapsedTime()
+		{
+			var currentTicks = _gameTimer.Elapsed.Ticks;
+			var timeAdvanced = TimeSpan.FromTicks(currentTicks - _previousTicks);
+			_accumulatedElapsedTime += timeAdvanced;
+			_previousTicks = currentTicks;
+			return timeAdvanced;
+		}
+
+		/* To calculate the sleep precision of the OS, we take the worst case
+		  * time spent sleeping over the results of previous requests to sleep 1ms.
+		  */
+		private void UpdateEstimatedSleepPrecision(TimeSpan timeSpentSleeping)
+		{
+			/* It is unlikely that the scheduler will actually be more imprecise than
+			  * 4ms and we don't want to get wrecked by a single long sleep so we cap this
+			  * value at 4ms for sanity.
+			  */
+			TimeSpan upperTimeBound = TimeSpan.FromMilliseconds(4);
+
+			if (timeSpentSleeping > upperTimeBound)
+			{
+				timeSpentSleeping = upperTimeBound;
+			}
+
+			/* We know the previous worst case - it's saved in worstCaseSleepPrecision.
+			  * We also know the current index. So the only way the worst case changes
+			  * is if we either 1) just got a new worst case, or 2) the worst case was
+			  * the oldest entry on the list.
+			  */
+			if (timeSpentSleeping >= _worstCaseSleepPrecision)
+			{
+				_worstCaseSleepPrecision = timeSpentSleeping;
+			}
+			else if (_previousSleepTimes[_sleepTimeIndex] == _worstCaseSleepPrecision)
+			{
+				TimeSpan maxSleepTime = TimeSpan.MinValue;
+				for (int i = 0; i < _previousSleepTimes.Length; i += 1)
+				{
+					if (_previousSleepTimes[i] > maxSleepTime)
+					{
+						maxSleepTime = _previousSleepTimes[i];
+					}
+				}
+
+				_worstCaseSleepPrecision = maxSleepTime;
+			}
+
+			_previousSleepTimes[_sleepTimeIndex] = timeSpentSleeping;
+			_sleepTimeIndex = (_sleepTimeIndex + 1) & SleepTimeMask;
 		}
 	}
 }
