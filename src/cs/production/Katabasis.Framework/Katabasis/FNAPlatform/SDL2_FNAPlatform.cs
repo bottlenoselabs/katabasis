@@ -1278,9 +1278,6 @@ namespace Katabasis
 				return default;
 			}
 
-			// The "master" button state is built from this.
-			Buttons buttonState = 0;
-
 			// Sticks
 			var stickLeft = new Vector2(
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f,
@@ -1290,22 +1287,6 @@ namespace Katabasis
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f,
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY) / -32767.0f);
 
-			buttonState |= READ_StickToButtons(
-				stickLeft,
-				Buttons.LeftThumbstickLeft,
-				Buttons.LeftThumbstickRight,
-				Buttons.LeftThumbstickUp,
-				Buttons.LeftThumbstickDown,
-				GamePad.LeftDeadZone);
-
-			buttonState |= READ_StickToButtons(
-				stickRight,
-				Buttons.RightThumbstickLeft,
-				Buttons.RightThumbstickRight,
-				Buttons.RightThumbstickUp,
-				Buttons.RightThumbstickDown,
-				GamePad.RightDeadZone);
-
 			// Triggers
 			var triggerLeft =
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32767.0f;
@@ -1313,17 +1294,8 @@ namespace Katabasis
 			var triggerRight =
 				SDL_GameControllerGetAxis(device, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32767.0f;
 
-			if (triggerLeft > GamePad.TriggerThreshold)
-			{
-				buttonState |= Buttons.LeftTrigger;
-			}
-
-			if (triggerRight > GamePad.TriggerThreshold)
-			{
-				buttonState |= Buttons.RightTrigger;
-			}
-
 			// Buttons
+			var buttonState = (Buttons)0;
 			if (SDL_GameControllerGetButton(device, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A) != 0)
 			{
 				buttonState |= Buttons.A;
@@ -2509,34 +2481,6 @@ namespace Katabasis
 			SDL_ClearError();
 
 			FNALoggerEXT.LogInfo!("Removed device, player: " + output);
-		}
-
-		// GetState can convert stick values to button values
-		private static Buttons READ_StickToButtons(Vector2 stick, Buttons left, Buttons right, Buttons up, Buttons down, float deadZoneSize)
-		{
-			Buttons b = 0;
-
-			if (stick.X > deadZoneSize)
-			{
-				b |= right;
-			}
-
-			if (stick.X < -deadZoneSize)
-			{
-				b |= left;
-			}
-
-			if (stick.Y > deadZoneSize)
-			{
-				b |= up;
-			}
-
-			if (stick.Y < -deadZoneSize)
-			{
-				b |= down;
-			}
-
-			return b;
 		}
 
 		private static string[] GenStringArray()

@@ -27,6 +27,31 @@ namespace Katabasis
 			GamePadDPad dPad)
 			: this()
 		{
+			if (triggers.Left > GamePad.TriggerThreshold)
+			{
+				buttons._buttons |= Katabasis.Buttons.LeftTrigger;
+			}
+
+			if (triggers.Right > GamePad.TriggerThreshold)
+			{
+				buttons._buttons |= Katabasis.Buttons.RightTrigger;
+			}
+
+			buttons._buttons |= StickToButtons(
+				thumbSticks.Left,
+				Katabasis.Buttons.LeftThumbstickLeft,
+				Katabasis.Buttons.LeftThumbstickRight,
+				Katabasis.Buttons.LeftThumbstickUp,
+				Katabasis.Buttons.LeftThumbstickDown,
+				GamePad.LeftDeadZone);
+			buttons._buttons |= StickToButtons(
+				thumbSticks.Right,
+				Katabasis.Buttons.RightThumbstickLeft,
+				Katabasis.Buttons.RightThumbstickRight,
+				Katabasis.Buttons.RightThumbstickUp,
+				Katabasis.Buttons.RightThumbstickDown,
+				GamePad.RightDeadZone);
+
 			ThumbSticks = thumbSticks;
 			Triggers = triggers;
 			Buttons = buttons;
@@ -66,5 +91,38 @@ namespace Katabasis
 		public override bool Equals(object? obj) => obj is GamePadState state && this == state;
 
 		public override int GetHashCode() => base.GetHashCode();
+
+		private static Buttons StickToButtons(
+			Vector2 stick,
+			Buttons left,
+			Buttons right,
+			Buttons up,
+			Buttons down,
+			float deadZoneSize)
+		{
+			var b = (Buttons)0;
+
+			if (stick.X > deadZoneSize)
+			{
+				b |= right;
+			}
+
+			if (stick.X < -deadZoneSize)
+			{
+				b |= left;
+			}
+
+			if (stick.Y > deadZoneSize)
+			{
+				b |= up;
+			}
+
+			if (stick.Y < -deadZoneSize)
+			{
+				b |= down;
+			}
+
+			return b;
+		}
 	}
 }
