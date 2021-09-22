@@ -61,10 +61,6 @@ namespace Katabasis
 		private static int _retinaWidth;
 		private static int _retinaHeight;
 
-		private static readonly bool OSXUseSpaces =
-			Platform.Equals("Mac OS X", StringComparison.Ordinal) && // Prevents race with OSVersion
-			SDL_GetHintBoolean(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, true) == true;
-
 		private static readonly SDL_EventFilter _win32OnPaint = new() { Pointer = &Win32OnPaint };
 		private static SDL_EventFilter? _prevEventFilter;
 
@@ -1751,7 +1747,7 @@ namespace Katabasis
 						{
 							game.IsActive = true;
 
-							if (!OSXUseSpaces)
+							if (SDL_GetCurrentVideoDriver() == "x11")
 							{
 								// If we alt-tab away, we lose the 'fullscreen desktop' flag on some WMs
 								SDL_SetWindowFullscreen(
@@ -1769,7 +1765,7 @@ namespace Katabasis
 						{
 							game.IsActive = false;
 
-							if (!OSXUseSpaces)
+							if (SDL_GetCurrentVideoDriver() == "x11")
 							{
 								SDL_SetWindowFullscreen((SDL_Window*)game.Window.Handle, 0);
 							}
