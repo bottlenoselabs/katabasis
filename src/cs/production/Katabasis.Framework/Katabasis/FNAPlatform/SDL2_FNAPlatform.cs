@@ -524,8 +524,7 @@ namespace Katabasis
 			    _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
 			    _osVersion.Equals("Linux", StringComparison.Ordinal) ||
 			    _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
-			    _osVersion.Equals("OpenBSD", StringComparison.Ordinal) ||
-			    _osVersion.Equals("NetBSD", StringComparison.Ordinal))
+			    _osVersion.Equals("OpenBSD", StringComparison.Ordinal))
 			{
 				_supportsGlobalMouse = true;
 			}
