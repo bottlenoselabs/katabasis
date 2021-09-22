@@ -49,6 +49,38 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(settingsFile));
 			}
 
+			// Allocate (but don't initialize just yet!)
+			_FAudio.FACTAudioEngine* handle;
+			_FAudio.FACTCreateEngine(0, &handle);
+			_handle = (IntPtr)handle;
+
+			// Grab RendererDetails
+			ushort rendererCount;
+			_FAudio.FACTAudioEngine_GetRendererCount(
+				handle,
+				&rendererCount);
+			if (rendererCount == 0)
+			{
+				_FAudio.FACTAudioEngine_ShutDown(handle);
+				throw new NoAudioHardwareException();
+			}
+
+			_rendererDetails = new RendererDetail[rendererCount];
+			byte[] converted = new byte[0xFF * sizeof(short)];
+			for (ushort i = 0; i < rendererCount; i += 1)
+			{
+				_FAudio.FACTRendererDetails details;
+				_FAudio.FACTAudioEngine_GetRendererDetails(
+					handle,
+					i,
+					&details);
+				Marshal.Copy((IntPtr) details._displayName, converted, 0, converted.Length);
+				string name = System.Text.Encoding.Unicode.GetString(converted).TrimEnd('\0');
+				Marshal.Copy((IntPtr) details._rendererID, converted, 0, converted.Length);
+				string id = System.Text.Encoding.Unicode.GetString(converted).TrimEnd('\0');
+				_rendererDetails[i] = new RendererDetail(name, id);
+			}
+
 			// Read entire file into memory, let FACT manage the pointer
 			var buffer = TitleContainer.ReadToPointer(settingsFile, out var bufferLen);
 
@@ -67,9 +99,6 @@ namespace Katabasis
 			}
 
 			// Init engine, finally
-			_FAudio.FACTAudioEngine* audioEngine;
-			_FAudio.FACTCreateEngine(0, &audioEngine);
-			_handle = (IntPtr)audioEngine;
 			if (_FAudio.FACTAudioEngine_Initialize((_FAudio.FACTAudioEngine*)_handle, &settings) != 0)
 			{
 				throw new InvalidOperationException("Engine initialization failed!");
@@ -79,34 +108,6 @@ namespace Katabasis
 			if ((IntPtr)settings.pRendererID != IntPtr.Zero)
 			{
 				Marshal.FreeHGlobal((IntPtr)settings.pRendererID);
-			}
-
-			// Grab RendererDetails
-			ushort rendererCount;
-			_FAudio.FACTAudioEngine_GetRendererCount((_FAudio.FACTAudioEngine*)_handle, &rendererCount);
-			if (rendererCount == 0)
-			{
-				Dispose();
-				throw new NoAudioHardwareException();
-			}
-
-			_rendererDetails = new RendererDetail[rendererCount];
-			byte[] converted = new byte[0xFF * sizeof(short)];
-			for (ushort i = 0; i < rendererCount; i += 1)
-			{
-				_FAudio.FACTRendererDetails rendererDetails;
-				_FAudio.FACTAudioEngine_GetRendererDetails((_FAudio.FACTAudioEngine*)_handle, i, &rendererDetails);
-				unsafe
-				{
-					for (var j = 0; j < 0xFF; j += 1)
-					{
-						Marshal.Copy((IntPtr)rendererDetails._displayName, converted, 0, converted.Length);
-						string name = System.Text.Encoding.Unicode.GetString(converted).TrimEnd('\0');
-						Marshal.Copy((IntPtr)rendererDetails._rendererID, converted, 0, converted.Length);
-						string id = System.Text.Encoding.Unicode.GetString(converted).TrimEnd('\0');
-						_rendererDetails[i] = new RendererDetail(name, id);
-					}
-				}
 			}
 
 			// Init 3D audio
