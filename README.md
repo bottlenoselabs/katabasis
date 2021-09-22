@@ -2,7 +2,7 @@
   <b>Katabasis</b> - <a href=https://en.wikipedia.org/wiki/Microsoft_XNA>XNA</a> re-imagined.</br>The software developer journeys to the underworld in search of augmented knowledge of game development.</a>
 </p>
 <p align="center">
-    <img src="https://github.com/craftworkgames/Katabasis/workflows/Build%20test%20deploy/badge.svg"/>
+    <img src="https://github.com/lithiumtoast/katabasis/actions/workflows/develop.yml/badge.svg" />
 </p>
 
 Katabasis is built for [programmers](https://en.wikipedia.org/wiki/Programmer) to make games using C#. It's not an engine, but rather some fundemental APIs glued together to form a *framework*. These include: playing audio, rendering of 3D and 2D graphics; and handling input such as mouse, keyboard, gamepads.
