@@ -2481,7 +2481,7 @@ namespace Katabasis
 
 			var gameControllerName = (string)SDL_GameControllerName(gameController);
 			var guid = _guids[which];
-			FNALoggerEXT.LogInfo($"Controller {which}: {gameControllerName}, GUID: {guid}, {deviceInfo}");
+			FNALoggerEXT.LogInfo!($"Controller {which}: {gameControllerName}, GUID: {guid}, {deviceInfo}");
 		}
 
 		private static void INTERNAL_RemoveInstance(int dev)
