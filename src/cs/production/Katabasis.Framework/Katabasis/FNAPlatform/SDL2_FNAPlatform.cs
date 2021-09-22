@@ -543,8 +543,7 @@ namespace Katabasis
 			var mappingsDB = Path.Combine(titleLocation, "gamecontrollerdb.txt");
 			if (File.Exists(mappingsDB))
 			{
-				var rwops = SDL_RWFromFile(mappingsDB, "rb");
-				SDL_GameControllerAddMappingsFromRW(rwops, 1);
+				SDL_SetHint(SDL_HINT_GAMECONTROLLERCONFIG_FILE, mappingsDB);
 			}
 
 			// Built-in SDL2 command line arguments
@@ -2455,7 +2454,20 @@ namespace Katabasis
 			}
 
 			// Print controller information to stdout.
-			FNALoggerEXT.LogInfo!("Controller " + which + ": " + SDL_GameControllerName((SDL_GameController*)_devices[which]));
+			string deviceInfo;
+			string mapping = SDL_GameControllerMapping(gameController);
+			if (string.IsNullOrEmpty(mapping))
+			{
+				deviceInfo = "Mapping not found";
+			}
+			else
+			{
+				deviceInfo = "Mapping: " + mapping;
+			}
+
+			var gameControllerName = (string)SDL_GameControllerName(gameController);
+			var guid = _guids[which];
+			FNALoggerEXT.LogInfo($"Controller {which}: {gameControllerName}, GUID: {guid}, {deviceInfo}");
 		}
 
 		private static void INTERNAL_RemoveInstance(int dev)
