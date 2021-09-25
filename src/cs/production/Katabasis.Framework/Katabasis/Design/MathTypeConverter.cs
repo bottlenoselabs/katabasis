@@ -13,7 +13,7 @@ namespace Katabasis
 
 		protected MathTypeConverter() => _supportStringConvert = true;
 
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
 		{
 			if (_supportStringConvert && sourceType == typeof(string))
 			{
@@ -23,7 +23,7 @@ namespace Katabasis
 			return base.CanConvertFrom(context, sourceType);
 		}
 
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
 		{
 			if (_supportStringConvert && destinationType == typeof(string))
 			{
@@ -33,14 +33,14 @@ namespace Katabasis
 			return base.CanConvertTo(context, destinationType);
 		}
 
-		public override bool GetCreateInstanceSupported(ITypeDescriptorContext context) => true;
+		public override bool GetCreateInstanceSupported(ITypeDescriptorContext? context) => true;
 
 		public override PropertyDescriptorCollection GetProperties(
-			ITypeDescriptorContext context,
+			ITypeDescriptorContext? context,
 			object value,
-			Attribute[] attributes) =>
+			Attribute[]? attributes) =>
 			_propertyDescriptions;
 
-		public override bool GetPropertiesSupported(ITypeDescriptorContext context) => true;
+		public override bool GetPropertiesSupported(ITypeDescriptorContext? context) => true;
 	}
 }

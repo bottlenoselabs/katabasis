@@ -10,14 +10,13 @@ namespace Katabasis
 	public class ColorConverter : MathTypeConverter
 	{
 		public override object ConvertFrom(
-			ITypeDescriptorContext context,
-			CultureInfo culture,
+			ITypeDescriptorContext? context,
+			CultureInfo? culture,
 			object value)
 		{
 			if (value is string s)
 			{
-				string[] v = s.Split(
-					culture.TextInfo.ListSeparator.ToCharArray());
+				string[] v = s.Split(culture!.TextInfo.ListSeparator.ToCharArray());
 
 				return new Color(
 					int.Parse(v[0], culture),
@@ -30,16 +29,16 @@ namespace Katabasis
 		}
 
 		public override object ConvertTo(
-			ITypeDescriptorContext context,
-			CultureInfo culture,
-			object value,
+			ITypeDescriptorContext? context,
+			CultureInfo? culture,
+			object? value,
 			Type destinationType)
 		{
 			if (destinationType == typeof(string))
 			{
-				var src = (Color)value;
+				var src = (Color)value!;
 				return string.Join(
-					culture.TextInfo.ListSeparator + " ",
+					culture!.TextInfo.ListSeparator + " ",
 					src.R.ToString(culture),
 					src.G.ToString(culture),
 					src.B.ToString(culture),
@@ -50,7 +49,7 @@ namespace Katabasis
 		}
 
 		public override object CreateInstance(
-			ITypeDescriptorContext context,
+			ITypeDescriptorContext? context,
 			IDictionary propertyValues) =>
 			new Color(
 				(int)(propertyValues["R"] ?? byte.MaxValue),

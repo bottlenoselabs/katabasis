@@ -12,7 +12,7 @@ namespace Katabasis
 			_supportStringConvert = false;
 
 		public override object CreateInstance(
-			ITypeDescriptorContext context,
+			ITypeDescriptorContext? context,
 			IDictionary propertyValues) =>
 			new Rectangle(
 				(int)(propertyValues["X"] ?? 0),

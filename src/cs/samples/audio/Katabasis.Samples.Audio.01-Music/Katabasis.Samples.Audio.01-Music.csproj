@@ -2,13 +2,13 @@
 
     <!-- MSBuild project settings -->
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <OutputType>WinExe</OutputType>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RootNamespace>Katabasis.Samples</RootNamespace>
-        <AssemblyName>Katabasis.Samples.Input.Mouse</AssemblyName>
+        <AssemblyName>Katabasis.Samples.Audio.Music</AssemblyName>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
