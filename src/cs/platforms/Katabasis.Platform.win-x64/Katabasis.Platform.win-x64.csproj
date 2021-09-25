@@ -2,6 +2,7 @@
 
     <!-- MSBuild Settings -->
     <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     </PropertyGroup>
 
