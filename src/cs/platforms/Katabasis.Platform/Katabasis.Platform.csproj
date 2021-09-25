@@ -5,6 +5,11 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <!-- NuGet package references -->
+  <ItemGroup>
+    <PackageReference Include="C2CS.Runtime" Version="*-*" />
+  </ItemGroup>
+
   <!-- Reference all platforms -->
   <ItemGroup>
     <ProjectReference Include="..\Katabasis.Platform.linux-x64\Katabasis.Platform.linux-x64.csproj" />
@@ -19,6 +24,27 @@
       <Pack>true</Pack>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="$(GitRepositoryPath)ext/sdl-cs/src/cs/production/SDL-cs/SDL.cs">
+      <Link>SDL.cs</Link>
+    </Compile>
+    <Compile Include="$(GitRepositoryPath)ext/FAudio-cs/src/cs/production/FAudio-cs/FAudio.cs">
+      <Link>FAudio.cs</Link>
+    </Compile>
+    <Compile Include="$(GitRepositoryPath)ext/FAudio-cs/src/cs/production/FAudio-cs/FAudio.Extensions.cs">
+      <Link>FAudio.Extensions.cs</Link>
+    </Compile>
+    <Compile Include="$(GitRepositoryPath)ext/FNA3D-cs/src/cs/production/FNA3D-cs/FNA3D.cs">
+      <Link>FNA3D.cs</Link>
+    </Compile>
+    <Compile Include="$(GitRepositoryPath)ext/FNA3D-cs/src/cs/production/FNA3D-cs/FNA3D_Image.cs">
+      <Link>FNA3D_Image.cs</Link>
+    </Compile>
+    <Compile Include="$(GitRepositoryPath)ext/imgui-cs/src/cs/production/imgui-cs/imgui.cs">
+      <Link>imgui.cs</Link>
+    </Compile>
   </ItemGroup>
   
 </Project>

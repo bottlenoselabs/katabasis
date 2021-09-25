@@ -16,16 +16,11 @@
 	
 	<!-- Project referneces -->
 	<ItemGroup>
-        <ProjectReference Include="$(GitRepositoryPath)/ext/sdl-cs/src/cs/production/SDL-cs/SDL-cs.csproj" />
-		<ProjectReference Include="$(GitRepositoryPath)/ext/FNA3D-cs/src/cs/production/FNA3D-cs/FNA3D-cs.csproj" />
-		<ProjectReference Include="$(GitRepositoryPath)/ext/FAudio-cs/src/cs/production/FAudio-cs/FAudio-cs.csproj" />
-		<ProjectReference Include="$(GitRepositoryPath)/ext/imgui-cs/src/cs/production/imgui-cs/imgui-cs.csproj" />
 		<ProjectReference Include="$(GitRepositoryPath)/src/cs/platforms/Katabasis.Platform/Katabasis.Platform.csproj" />
 	</ItemGroup>
 
 	<!-- NuGet references -->
 	<ItemGroup>
-		<PackageReference Include="C2CS.Runtime" Version="*-*" />
 		<PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
 	</ItemGroup>
 

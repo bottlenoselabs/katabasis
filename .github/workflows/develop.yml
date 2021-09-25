@@ -50,9 +50,10 @@ jobs:
     strategy:
       matrix:
         platform:
-        - { name: Windows (x64), os: ubuntu-latest, rid: win-x64 }
-        - { name: Linux (x64), os: ubuntu-latest, rid: linux-x64 }
-        - { name: macOS (x64), os: macos-latest, rid: osx-x64 }
+        - { name: Windows (x64), os: ubuntu-latest, rid: win-x64, TARGET_BUILD_OS: microsoft, TARGET_BUILD_ARCH: x86_64 }
+        - { name: Linux (x64), os: ubuntu-latest, rid: linux-x64, TARGET_BUILD_OS: linux, TARGET_BUILD_ARCH: x86_64 }
+        - { name: macOS (x64), os: macos-latest, rid: osx-x64, TARGET_BUILD_OS: apple, TARGET_BUILD_ARCH: x86_64 }
+        - { name: macOS (arm64), os: macos-latest, rid: osx-arm64, TARGET_BUILD_OS: apple, TARGET_BUILD_ARCH: arm64 }
     steps:
 
     - name: "Clone Git repository"
@@ -69,7 +70,7 @@ jobs:
     - name: "Build native libraries (Unix)"
       if: ${{ !(startsWith(matrix.platform.rid, 'win')) }}
       shell: bash
-      run: ./library.sh
+      run: ./library.sh "${{ matrix.platform.TARGET_BUILD_OS }}" "${{ matrix.platform.TARGET_BUILD_ARCH }}"
 
     - name: "Upload native libraries"
       uses: actions/upload-artifact@v2
