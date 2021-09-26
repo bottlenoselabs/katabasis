@@ -16,7 +16,7 @@
 	
 	<!-- Project referneces -->
 	<ItemGroup>
-		<ProjectReference Include="$(GitRepositoryPath)/src/cs/platforms/Katabasis.Platform/Katabasis.Platform.csproj" />
+		<ProjectReference Include="..\Katabasis.Native\Katabasis.Native.csproj" />
 	</ItemGroup>
 
 	<!-- NuGet references -->

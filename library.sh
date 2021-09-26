@@ -1,8 +1,6 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-LIBS_DIR=$DIR/lib
-mkdir -p $LIBS_DIR
 
 if [[ ! -z "$1" ]]; then
     TARGET_BUILD_OS="$1"
@@ -52,6 +50,21 @@ function set_target_build_arch {
 
 set_target_build_os
 set_target_build_arch
+
+if [[ "$TARGET_BUILD_OS" == "microsoft" && "$TARGET_BUILD_ARCH" == "x86_64" ]]; then
+    RID=win-x64
+elif [[ "$TARGET_BUILD_OS" == "linux" && "$TARGET_BUILD_ARCH" == "x86_64" ]]; then
+    RID=linux-x64
+elif [[ "$TARGET_BUILD_OS" == "apple" && "$TARGET_BUILD_ARCH" == "x86_64" ]]; then
+    RID=osx-x64
+elif [[ "$TARGET_BUILD_OS" == "apple" && "$TARGET_BUILD_ARCH" == "arm64" ]]; then
+    RID=osx-arm64
+else 
+    echo "Unknown Runtime Identifier for '$TARGET_BUILD_OS' and '$TARGET_BUILD_ARCH'."
+    exit 1
+fi
+LIBS_DIR=$DIR/lib/$RID
+mkdir -p $LIBS_DIR
 
 # Build SDL
 echo "Building SDL from source..."
