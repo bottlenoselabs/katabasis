@@ -10,7 +10,7 @@ Katabasis is built for [programmers](https://en.wikipedia.org/wiki/Programmer) t
 ## News
 
 To see what's new, check the development log! [docs/dev/LOG.md](docs/dev/LOG.md)  
-Lastest update: - [2021-12-06: FAudio](docs/dev/2021-09-12-FAudio.md)
+Lastest update: - [2021-09-26: .NET 6 & Apple Silicon](docs/dev/2021-09-26-net6-apple-silicon.md)
 
 ## Background: Why?
 
