@@ -1,4 +1,4 @@
-# 2021-09-26 .NET 6 and Apple Silicon
+# .NET 6 and Apple Silicon
 
 ### Written by [@lithiumtoast](https://github.com/lithiumtoast) on Sunday, September 26th, 2021
 
