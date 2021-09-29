@@ -30,4 +30,4 @@ For documentation, see [docs/README.md](docs/README.md). This includes architect
 
 Katabasis is licensed under the Microsoft Public License (`MS-PL`). This is because a constraint of forking [FNA](https://github.com/FNA-XNA/FNA). There are a few exceptions to this detailed below. See the [LICENSE](LICENSE) file for details with this license and this main product.
 
-Katabasis uses [FAudio](https://github.com/FNA-XNA/FAudio), [FNA3D](https://github.com/FNA-XNA/FNA3D), [SDL2-CS](https://github.com/flibitijibibo/SDL2-CS), and [Theorafile](https://github.com/FNA-XNA/Theorafile), all of which are released under the Zlib-Libpng License (`zlib`).
+Katabasis uses [SDL2](https://github.com/libsdl-org/SDL), [FNA3D](https://github.com/FNA-XNA/FNA3D), [FAudio](https://github.com/FNA-XNA/FAudio), and [Theorafile](https://github.com/FNA-XNA/Theorafile), all of which are released under the Zlib-Libpng License (`zlib`).
