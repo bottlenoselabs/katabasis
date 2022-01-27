@@ -17,26 +17,26 @@
 
   <!-- Meta projects that pull in native assemblies based on runtime -->
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
-    <ProjectReference Include="..\Katabasis.Native.win-x64\Katabasis.Native.win-x64.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../Katabasis.Native.win-x64/Katabasis.Native.win-x64.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
-    <ProjectReference Include="..\Katabasis.Native.osx-x64\Katabasis.Native.osx-x64.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../Katabasis.Native.osx-x64/Katabasis.Native.osx-x64.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">
-    <ProjectReference Include="..\Katabasis.Native.osx-arm64\Katabasis.Native.osx-arm64.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../Katabasis.Native.osx-arm64/Katabasis.Native.osx-arm64.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
-    <ProjectReference Include="..\Katabasis.Native.linux-x64\Katabasis.Native.linux-x64.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../Katabasis.Native.linux-x64/Katabasis.Native.linux-x64.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <!-- C# bindings for native assemblies -->
   <ItemGroup>
-	<Compile Include="$(GitRepositoryPath)\ext\sdl-cs\src\cs\production\SDL\SDL.cs" Link="SDL/SDL.cs" />
-	<Compile Include="$(GitRepositoryPath)\ext\FAudio-cs\src\cs\production\FAudio\FAudio.cs" Link="FAudio/FAudio.cs" />
-    <Compile Include="$(GitRepositoryPath)\ext\FAudio-cs\src\cs\production\FAudio\FAudio.Extensions.cs" Link="FAudio/FAudio.Extensions.cs" />
-    <Compile Include="$(GitRepositoryPath)\ext\FNA3D-cs\src\cs\production\FNA3D\FNA3D.cs" Link="FNA3D/FNA3D.cs" />
-    <Compile Include="$(GitRepositoryPath)\ext\FNA3D-cs\src\cs\production\FNA3D\FNA3D_Image.cs" Link="FNA3D/FNA3D_Image.cs" />
-    <Compile Include="$(GitRepositoryPath)\ext\imgui-cs\src\cs\production\imgui\imgui.cs" Link="ImGui/imgui.cs" />
+	<Compile Include="$(GitRepositoryPath)/ext/sdl-cs/src/cs/production/SDL/SDL.cs" Link="SDL/SDL.cs" />
+	<Compile Include="$(GitRepositoryPath)/ext/FAudio-cs/src/cs/production/FAudio/FAudio.cs" Link="FAudio/FAudio.cs" />
+    <Compile Include="$(GitRepositoryPath)/ext/FAudio-cs/src/cs/production/FAudio/FAudio.Extensions.cs" Link="FAudio/FAudio.Extensions.cs" />
+    <Compile Include="$(GitRepositoryPath)/ext/FNA3D-cs/src/cs/production/FNA3D/FNA3D.cs" Link="FNA3D/FNA3D.cs" />
+    <Compile Include="$(GitRepositoryPath)/ext/FNA3D-cs/src/cs/production/FNA3D/FNA3D_Image.cs" Link="FNA3D/FNA3D_Image.cs" />
+    <Compile Include="$(GitRepositoryPath)/ext/imgui-cs/src/cs/production/imgui/imgui.cs" Link="ImGui/imgui.cs" />
   </ItemGroup>
 
   <ItemGroup>
