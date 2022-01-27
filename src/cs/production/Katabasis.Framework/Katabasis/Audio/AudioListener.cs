@@ -2,13 +2,14 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Numerics;
+using bottlenoselabs;
 
 namespace Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.audiolistener.aspx
 	public unsafe class AudioListener
 	{
-		internal _FAudio.F3DAUDIO_LISTENER _listenerData;
+		internal FAudio.F3DAUDIO_LISTENER _listenerData;
 
 		public AudioListener()
 		{
@@ -19,7 +20,7 @@ namespace Katabasis
 			Velocity = Vector3.Zero;
 
 			/* Unused variables, defaults based on XNA behavior */
-			_listenerData.pCone = (_FAudio.F3DAUDIO_CONE*)IntPtr.Zero;
+			_listenerData.pCone = (FAudio.F3DAUDIO_CONE*)IntPtr.Zero;
 		}
 
 		public Vector3 Forward

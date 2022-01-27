@@ -9,8 +9,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using bottlenoselabs;
 using ObjCRuntime;
-using static SDL;
+using static bottlenoselabs.SDL;
 
 namespace Katabasis
 {

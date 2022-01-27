@@ -3,7 +3,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using C2CS;
+using bottlenoselabs;
+using static bottlenoselabs.FNA3D.Runtime;
 
 namespace Katabasis
 {
@@ -45,13 +46,13 @@ namespace Katabasis
 		}
 
 		[UnmanagedCallersOnly]
-		private static void FNA3DLogInfo(CString8U msg) => LogInfo!(msg);
+		private static void FNA3DLogInfo(CString msg) => LogInfo!(msg);
 
 		[UnmanagedCallersOnly]
-		private static void FNA3DLogWarn(CString8U msg) => LogWarn!(msg);
+		private static void FNA3DLogWarn(CString msg) => LogWarn!(msg);
 
 		[UnmanagedCallersOnly]
-		private static void FNA3DLogError(CString8U msg)
+		private static void FNA3DLogError(CString msg)
 		{
 			LogError!(msg);
 			throw new InvalidOperationException(msg);

@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using bottlenoselabs;
 
 namespace Katabasis
 {
@@ -11,7 +12,7 @@ namespace Katabasis
 	{
 		private readonly SoundEffect? _parentEffect;
 		private readonly WeakReference _selfReference;
-		private _FAudio.F3DAUDIO_DSP_SETTINGS _dspSettings;
+		private FAudio.F3DAUDIO_DSP_SETTINGS _dspSettings;
 		internal IntPtr _handle;
 		private bool _hasStarted;
 		private bool _is3D;
@@ -83,9 +84,9 @@ namespace Katabasis
 				SetPanMatrixCoefficients();
 				if (_handle != IntPtr.Zero)
 				{
-					_FAudio.FAudioVoice_SetOutputMatrix(
-						(_FAudio.FAudioVoice*)_handle,
-						(_FAudio.FAudioVoice*)SoundEffect.Device().MasterVoice,
+					FAudio.FAudioVoice_SetOutputMatrix(
+						(FAudio.FAudioVoice*)_handle,
+						(FAudio.FAudioVoice*)SoundEffect.Device().MasterVoice,
 						_dspSettings.SrcChannelCount,
 						_dspSettings.DstChannelCount,
 						_dspSettings.pMatrixCoefficients,
@@ -115,11 +116,11 @@ namespace Katabasis
 				    _handle != IntPtr.Zero &&
 				    _state == SoundState.Playing)
 				{
-					_FAudio.FAudioVoiceState state;
-					_FAudio.FAudioSourceVoice_GetState(
-						(_FAudio.FAudioSourceVoice*)_handle,
+					FAudio.FAudioVoiceState state;
+					FAudio.FAudioSourceVoice_GetState(
+						(FAudio.FAudioSourceVoice*)_handle,
 						&state,
-						_FAudio.FAUDIO_VOICE_NOSAMPLESPLAYED);
+						FAudio.FAUDIO_VOICE_NOSAMPLESPLAYED);
 
 					if (state.BuffersQueued == 0)
 					{
@@ -139,8 +140,8 @@ namespace Katabasis
 				_volume = value;
 				if (_handle != IntPtr.Zero)
 				{
-					_FAudio.FAudioVoice_SetVolume(
-						(_FAudio.FAudioVoice*)_handle,
+					FAudio.FAudioVoice_SetVolume(
+						(FAudio.FAudioVoice*)_handle,
 						_volume,
 						0);
 				}
@@ -186,19 +187,19 @@ namespace Katabasis
 			SoundEffect.FAudioContext dev = SoundEffect.Device();
 			emitter._emitterData.CurveDistanceScaler = dev.CurveDistanceScaler;
 			emitter._emitterData.ChannelCount = _dspSettings.SrcChannelCount;
-			_FAudio.F3DAudioCalculate(
+			FAudio.F3DAudioCalculate(
 				dev.Handle3D!,
-				(_FAudio.F3DAUDIO_LISTENER*)Unsafe.AsPointer(ref listener._listenerData),
-				(_FAudio.F3DAUDIO_EMITTER*)Unsafe.AsPointer(ref emitter._emitterData),
-				_FAudio.F3DAUDIO_CALCULATE_MATRIX | _FAudio.F3DAUDIO_CALCULATE_DOPPLER,
-				(_FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _dspSettings));
+				(FAudio.F3DAUDIO_LISTENER*)Unsafe.AsPointer(ref listener._listenerData),
+				(FAudio.F3DAUDIO_EMITTER*)Unsafe.AsPointer(ref emitter._emitterData),
+				FAudio.F3DAUDIO_CALCULATE_MATRIX | FAudio.F3DAUDIO_CALCULATE_DOPPLER,
+				(FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _dspSettings));
 
 			if (_handle != IntPtr.Zero)
 			{
 				UpdatePitch();
-				_FAudio.FAudioVoice_SetOutputMatrix(
-					(_FAudio.FAudioVoice*)_handle,
-					(_FAudio.FAudioVoice*)SoundEffect.Device().MasterVoice,
+				FAudio.FAudioVoice_SetOutputMatrix(
+					(FAudio.FAudioVoice*)_handle,
+					(FAudio.FAudioVoice*)SoundEffect.Device().MasterVoice,
 					_dspSettings.SrcChannelCount,
 					_dspSettings.DstChannelCount,
 					_dspSettings.pMatrixCoefficients,
@@ -232,7 +233,7 @@ namespace Katabasis
 			if (State == SoundState.Paused)
 			{
 				/* Just resume the existing handle */
-				_FAudio.FAudioSourceVoice_Start((_FAudio.FAudioSourceVoice*)_handle, 0, 0);
+				FAudio.FAudioSourceVoice_Start((FAudio.FAudioSourceVoice*)_handle, 0, 0);
 				_state = SoundState.Playing;
 				return;
 			}
@@ -242,30 +243,30 @@ namespace Katabasis
 			/* Create handle */
 			if (_isDynamic)
 			{
-				_FAudio.FAudioSourceVoice* handle;
-				_FAudio.FAudio_CreateSourceVoice(
-					(_FAudio.FAudio*)dev.Handle,
+				FAudio.FAudioSourceVoice* handle;
+				FAudio.FAudio_CreateSourceVoice(
+					(FAudio.FAudioSystem*)dev.Handle,
 					&handle,
-					(_FAudio.FAudioWaveFormatEx*)Unsafe.AsPointer(ref (this as DynamicSoundEffectInstance)!._format),
-					_FAudio.FAUDIO_VOICE_USEFILTER,
-					_FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
-					(_FAudio.FAudioVoiceCallback*)IntPtr.Zero,
-					(_FAudio.FAudioVoiceSends*)IntPtr.Zero,
-					(_FAudio.FAudioEffectChain*)IntPtr.Zero);
+					(FAudio.FAudioWaveFormatEx*)Unsafe.AsPointer(ref (this as DynamicSoundEffectInstance)!._format),
+					FAudio.FAUDIO_VOICE_USEFILTER,
+					FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
+					(FAudio.FAudioVoiceCallback*)IntPtr.Zero,
+					(FAudio.FAudioVoiceSends*)IntPtr.Zero,
+					(FAudio.FAudioEffectChain*)IntPtr.Zero);
 				_handle = (IntPtr)handle;
 			}
 			else
 			{
-				_FAudio.FAudioSourceVoice* handle;
-				_FAudio.FAudio_CreateSourceVoice(
-					(_FAudio.FAudio*)dev.Handle,
+				FAudio.FAudioSourceVoice* handle;
+				FAudio.FAudio_CreateSourceVoice(
+					(FAudio.FAudioSystem*)dev.Handle,
 					&handle,
-					(_FAudio.FAudioWaveFormatEx*)_parentEffect!._formatPtr,
-					_FAudio.FAUDIO_VOICE_USEFILTER,
-					_FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
-					(_FAudio.FAudioVoiceCallback*)IntPtr.Zero,
-					(_FAudio.FAudioVoiceSends*)IntPtr.Zero,
-					(_FAudio.FAudioEffectChain*)IntPtr.Zero);
+					(FAudio.FAudioWaveFormatEx*)_parentEffect!._formatPtr,
+					FAudio.FAUDIO_VOICE_USEFILTER,
+					FAudio.FAUDIO_DEFAULT_FREQ_RATIO,
+					(FAudio.FAudioVoiceCallback*)IntPtr.Zero,
+					(FAudio.FAudioVoiceSends*)IntPtr.Zero,
+					(FAudio.FAudioEffectChain*)IntPtr.Zero);
 				_handle = (IntPtr)handle;
 			}
 
@@ -275,13 +276,13 @@ namespace Katabasis
 			}
 
 			/* Apply current properties */
-			_FAudio.FAudioVoice_SetVolume((_FAudio.FAudioVoice*)_handle, _volume, 0);
+			FAudio.FAudioVoice_SetVolume((FAudio.FAudioVoice*)_handle, _volume, 0);
 			UpdatePitch();
 			if (_is3D || Pan != 0.0f)
 			{
-				_FAudio.FAudioVoice_SetOutputMatrix(
-					(_FAudio.FAudioVoice*)_handle,
-					(_FAudio.FAudioVoice*)SoundEffect.Device().MasterVoice,
+				FAudio.FAudioVoice_SetOutputMatrix(
+					(FAudio.FAudioVoice*)_handle,
+					(FAudio.FAudioVoice*)SoundEffect.Device().MasterVoice,
 					_dspSettings.SrcChannelCount,
 					_dspSettings.DstChannelCount,
 					_dspSettings.pMatrixCoefficients,
@@ -309,14 +310,14 @@ namespace Katabasis
 					_parentEffect._handle.LoopLength = 0;
 				}
 
-				_FAudio.FAudioSourceVoice_SubmitSourceBuffer(
-					(_FAudio.FAudioSourceVoice*)_handle,
-					(_FAudio.FAudioBuffer*)Unsafe.AsPointer(ref _parentEffect._handle),
-					(_FAudio.FAudioBufferWMA*)IntPtr.Zero);
+				FAudio.FAudioSourceVoice_SubmitSourceBuffer(
+					(FAudio.FAudioSourceVoice*)_handle,
+					(FAudio.FAudioBuffer*)Unsafe.AsPointer(ref _parentEffect._handle),
+					(FAudio.FAudioBufferWMA*)IntPtr.Zero);
 			}
 
 			/* Play, finally. */
-			_FAudio.FAudioSourceVoice_Start((_FAudio.FAudioSourceVoice*)_handle, 0, 0);
+			FAudio.FAudioSourceVoice_Start((FAudio.FAudioSourceVoice*)_handle, 0, 0);
 			_state = SoundState.Playing;
 			_hasStarted = true;
 		}
@@ -325,7 +326,7 @@ namespace Katabasis
 		{
 			if (_handle != IntPtr.Zero && State == SoundState.Playing)
 			{
-				_FAudio.FAudioSourceVoice_Stop((_FAudio.FAudioSourceVoice*)_handle, 0, 0);
+				FAudio.FAudioSourceVoice_Stop((FAudio.FAudioSourceVoice*)_handle, 0, 0);
 				_state = SoundState.Paused;
 			}
 		}
@@ -340,7 +341,7 @@ namespace Katabasis
 			}
 			else if (state == SoundState.Paused)
 			{
-				_FAudio.FAudioSourceVoice_Start((_FAudio.FAudioSourceVoice*)_handle, 0, 0);
+				FAudio.FAudioSourceVoice_Start((FAudio.FAudioSourceVoice*)_handle, 0, 0);
 				_state = SoundState.Playing;
 			}
 		}
@@ -356,9 +357,9 @@ namespace Katabasis
 
 			if (immediate)
 			{
-				_FAudio.FAudioSourceVoice_Stop((_FAudio.FAudioSourceVoice*)_handle, 0, 0);
-				_FAudio.FAudioSourceVoice_FlushSourceBuffers((_FAudio.FAudioSourceVoice*)_handle);
-				_FAudio.FAudioVoice_DestroyVoice((_FAudio.FAudioVoice*)_handle);
+				FAudio.FAudioSourceVoice_Stop((FAudio.FAudioSourceVoice*)_handle, 0, 0);
+				FAudio.FAudioSourceVoice_FlushSourceBuffers((FAudio.FAudioSourceVoice*)_handle);
+				FAudio.FAudioVoice_DestroyVoice((FAudio.FAudioVoice*)_handle);
 				_handle = IntPtr.Zero;
 				_usingReverb = false;
 				_state = SoundState.Stopped;
@@ -381,7 +382,7 @@ namespace Katabasis
 					throw new InvalidOperationException();
 				}
 
-				_FAudio.FAudioSourceVoice_ExitLoop((_FAudio.FAudioSourceVoice*)_handle, 0);
+				FAudio.FAudioSourceVoice_ExitLoop((FAudio.FAudioSourceVoice*)_handle, 0);
 			}
 		}
 
@@ -430,9 +431,9 @@ namespace Katabasis
 				outputMatrix[1] = rvGain;
 			}
 
-			_FAudio.FAudioVoice_SetOutputMatrix(
-				(_FAudio.FAudioVoice*)_handle,
-				(_FAudio.FAudioVoice*)SoundEffect.Device().ReverbVoice,
+			FAudio.FAudioVoice_SetOutputMatrix(
+				(FAudio.FAudioVoice*)_handle,
+				(FAudio.FAudioVoice*)SoundEffect.Device().ReverbVoice,
 				_dspSettings.SrcChannelCount,
 				1,
 				_dspSettings.pMatrixCoefficients,
@@ -446,11 +447,11 @@ namespace Katabasis
 				return;
 			}
 
-			var p = default(_FAudio.FAudioFilterParameters);
-			p.Type = _FAudio.FAudioFilterType.FAudioLowPassFilter;
+			var p = default(FAudio.FAudioFilterParameters);
+			p.Type = FAudio.FAudioFilterType.FAudioLowPassFilter;
 			p.Frequency = cutoff;
 			p.OneOverQ = 1.0f;
-			_FAudio.FAudioVoice_SetFilterParameters((_FAudio.FAudioVoice*)_handle, &p, 0);
+			FAudio.FAudioVoice_SetFilterParameters((FAudio.FAudioVoice*)_handle, &p, 0);
 		}
 
 		internal void INTERNAL_applyHighPassFilter(float cutoff)
@@ -460,11 +461,11 @@ namespace Katabasis
 				return;
 			}
 
-			var p = default(_FAudio.FAudioFilterParameters);
-			p.Type = _FAudio.FAudioFilterType.FAudioHighPassFilter;
+			var p = default(FAudio.FAudioFilterParameters);
+			p.Type = FAudio.FAudioFilterType.FAudioHighPassFilter;
 			p.Frequency = cutoff;
 			p.OneOverQ = 1.0f;
-			_FAudio.FAudioVoice_SetFilterParameters((_FAudio.FAudioVoice*)_handle, &p, 0);
+			FAudio.FAudioVoice_SetFilterParameters((FAudio.FAudioVoice*)_handle, &p, 0);
 		}
 
 		internal void INTERNAL_applyBandPassFilter(float center)
@@ -474,11 +475,11 @@ namespace Katabasis
 				return;
 			}
 
-			var p = default(_FAudio.FAudioFilterParameters);
-			p.Type = _FAudio.FAudioFilterType.FAudioBandPassFilter;
+			var p = default(FAudio.FAudioFilterParameters);
+			p.Type = FAudio.FAudioFilterType.FAudioBandPassFilter;
 			p.Frequency = center;
 			p.OneOverQ = 1.0f;
-			_FAudio.FAudioVoice_SetFilterParameters((_FAudio.FAudioVoice*)_handle, &p, 0);
+			FAudio.FAudioVoice_SetFilterParameters((FAudio.FAudioVoice*)_handle, &p, 0);
 		}
 
 		protected virtual void Dispose(bool disposing)
@@ -505,8 +506,8 @@ namespace Katabasis
 				doppler = _dspSettings.DopplerFactor * dopplerScale;
 			}
 
-			_FAudio.FAudioSourceVoice_SetFrequencyRatio(
-				(_FAudio.FAudioSourceVoice*)_handle,
+			FAudio.FAudioSourceVoice_SetFrequencyRatio(
+				(FAudio.FAudioSourceVoice*)_handle,
 				(float)Math.Pow(2.0, _pitch) * doppler,
 				0);
 		}

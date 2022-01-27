@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static FNA3D;
+using static bottlenoselabs.FNA3D;
 
 namespace Katabasis
 {

@@ -2,6 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using bottlenoselabs;
 
 namespace Katabasis
 {
@@ -33,7 +34,7 @@ namespace Katabasis
 					return;
 				}
 
-				_FAudio.FACTAudioEngine_Pause((_FAudio.FACTAudioEngine*)_parent._handle, _index, 1);
+				FAudio.FACTAudioEngine_Pause((FAudio.FACTAudioEngine*)_parent._handle, _index, 1);
 			}
 		}
 
@@ -46,7 +47,7 @@ namespace Katabasis
 					return;
 				}
 
-				_FAudio.FACTAudioEngine_Pause((_FAudio.FACTAudioEngine*)_parent._handle, _index, 0);
+				FAudio.FACTAudioEngine_Pause((FAudio.FACTAudioEngine*)_parent._handle, _index, 0);
 			}
 		}
 
@@ -59,7 +60,7 @@ namespace Katabasis
 					return;
 				}
 
-				_FAudio.FACTAudioEngine_SetVolume((_FAudio.FACTAudioEngine*)_parent._handle, _index, volume);
+				FAudio.FACTAudioEngine_SetVolume((FAudio.FACTAudioEngine*)_parent._handle, _index, volume);
 			}
 		}
 
@@ -72,10 +73,10 @@ namespace Katabasis
 					return;
 				}
 
-				_FAudio.FACTAudioEngine_Stop(
-					(_FAudio.FACTAudioEngine*)_parent._handle,
+				FAudio.FACTAudioEngine_Stop(
+					(FAudio.FACTAudioEngine*)_parent._handle,
 					_index,
-					options == AudioStopOptions.Immediate ? _FAudio.FACT_FLAG_STOP_IMMEDIATE : _FAudio.FACT_FLAG_STOP_RELEASE);
+					options == AudioStopOptions.Immediate ? FAudio.FACT_FLAG_STOP_IMMEDIATE : FAudio.FACT_FLAG_STOP_RELEASE);
 			}
 		}
 

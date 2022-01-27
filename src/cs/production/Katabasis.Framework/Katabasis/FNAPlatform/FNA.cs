@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using C2CS;
-using static FNA3D_Image;
+using static bottlenoselabs.FNA3D_Image;
+using static bottlenoselabs.FNA3D_Image.Runtime;
 
 namespace Katabasis
 {
@@ -25,7 +25,7 @@ namespace Katabasis
         [UnmanagedCallersOnly]
         private static int INTERNAL_Read(
 			void* context,
-			CString8U data,
+			CString data,
 			int size)
 		{
 			Stream stream;

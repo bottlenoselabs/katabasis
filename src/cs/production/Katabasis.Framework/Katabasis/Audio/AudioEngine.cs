@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using bottlenoselabs;
 using ObjCRuntime;
 
 namespace Katabasis
@@ -28,16 +29,16 @@ namespace Katabasis
 		internal readonly object _gcSync = new();
 
 		internal readonly IntPtr _handle;
-		internal readonly _FAudio.F3DAUDIO_HANDLE _handle3D;
+		internal readonly FAudio.F3DAUDIO_HANDLE _handle3D;
 
 		private RendererDetail[]? _rendererDetails;
 
-		private _FAudio.FACTNotificationDescription _notificationDesc;
+		private FAudio.FACTNotificationDescription _notificationDesc;
 
 		public AudioEngine(string settingsFile)
 			: this(
 				settingsFile,
-				new TimeSpan(0, 0, 0, 0, (int)_FAudio.FACT_ENGINE_LOOKAHEAD_DEFAULT),
+				new TimeSpan(0, 0, 0, 0, (int)FAudio.FACT_ENGINE_LOOKAHEAD_DEFAULT),
 				string.Empty)
 		{
 		}
@@ -50,18 +51,18 @@ namespace Katabasis
 			}
 
 			// Allocate (but don't initialize just yet!)
-			_FAudio.FACTAudioEngine* handle;
-			_FAudio.FACTCreateEngine(0, &handle);
+			FAudio.FACTAudioEngine* handle;
+			FAudio.FACTCreateEngine(0, &handle);
 			_handle = (IntPtr)handle;
 
 			// Grab RendererDetails
 			ushort rendererCount;
-			_FAudio.FACTAudioEngine_GetRendererCount(
+			FAudio.FACTAudioEngine_GetRendererCount(
 				handle,
 				&rendererCount);
 			if (rendererCount == 0)
 			{
-				_FAudio.FACTAudioEngine_Release(handle);
+				FAudio.FACTAudioEngine_Release(handle);
 				throw new NoAudioHardwareException();
 			}
 
@@ -69,8 +70,8 @@ namespace Katabasis
 			byte[] converted = new byte[0xFF * sizeof(short)];
 			for (ushort i = 0; i < rendererCount; i += 1)
 			{
-				_FAudio.FACTRendererDetails details;
-				_FAudio.FACTAudioEngine_GetRendererDetails(
+				FAudio.FACTRendererDetails details;
+				FAudio.FACTAudioEngine_GetRendererDetails(
 					handle,
 					i,
 					&details);
@@ -85,10 +86,10 @@ namespace Katabasis
 			var buffer = TitleContainer.ReadToPointer(settingsFile, out var bufferLen);
 
 			// Generate engine parameters
-			var settings = default(_FAudio.FACTRuntimeParameters);
+			var settings = default(FAudio.FACTRuntimeParameters);
 			settings.pGlobalSettingsBuffer = (void*)buffer;
 			settings.globalSettingsBufferSize = (uint)bufferLen;
-			settings.fnNotificationCallback = new _FAudio.FACTNotificationCallback { Pointer = &OnXACTNotification };
+			settings.fnNotificationCallback = new FAudio.FACTNotificationCallback { Pointer = &OnXACTNotification };
 
 			// Special parameters from constructor
 			settings.lookAheadTime = (uint)lookAheadTime.Milliseconds;
@@ -99,7 +100,7 @@ namespace Katabasis
 			}
 
 			// Init engine, finally
-			if (_FAudio.FACTAudioEngine_Initialize((_FAudio.FACTAudioEngine*)_handle, &settings) != 0)
+			if (FAudio.FACTAudioEngine_Initialize((FAudio.FACTAudioEngine*)_handle, &settings) != 0)
 			{
 				throw new InvalidOperationException("Engine initialization failed!");
 			}
@@ -111,12 +112,12 @@ namespace Katabasis
 			}
 
 			// Init 3D audio
-			_handle3D.Data = (byte*)Marshal.AllocHGlobal(_FAudio.F3DAUDIO_HANDLE_BYTESIZE);
-			_FAudio.FACT3DInitialize((_FAudio.FACTAudioEngine*)_handle, _handle3D);
+			_handle3D.Data = (byte*)Marshal.AllocHGlobal(FAudio.F3DAUDIO_HANDLE_BYTESIZE);
+			FAudio.FACT3DInitialize((FAudio.FACTAudioEngine*)_handle, _handle3D);
 
 			// Grab channel count for DSP_SETTINGS
-			_FAudio.FAudioWaveFormatExtensible mixFormat;
-			_FAudio.FACTAudioEngine_GetFinalMixFormat((_FAudio.FACTAudioEngine*)_handle, &mixFormat);
+			FAudio.FAudioWaveFormatExtensible mixFormat;
+			FAudio.FACTAudioEngine_GetFinalMixFormat((FAudio.FACTAudioEngine*)_handle, &mixFormat);
 			_channels = mixFormat.Format.nChannels;
 
 			// All XACT references have to go through here...
@@ -147,21 +148,21 @@ namespace Katabasis
 				}
 
 				Disposing?.Invoke(this, EventArgs.Empty);
-				_FAudio.FACTAudioEngine_ShutDown((_FAudio.FACTAudioEngine*)_handle);
-				_FAudio.FACTAudioEngine_Release((_FAudio.FACTAudioEngine*)_handle);
+				FAudio.FACTAudioEngine_ShutDown((FAudio.FACTAudioEngine*)_handle);
+				FAudio.FACTAudioEngine_Release((FAudio.FACTAudioEngine*)_handle);
 				_rendererDetails = null;
 				IsDisposed = true;
 			}
 		}
 
 		[UnmanagedCallersOnly]
-		private static void OnXACTNotification(_FAudio.FACTNotification* notification)
+		private static void OnXACTNotification(FAudio.FACTNotification* notification)
 		{
 			WeakReference? reference;
-			var not = (_FAudio.FACTNotification_FNA*)notification;
+			var not = (FAudio.FACTNotification_FNA*)notification;
 			switch (not->type)
 			{
-				case _FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED:
+				case FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED:
 				{
 					var target = not->anon.waveBank.pWaveBank;
 					lock (_xactPointers)
@@ -180,7 +181,7 @@ namespace Katabasis
 					break;
 				}
 
-				case _FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED:
+				case FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED:
 				{
 					var target = not->anon.soundBank.pSoundBank;
 					lock (_xactPointers)
@@ -199,7 +200,7 @@ namespace Katabasis
 					break;
 				}
 
-				case _FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED:
+				case FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED:
 				{
 					var target = not->anon.cue.pCue;
 					lock (_xactPointers)
@@ -227,9 +228,9 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var category = _FAudio.FACTAudioEngine_GetCategory((_FAudio.FACTAudioEngine*)_handle, name);
+			var category = FAudio.FACTAudioEngine_GetCategory((FAudio.FACTAudioEngine*)_handle, name);
 
-			if (category == _FAudio.FACTCATEGORY_INVALID)
+			if (category == FAudio.FACTCATEGORY_INVALID)
 			{
 				throw new InvalidOperationException("Invalid category name!");
 			}
@@ -244,15 +245,15 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var variable = _FAudio.FACTAudioEngine_GetGlobalVariableIndex((_FAudio.FACTAudioEngine*)_handle, name);
+			var variable = FAudio.FACTAudioEngine_GetGlobalVariableIndex((FAudio.FACTAudioEngine*)_handle, name);
 
-			if (variable == _FAudio.FACTVARIABLEINDEX_INVALID)
+			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid variable name!");
 			}
 
 			float result;
-			_FAudio.FACTAudioEngine_GetGlobalVariable((_FAudio.FACTAudioEngine*)_handle, variable, &result);
+			FAudio.FACTAudioEngine_GetGlobalVariable((FAudio.FACTAudioEngine*)_handle, variable, &result);
 			return result;
 		}
 
@@ -263,23 +264,23 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var variable = _FAudio.FACTAudioEngine_GetGlobalVariableIndex((_FAudio.FACTAudioEngine*)_handle, name);
+			var variable = FAudio.FACTAudioEngine_GetGlobalVariableIndex((FAudio.FACTAudioEngine*)_handle, name);
 
-			if (variable == _FAudio.FACTVARIABLEINDEX_INVALID)
+			if (variable == FAudio.FACTVARIABLEINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid variable name!");
 			}
 
-			_FAudio.FACTAudioEngine_SetGlobalVariable((_FAudio.FACTAudioEngine*)_handle, variable, value);
+			FAudio.FACTAudioEngine_SetGlobalVariable((FAudio.FACTAudioEngine*)_handle, variable, value);
 		}
 
-		public void Update() => _FAudio.FACTAudioEngine_DoWork((_FAudio.FACTAudioEngine*)_handle);
+		public void Update() => FAudio.FACTAudioEngine_DoWork((FAudio.FACTAudioEngine*)_handle);
 
 		internal void RegisterWaveBank(IntPtr ptr, WeakReference reference)
 		{
-			_notificationDesc.type = _FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
-			_notificationDesc.pWaveBank = (_FAudio.FACTWaveBank*)ptr;
-			_FAudio.FACTAudioEngine_RegisterNotification((_FAudio.FACTAudioEngine*)_handle, (_FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
+			_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
+			_notificationDesc.pWaveBank = (FAudio.FACTWaveBank*)ptr;
+			FAudio.FACTAudioEngine_RegisterNotification((FAudio.FACTAudioEngine*)_handle, (FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 			lock (_xactPointers)
 			{
 				_xactPointers.Add(ptr, reference);
@@ -288,9 +289,9 @@ namespace Katabasis
 
 		internal void RegisterSoundBank(IntPtr ptr, WeakReference reference)
 		{
-			_notificationDesc.type = _FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
-			_notificationDesc.pSoundBank = (_FAudio.FACTSoundBank*)ptr;
-			_FAudio.FACTAudioEngine_RegisterNotification((_FAudio.FACTAudioEngine*)_handle, (_FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
+			_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
+			_notificationDesc.pSoundBank = (FAudio.FACTSoundBank*)ptr;
+			FAudio.FACTAudioEngine_RegisterNotification((FAudio.FACTAudioEngine*)_handle, (FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 			lock (_xactPointers)
 			{
 				_xactPointers.Add(ptr, reference);
@@ -299,9 +300,9 @@ namespace Katabasis
 
 		internal void RegisterCue(IntPtr ptr, WeakReference reference)
 		{
-			_notificationDesc.type = _FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
-			_notificationDesc.pCue = (_FAudio.FACTCue*)ptr;
-			_FAudio.FACTAudioEngine_RegisterNotification((_FAudio.FACTAudioEngine*)_handle, (_FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
+			_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
+			_notificationDesc.pCue = (FAudio.FACTCue*)ptr;
+			FAudio.FACTAudioEngine_RegisterNotification((FAudio.FACTAudioEngine*)_handle, (FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 			lock (_xactPointers)
 			{
 				_xactPointers.Add(ptr, reference);
@@ -317,9 +318,9 @@ namespace Katabasis
 					return;
 				}
 
-				_notificationDesc.type = _FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
-				_notificationDesc.pWaveBank = (_FAudio.FACTWaveBank*)ptr;
-				_FAudio.FACTAudioEngine_UnRegisterNotification((_FAudio.FACTAudioEngine*)_handle, (_FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
+				_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
+				_notificationDesc.pWaveBank = (FAudio.FACTWaveBank*)ptr;
+				FAudio.FACTAudioEngine_UnRegisterNotification((FAudio.FACTAudioEngine*)_handle, (FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 				_xactPointers.Remove(ptr);
 			}
 		}
@@ -333,9 +334,9 @@ namespace Katabasis
 					return;
 				}
 
-				_notificationDesc.type = _FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
-				_notificationDesc.pSoundBank = (_FAudio.FACTSoundBank*)ptr;
-				_FAudio.FACTAudioEngine_UnRegisterNotification((_FAudio.FACTAudioEngine*)_handle, (_FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
+				_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
+				_notificationDesc.pSoundBank = (FAudio.FACTSoundBank*)ptr;
+				FAudio.FACTAudioEngine_UnRegisterNotification((FAudio.FACTAudioEngine*)_handle, (FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 				_xactPointers.Remove(ptr);
 			}
 		}
@@ -349,9 +350,9 @@ namespace Katabasis
 					return;
 				}
 
-				_notificationDesc.type = _FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
-				_notificationDesc.pCue = (_FAudio.FACTCue*)ptr;
-				_FAudio.FACTAudioEngine_UnRegisterNotification((_FAudio.FACTAudioEngine*)_handle, (_FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
+				_notificationDesc.type = FAudio.FACTNOTIFICATIONTYPE_CUEDESTROYED;
+				_notificationDesc.pCue = (FAudio.FACTCue*)ptr;
+				FAudio.FACTAudioEngine_UnRegisterNotification((FAudio.FACTAudioEngine*)_handle, (FAudio.FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 				_xactPointers.Remove(ptr);
 			}
 		}

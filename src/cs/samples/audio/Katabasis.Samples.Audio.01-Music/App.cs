@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using C2CS;
 using Katabasis.ImGui;
-using static imgui;
+using static bottlenoselabs.imgui;
+using static bottlenoselabs.imgui.Runtime;
+
 
 namespace Katabasis.Samples
 {
