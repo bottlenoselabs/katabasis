@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using static imgui;
+using static bottlenoselabs.imgui;
 
 namespace Katabasis.ImGui
 {

@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using bottlenoselabs;
 
 namespace Katabasis
 {
@@ -11,7 +12,7 @@ namespace Katabasis
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
 	public unsafe class SoundBank : IDisposable
 	{
-		internal _FAudio.F3DAUDIO_DSP_SETTINGS _dspSettings;
+		internal FAudio.F3DAUDIO_DSP_SETTINGS _dspSettings;
 		internal AudioEngine _engine;
 		private IntPtr _handle;
 		private WeakReference? _selfReference;
@@ -25,9 +26,9 @@ namespace Katabasis
 
 			var buffer = TitleContainer.ReadToPointer(filename, out var bufferLen);
 
-			_FAudio.FACTSoundBank* soundBank;
-			_FAudio.FACTAudioEngine_CreateSoundBank(
-				(_FAudio.FACTAudioEngine*)audioEngine._handle,
+			FAudio.FACTSoundBank* soundBank;
+			FAudio.FACTAudioEngine_CreateSoundBank(
+				(FAudio.FACTAudioEngine*)audioEngine._handle,
 				(void*)buffer,
 				(uint) bufferLen,
 				0,
@@ -58,8 +59,8 @@ namespace Katabasis
 			get
 			{
 				uint state;
-				_FAudio.FACTSoundBank_GetState((_FAudio.FACTSoundBank*)_handle, &state);
-				return (state & _FAudio.FACT_STATE_INUSE) != 0;
+				FAudio.FACTSoundBank_GetState((FAudio.FACTSoundBank*)_handle, &state);
+				return (state & FAudio.FACT_STATE_INUSE) != 0;
 			}
 		}
 
@@ -95,16 +96,16 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var cue = _FAudio.FACTSoundBank_GetCueIndex((_FAudio.FACTSoundBank*)_handle, name);
+			var cue = FAudio.FACTSoundBank_GetCueIndex((FAudio.FACTSoundBank*)_handle, name);
 
-			if (cue == _FAudio.FACTINDEX_INVALID)
+			if (cue == FAudio.FACTINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid cue name!");
 			}
 
-			_FAudio.FACTCue* result;
-			_FAudio.FACTSoundBank_Prepare(
-				(_FAudio.FACTSoundBank*)_handle,
+			FAudio.FACTCue* result;
+			FAudio.FACTSoundBank_Prepare(
+				(FAudio.FACTSoundBank*)_handle,
 				cue,
 				0,
 				0,
@@ -120,14 +121,14 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var cue = _FAudio.FACTSoundBank_GetCueIndex((_FAudio.FACTSoundBank*)_handle, name);
+			var cue = FAudio.FACTSoundBank_GetCueIndex((FAudio.FACTSoundBank*)_handle, name);
 
-			if (cue == _FAudio.FACTINDEX_INVALID)
+			if (cue == FAudio.FACTINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid cue name!");
 			}
 
-			_FAudio.FACTSoundBank_Play((_FAudio.FACTSoundBank*)_handle, cue, 0, 0, (_FAudio.FACTCue**)IntPtr.Zero);
+			FAudio.FACTSoundBank_Play((FAudio.FACTSoundBank*)_handle, cue, 0, 0, (FAudio.FACTCue**)IntPtr.Zero);
 		}
 
 		public void PlayCue(string name, AudioListener listener, AudioEmitter emitter)
@@ -137,28 +138,28 @@ namespace Katabasis
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			var cue = _FAudio.FACTSoundBank_GetCueIndex((_FAudio.FACTSoundBank*)_handle, name);
+			var cue = FAudio.FACTSoundBank_GetCueIndex((FAudio.FACTSoundBank*)_handle, name);
 
-			if (cue == _FAudio.FACTINDEX_INVALID)
+			if (cue == FAudio.FACTINDEX_INVALID)
 			{
 				throw new InvalidOperationException("Invalid cue name!");
 			}
 
 			emitter._emitterData.ChannelCount = _dspSettings.SrcChannelCount;
 			emitter._emitterData.CurveDistanceScaler = float.MaxValue;
-			_FAudio.FACT3DCalculate(
+			FAudio.FACT3DCalculate(
 				_engine._handle3D,
-				(_FAudio.F3DAUDIO_LISTENER*)Unsafe.AsPointer(ref listener._listenerData),
-				(_FAudio.F3DAUDIO_EMITTER*)Unsafe.AsPointer(ref emitter._emitterData),
-				(_FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _dspSettings));
+				(FAudio.F3DAUDIO_LISTENER*)Unsafe.AsPointer(ref listener._listenerData),
+				(FAudio.F3DAUDIO_EMITTER*)Unsafe.AsPointer(ref emitter._emitterData),
+				(FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _dspSettings));
 
-			_FAudio.FACTSoundBank_Play3D(
-				(_FAudio.FACTSoundBank*)_handle,
+			FAudio.FACTSoundBank_Play3D(
+				(FAudio.FACTSoundBank*)_handle,
 				cue,
 				0,
 				0,
-				(_FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _dspSettings),
-				(_FAudio.FACTCue**)IntPtr.Zero);
+				(FAudio.F3DAUDIO_DSP_SETTINGS*)Unsafe.AsPointer(ref _dspSettings),
+				(FAudio.FACTCue**)IntPtr.Zero);
 		}
 
 		internal void OnSoundBankDestroyed()
@@ -180,7 +181,7 @@ namespace Katabasis
 					if (!_engine.IsDisposed)
 					{
 						_engine.UnregisterSoundBank(_handle);
-						_FAudio.FACTSoundBank_Destroy((_FAudio.FACTSoundBank*)_handle);
+						FAudio.FACTSoundBank_Destroy((FAudio.FACTSoundBank*)_handle);
 						Marshal.FreeHGlobal((IntPtr)_dspSettings.pMatrixCoefficients);
 					}
 
