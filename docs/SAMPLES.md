@@ -7,7 +7,7 @@ To learn how to use the Katabasis check out the following samples. The samples a
 > :notebook: The majority of the samples related to graphics have been inspired from https://github.com/floooh/sokol-samples
 
 #|Name|Description
-:---:|:---:|:---:|:---:
+:---:|:---:|:---:
 1|[Clear][graphics-sample-01]|[Clears the screen with a specific color.][graphics-sample-01]
 2|[Triangle][graphics-sample-02]|[Draw a triangle to the screen in clip space using a vertex buffer and a index buffer.][graphics-sample-02]
 3|[Rectangle][graphics-sample-03]|[Draw a rectangle to the screen in clip space using a vertex buffer and a index buffer.][graphics-sample-03]
@@ -37,7 +37,7 @@ To learn how to use the Katabasis check out the following samples. The samples a
 ## Input
 
 #|Name|Description
-:---:|:---:|:---:|:---:
+:---:|:---:|:---:
 1|[Mouse][input-sample-01]|[Do logic based on the information of the mouse's state of the previous frame and of the current frame.][input-sample-01]
 
 [input-sample-01]: ../src/dotnet/projects/samples/input/Katabasis.Samples.Input.01-Mouse/App.cs
