@@ -1,0 +1,3 @@
+[submodule "ext/katabasis-bedrock"]
+	path = ext/katabasis-bedrock
+	url = https://github.com/bottlenoselabs/katabasis-bedrock
