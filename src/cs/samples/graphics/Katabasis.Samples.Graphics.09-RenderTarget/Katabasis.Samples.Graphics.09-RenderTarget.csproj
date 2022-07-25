@@ -7,7 +7,7 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <RootNamespace>Katabasis.Samples</RootNamespace>
+        <RootNamespace>bottlenoselabs.Katabasis.Samples</RootNamespace>
         <AssemblyName>Katabasis.Samples.Graphics.CubeRenderTarget</AssemblyName>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

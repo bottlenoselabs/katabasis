@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Numerics;
 
-namespace Katabasis.Samples
+namespace bottlenoselabs.Katabasis.Samples
 {
 	public class App : Game
 	{

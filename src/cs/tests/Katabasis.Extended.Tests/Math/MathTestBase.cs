@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace Katabasis.Extended.Tests.Math
+namespace bottlenoselabs.Katabasis.Extended.Tests.Math
 {
     [Trait("Category", "Math")]
     public class MathTestBase

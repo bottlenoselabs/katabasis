@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using C2CS;
-using Katabasis.ImGui;
-using static imgui;
+using bottlenoselabs.Katabasis.ImGui;
+using static bottlenoselabs.imgui;
 
-namespace Katabasis.Samples
+namespace bottlenoselabs.Katabasis.Samples
 {
 	public class App : Game
 	{
@@ -145,7 +144,7 @@ Current song: {songName}
 				
 				igSameLine(default, -1);
 				
-				igCheckbox("Repeat", (CBool*)Unsafe.AsPointer(ref _isRepeating));
+				igCheckbox("Repeat", (Runtime.CBool*)Unsafe.AsPointer(ref _isRepeating));
 				MediaPlayer.IsRepeating = _isRepeating;
 
 				igText($"Average {1000f / igGetIO()->Framerate:F3} ms/frame ({igGetIO()->Framerate:F1} FPS)");

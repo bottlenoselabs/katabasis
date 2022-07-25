@@ -2,15 +2,9 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using C2CS;
-using Katabasis.ImGui;
-using static imgui;
 
-namespace Katabasis.Samples
+namespace bottlenoselabs.Katabasis.Samples
 {
 	public class App : Game
 	{

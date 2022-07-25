@@ -3,11 +3,10 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using C2CS;
-using Katabasis.ImGui;
-using static imgui;
+using bottlenoselabs.Katabasis.ImGui;
+using static bottlenoselabs.imgui;
 
-namespace Katabasis.Samples
+namespace bottlenoselabs.Katabasis.Samples
 {
 	public class App : Game
 	{
@@ -58,15 +57,19 @@ namespace Katabasis.Samples
 			// show the ImGui test window
 			if (_showTestWindow)
 			{
-				igSetNextWindowPos(new Vector2(650, 20), ImGuiCond_FirstUseEver, default);
-				igShowDemoWindow((CBool*)Unsafe.AsPointer(ref _showTestWindow));
+				ImGuiCond cond;
+				cond.Data = (int)ImGuiCond_.ImGuiCond_FirstUseEver;
+				igSetNextWindowPos(new Vector2(650, 20), cond, default);
+				igShowDemoWindow((Runtime.CBool*)Unsafe.AsPointer(ref _showTestWindow));
 			}
 
 			// show another simple window, this time using an explicit Begin/End pair
 			if (_showAnotherWindow)
 			{
-				igSetNextWindowSize(new Vector2(200, 100), ImGuiCond_FirstUseEver);
-				igBegin("Another Window", (CBool*)Unsafe.AsPointer(ref _showAnotherWindow), default);
+				ImGuiCond cond;
+				cond.Data = (int)ImGuiCond_.ImGuiCond_FirstUseEver;
+				igSetNextWindowSize(new Vector2(200, 100), cond);
+				igBegin("Another Window", (Runtime.CBool*)Unsafe.AsPointer(ref _showAnotherWindow), default);
 				igText("Hello");
 				igEnd();
 			}

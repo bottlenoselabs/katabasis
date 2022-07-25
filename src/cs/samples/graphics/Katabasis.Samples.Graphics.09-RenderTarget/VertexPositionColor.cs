@@ -2,7 +2,7 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System.Numerics;
 
-namespace Katabasis.Samples
+namespace bottlenoselabs.Katabasis.Samples
 {
 	internal struct VertexPositionColor : IVertexType
 	{

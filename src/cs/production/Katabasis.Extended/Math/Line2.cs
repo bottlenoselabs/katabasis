@@ -7,7 +7,7 @@
 // using System.Runtime.CompilerServices;
 // using JetBrains.Annotations;
 //
-// namespace Katabasis.Extended
+// namespace bottlenoselabs.Katabasis.Extended
 // {
 //     /// <summary>
 //     ///     A two dimensional line segment defined by two points, a starting point and an ending point.

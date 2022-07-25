@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using JetBrains.Annotations;
 
-namespace Katabasis.Extended
+namespace bottlenoselabs.Katabasis.Extended
 {
     /// <summary>
     ///     An axis-aligned, four sided, two dimensional box defined by a center point along with half-width and

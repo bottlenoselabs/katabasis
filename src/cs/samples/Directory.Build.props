@@ -7,4 +7,14 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
+    <!-- Dynamic link libraries -->
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)../../../ext/katabasis-bedrock/lib/osx/*.dylib">
+            <Link>%(Filename)%(Extension)</Link>
+            <PackagePath>runtimes/osx-x64/native/%(Filename)%(Extension)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
 </Project>

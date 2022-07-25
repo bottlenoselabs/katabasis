@@ -1,6 +1,6 @@
 <Project>
 
-    <!-- My-MSBuild settings -->
+    <!-- MSBuild.Tools settings -->
     <PropertyGroup>    
 		  <CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)/CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
 		  <StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)/StyleCop.json</StyleCopSettingsFilePath>

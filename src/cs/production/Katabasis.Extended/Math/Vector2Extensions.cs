@@ -5,7 +5,7 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Katabasis.Extended
+namespace bottlenoselabs.Katabasis.Extended
 {
     public static class Vector2Extensions
     {

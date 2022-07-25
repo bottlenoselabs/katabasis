@@ -4,6 +4,9 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblyName>bottlenoselabs.Katabasis.Framework</AssemblyName>
+		<RootNamespace>bottlenoselabs.Katabasis</RootNamespace>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<!-- My-MSBuild settings -->
@@ -16,21 +19,18 @@
 	
 	<!-- Project referneces -->
 	<ItemGroup>
-		<ProjectReference Include="..\Katabasis.Native\Katabasis.Native.csproj" />
+		<ProjectReference Include="..\..\..\..\ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock\Katabasis.Bedrock.csproj" />
 	</ItemGroup>
 
-	<!-- NuGet references -->
-	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
-	</ItemGroup>
+	<!-- NuGet package references -->
 
 	<!-- Stock effects files emedded into assembly -->
 	<ItemGroup>
+		<EmbeddedResource Include="Graphics\Effect\Sprite\SpriteEffect.fxb" />
+		<EmbeddedResource Include="Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
+		<EmbeddedResource Include="ImGui\Main.fxb" />
 		<EmbeddedResource Include="Katabasis/Graphics/Effect/StockEffects/FXB/*.fxb" />
-		<EmbeddedResource Include="Katabasis/ImGui/Main.fxb" />
 		<None Remove="Katabasis\Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
-		<EmbeddedResource Include="Katabasis\Graphics\Effect\Sprite\SpriteEffect.fxb" />
-		<EmbeddedResource Include="Katabasis\Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
 	</ItemGroup>
 
 </Project>
