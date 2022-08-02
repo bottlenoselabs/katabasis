@@ -27,9 +27,10 @@ jobs:
 
     steps:
     - name: "Checkout Git repository"
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.GITHUB_REF }}
+        submodules: 'recursive'
 
     - name: "Fetch all history for all tags and branches"
       run: git fetch --prune --unshallow
@@ -39,8 +40,12 @@ jobs:
       with:
         versionSpec: '5.x'
 
+    - name: "Use GitVersion"
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+
     - name: "Build solution"
-      run: dotnet build --nologo --configuration Release /p:Version='${{ GitVersion_NuGetVersionV2 }}'
+      run: dotnet build --nologo --configuration Release /p:Version='${{ steps.gitversion.outputs.nuGetVersionV2 }}"'
 
     - name: "Test solution"
       run: dotnet test --nologo --configuration Release --no-build
