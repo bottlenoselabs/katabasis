@@ -1,6 +1,10 @@
 # Documentation: Development Log
 
-Developer notes about the latest news and changes to Katabasis
+Developer notes about the latest news and changes to Katabasis.
+
+## August 2022
+
+- [2022-08-01: C2CS Update & Katabasis.Bedrock](2022-08-01_c2cs-update-katabasis-bedrock.md)
 
 ## Septemeber 2021
 
