@@ -17,6 +17,9 @@ namespace bottlenoselabs.Katabasis
 	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Native naming conventions.")]
 	internal static unsafe class SDL2_FNAPlatform
 	{
+		[DllImport("SDL2", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void SDL_free(IntPtr memblock);
+		
 		static SDL2_FNAPlatform()
 		{
 			_win32OnPaint.Data.Pointer = &Win32OnPaint;

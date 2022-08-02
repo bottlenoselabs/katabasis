@@ -8,7 +8,7 @@
         <TieredCompilation>false</TieredCompilation>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RootNamespace>bottlenoselabs.Katabasis.Samples</RootNamespace>
-        <AssemblyName>Katabasis.Samples.Input.Mouse</AssemblyName>
+        <AssemblyName>Katabasis.Samples.Video.Playback</AssemblyName>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>

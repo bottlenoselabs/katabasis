@@ -172,8 +172,8 @@ namespace bottlenoselabs.Katabasis
 
 			// Be sure we can even get something from theorafile...
 			if (State == MediaState.Stopped ||
-			    Video._theora == IntPtr.Zero ||
-			    Theorafile.tf_hasvideo(Video._theora) == 0)
+			    Video.Handle == IntPtr.Zero ||
+			    Theorafile.tf_hasvideo((Theorafile.OggTheora_File*)Video.Handle) == 0)
 			{
 				// Screw it, give them the old one.
 				var texture = _videoTexture[0].RenderTarget as Texture2D;
@@ -184,7 +184,7 @@ namespace bottlenoselabs.Katabasis
 			if (thisFrame > _currentFrame)
 			{
 				// Only update the textures if we need to!
-				if (Theorafile.tf_readvideo(Video._theora, _yuvData, thisFrame - _currentFrame) ==
+				if (Theorafile.tf_readvideo((Theorafile.OggTheora_File*)Video.Handle, new Theorafile.Runtime.CString(_yuvData), thisFrame - _currentFrame) ==
 					1 || _currentFrame == -1)
 				{
 					UpdateTexture();
@@ -194,7 +194,7 @@ namespace bottlenoselabs.Katabasis
 			}
 
 			// Check for the end...
-			var ended = Theorafile.tf_eos(Video._theora) == 1;
+			var ended = Theorafile.tf_eos((Theorafile.OggTheora_File*)Video.Handle) == 1;
 			if (_audioStream != null)
 			{
 				ended &= _audioStream.PendingBufferCount == 0;
@@ -221,7 +221,7 @@ namespace bottlenoselabs.Katabasis
 				}
 
 				// Reset the stream no matter what happens next
-				Theorafile.tf_reset(Video._theora);
+				Theorafile.tf_reset((Theorafile.OggTheora_File*)Video.Handle);
 
 				// If looping, go back to the start. Otherwise, we'll be exiting.
 				if (IsLooped)
@@ -282,7 +282,7 @@ namespace bottlenoselabs.Katabasis
 			InitializeTheoraStream();
 
 			// Set up the texture data
-			if (Theorafile.tf_hasvideo(Video._theora) == 1)
+			if (Theorafile.tf_hasvideo((Theorafile.OggTheora_File*)Video.Handle) == 1)
 			{
 				// The VideoPlayer will use the GraphicsDevice that is set now.
 				if (_currentDevice == null)
@@ -336,7 +336,7 @@ namespace bottlenoselabs.Katabasis
 				_audioStream = null;
 			}
 
-			Theorafile.tf_reset(Video!._theora);
+			Theorafile.tf_reset((Theorafile.OggTheora_File*)Video!.Handle);
 		}
 
 		public void Pause()
@@ -406,9 +406,10 @@ namespace bottlenoselabs.Katabasis
 
 		private void OnBufferRequest(object? sender, EventArgs args)
 		{
+			var buffer = (float*)_audioDataPtr;
 			var samples = Theorafile.tf_readaudio(
-				Video!._theora,
-				_audioDataPtr,
+				(Theorafile.OggTheora_File*)Video!.Handle,
+				buffer,
 				AudioBufferSize);
 
 			if (samples > 0)
@@ -418,7 +419,7 @@ namespace bottlenoselabs.Katabasis
 					0,
 					samples);
 			}
-			else if (Theorafile.tf_eos(Video._theora) == 1)
+			else if (Theorafile.tf_eos((Theorafile.OggTheora_File*)Video.Handle) == 1)
 			{
 				// Okay, we ran out. No need for this!
 				_audioStream!.BufferNeeded -= OnBufferRequest;
@@ -453,14 +454,16 @@ namespace bottlenoselabs.Katabasis
 		private void InitializeTheoraStream()
 		{
 			// Grab the first video frame ASAP.
-			while (Theorafile.tf_readvideo(Video!._theora, _yuvData, 1) == 0)
+			while (Theorafile.tf_readvideo((Theorafile.OggTheora_File*)Video!.Handle, new Theorafile.Runtime.CString(_yuvData), 1) == 0)
 			{
 			}
 
 			// Grab the first bit of audio. We're trying to start the decoding ASAP.
-			if (Theorafile.tf_hasaudio(Video._theora) == 1)
+			if (Theorafile.tf_hasaudio((Theorafile.OggTheora_File*)Video.Handle) == 1)
 			{
-				Theorafile.tf_audioinfo(Video._theora, out var channels, out var sampleRate);
+				var channels = 0;
+				var sampleRate = 0;
+				Theorafile.tf_audioinfo((Theorafile.OggTheora_File*)Video.Handle, &channels, &sampleRate);
 				_audioStream = new DynamicSoundEffectInstance(
 					sampleRate,
 					(AudioChannels)channels);

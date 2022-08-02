@@ -2,36 +2,47 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using static bottlenoselabs.Theorafile;
 
 namespace bottlenoselabs.Katabasis
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
-	public sealed class Video
+	public sealed unsafe class Video
 	{
-		internal double _fps;
-		internal bool _needsDurationHack;
-		internal IntPtr _theora;
-		internal int _uvHeight;
-		internal int _uvWidth;
-		internal int _yHeight;
-		internal int _yWidth;
+		private IntPtr _handle;
+		internal readonly double _fps;
+		internal readonly bool _needsDurationHack;
+		internal readonly int _uvHeight;
+		internal readonly int _uvWidth;
+		internal readonly int _yHeight;
+		internal readonly int _yWidth;
+
+		public IntPtr Handle => _handle;
 
 		public Video(string fileName)
 		{
-			Theorafile.tf_fopen(fileName, out _theora);
-			Theorafile.tf_videoinfo(_theora, out _yWidth, out _yHeight, out _fps, out var pixelFormat);
-			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+			Open(fileName, out _handle);
+
+			var width = 0;
+			var height = 0;
+			var fps = 0d;
+			th_pixel_fmt pixelFormat;
+			tf_videoinfo((OggTheora_File*)_handle, &width, &height, &fps, &pixelFormat);
+			_yWidth = width;
+			_yHeight = height;
+			_fps = fps;
+
 			switch (pixelFormat)
 			{
-				case Theorafile.th_pixel_fmt.TH_PF_420:
+				case th_pixel_fmt.TH_PF_420:
 					_uvWidth = _yWidth / 2;
 					_uvHeight = _yHeight / 2;
 					break;
-				case Theorafile.th_pixel_fmt.TH_PF_422:
+				case th_pixel_fmt.TH_PF_422:
 					_uvWidth = _yWidth / 2;
 					_uvHeight = _yHeight;
 					break;
-				case Theorafile.th_pixel_fmt.TH_PF_444:
+				case th_pixel_fmt.TH_PF_444:
 					_uvWidth = _yWidth;
 					_uvHeight = _yHeight;
 					break;
@@ -84,21 +95,21 @@ namespace bottlenoselabs.Katabasis
 
 		~Video()
 		{
-			if (_theora != IntPtr.Zero)
+			if (_handle != IntPtr.Zero)
 			{
-				Theorafile.tf_close(ref _theora);
+				Close(ref _handle);
 			}
 		}
 
 		// ReSharper disable once InconsistentNaming
 		public void SetAudioTrackEXT(int track)
 		{
-			if (_theora == IntPtr.Zero)
+			if (_handle == IntPtr.Zero)
 			{
 				return;
 			}
 
-			Theorafile.tf_setaudiotrack(_theora, track);
+			tf_setaudiotrack((OggTheora_File*)_handle, track);
 		}
 	}
 }
