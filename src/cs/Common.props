@@ -1,0 +1,14 @@
+<Project>
+
+    <!-- MSBuild.Tools settings -->
+    <PropertyGroup>    
+		  <CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)/CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
+		  <StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)/StyleCop.json</StyleCopSettingsFilePath>
+    </PropertyGroup>
+
+    <!-- NuGet -->
+    <ItemGroup>
+      <None Include="$(MSBuildThisFileDirectory)NuGet.config" Link="Properties/NuGet.config" />
+    </ItemGroup>
+
+</Project>

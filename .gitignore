@@ -1,0 +1,19 @@
+# Build artifacts
+bin/
+obj/
+
+# Local libraries on disk
+lib/
+
+# JetBrains
+.idea/
+
+# VisualStudio
+*.vs
+
+# User specific
+*.user
+*.userprefs
+
+# macOS
+.DS_Store

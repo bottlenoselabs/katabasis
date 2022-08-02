@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- MSBuild project settings -->
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<!-- My-MSBuild settings -->
+	<PropertyGroup>
+		<EnableAnalyzers>true</EnableAnalyzers>
+		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
+	</PropertyGroup>
+
+	<!-- Project references -->
+	<ItemGroup>
+	  <ProjectReference Include="..\Katabasis.Framework\Katabasis.Framework.csproj" />
+	</ItemGroup>
+	
+	<!-- NuGet packages -->
+
+	<!-- Disable warnins -->
+	<PropertyGroup>
+		<NoWarn>CA1051</NoWarn>
+	</PropertyGroup>
+
+</Project>

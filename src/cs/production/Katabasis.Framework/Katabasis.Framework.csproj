@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- MSBuild project settings -->
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblyName>bottlenoselabs.Katabasis.Framework</AssemblyName>
+		<RootNamespace>bottlenoselabs.Katabasis</RootNamespace>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<!-- My-MSBuild settings -->
+	<PropertyGroup>
+		<EnableRootNamespace>false</EnableRootNamespace>
+		<EnableAnalyzers>true</EnableAnalyzers>
+		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
+		<EnableCodeCoverage>false</EnableCodeCoverage>
+	</PropertyGroup>
+	
+	<!-- Project referneces -->
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock\Katabasis.Bedrock.csproj" />
+	</ItemGroup>
+
+	<!-- NuGet package references -->
+
+	<!-- Stock effects files emedded into assembly -->
+	<ItemGroup>
+		<EmbeddedResource Include="Graphics\Effect\Sprite\SpriteEffect.fxb" />
+		<EmbeddedResource Include="Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
+		<EmbeddedResource Include="ImGui\Main.fxb" />
+		<EmbeddedResource Include="Katabasis/Graphics/Effect/StockEffects/FXB/*.fxb" />
+		<None Remove="Katabasis\Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
+	</ItemGroup>
+
+</Project>
