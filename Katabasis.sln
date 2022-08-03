@@ -1,80 +1,84 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{412996A6-B849-4293-AB31-3A72DA4362FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorVenture", "src\cs\games\VectorVenture\VectorVenture.csproj", "{D9763D2B-0F3D-4210-A5CC-EE206F62F111}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VectorVenture", "src\cs\games\VectorVenture\VectorVenture.csproj", "{D9763D2B-0F3D-4210-A5CC-EE206F62F111}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Production", "Production", "{4512F24B-1568-444E-915A-810DF518DE81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Framework", "src\cs\production\Katabasis.Framework\Katabasis.Framework.csproj", "{D867D6BC-E023-4FFE-981A-3C21A961FEC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Framework", "src\cs\production\Katabasis.Framework\Katabasis.Framework.csproj", "{D867D6BC-E023-4FFE-981A-3C21A961FEC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Extended", "src\cs\production\Katabasis.Extended\Katabasis.Extended.csproj", "{CFBCCFCF-522F-42ED-9F42-A40D172152E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Extended", "src\cs\production\Katabasis.Extended\Katabasis.Extended.csproj", "{CFBCCFCF-522F-42ED-9F42-A40D172152E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Assetyard", "src\cs\production\Katabasis.Assetyard\Katabasis.Assetyard.csproj", "{82696453-2D0E-496F-9D16-F0F156050ADB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Assetyard", "src\cs\production\Katabasis.Assetyard\Katabasis.Assetyard.csproj", "{82696453-2D0E-496F-9D16-F0F156050ADB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Graphics", "Graphics", "{5630F52F-E189-4FA0-92DC-95687895ADA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.01-Clear", "src\cs\samples\graphics\Katabasis.Samples.Graphics.01-Clear\Katabasis.Samples.Graphics.01-Clear.csproj", "{2965CDF5-4884-493A-B703-56D152739B94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.01-Clear", "src\cs\samples\graphics\Katabasis.Samples.Graphics.01-Clear\Katabasis.Samples.Graphics.01-Clear.csproj", "{2965CDF5-4884-493A-B703-56D152739B94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.03-Rectangle", "src\cs\samples\graphics\Katabasis.Samples.Graphics.03-Rectangle\Katabasis.Samples.Graphics.03-Rectangle.csproj", "{96C5178D-21D6-46E4-A3B8-BFD76DA5A13A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.03-Rectangle", "src\cs\samples\graphics\Katabasis.Samples.Graphics.03-Rectangle\Katabasis.Samples.Graphics.03-Rectangle.csproj", "{96C5178D-21D6-46E4-A3B8-BFD76DA5A13A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.02-Triangle", "src\cs\samples\graphics\Katabasis.Samples.Graphics.02-Triangle\Katabasis.Samples.Graphics.02-Triangle.csproj", "{D6DC9CA1-0A1A-41F5-B097-9BDB305213A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.02-Triangle", "src\cs\samples\graphics\Katabasis.Samples.Graphics.02-Triangle\Katabasis.Samples.Graphics.02-Triangle.csproj", "{D6DC9CA1-0A1A-41F5-B097-9BDB305213A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.04-BufferOffsets", "src\cs\samples\graphics\Katabasis.Samples.Graphics.04-BufferOffsets\Katabasis.Samples.Graphics.04-BufferOffsets.csproj", "{4D67004D-B675-4568-BF83-0C7923F65A87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.04-BufferOffsets", "src\cs\samples\graphics\Katabasis.Samples.Graphics.04-BufferOffsets\Katabasis.Samples.Graphics.04-BufferOffsets.csproj", "{4D67004D-B675-4568-BF83-0C7923F65A87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.05-Cube", "src\cs\samples\graphics\Katabasis.Samples.Graphics.05-Cube\Katabasis.Samples.Graphics.05-Cube.csproj", "{C6757AFF-F21A-410B-894B-0B0E58D5FE73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.05-Cube", "src\cs\samples\graphics\Katabasis.Samples.Graphics.05-Cube\Katabasis.Samples.Graphics.05-Cube.csproj", "{C6757AFF-F21A-410B-894B-0B0E58D5FE73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.06-CubeTexture2D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.06-CubeTexture2D\Katabasis.Samples.Graphics.06-CubeTexture2D.csproj", "{AF64816A-2A0B-4298-9D4A-4B80BA6A8AB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.06-CubeTexture2D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.06-CubeTexture2D\Katabasis.Samples.Graphics.06-CubeTexture2D.csproj", "{AF64816A-2A0B-4298-9D4A-4B80BA6A8AB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.07-TextureCoordinates2D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.07-TextureCoordinates2D\Katabasis.Samples.Graphics.07-TextureCoordinates2D.csproj", "{BDBA0860-D63A-42C6-9263-D222CD40F5B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.07-TextureCoordinates2D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.07-TextureCoordinates2D\Katabasis.Samples.Graphics.07-TextureCoordinates2D.csproj", "{BDBA0860-D63A-42C6-9263-D222CD40F5B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.08-CubeDynamicTexture2D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.08-CubeDynamicTexture2D\Katabasis.Samples.Graphics.08-CubeDynamicTexture2D.csproj", "{BBA15B48-2BE6-4ABD-B358-15C9611C41EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.08-CubeDynamicTexture2D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.08-CubeDynamicTexture2D\Katabasis.Samples.Graphics.08-CubeDynamicTexture2D.csproj", "{BBA15B48-2BE6-4ABD-B358-15C9611C41EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.09-RenderTarget", "src\cs\samples\graphics\Katabasis.Samples.Graphics.09-RenderTarget\Katabasis.Samples.Graphics.09-RenderTarget.csproj", "{73AF8E08-203F-49E8-AF66-0222E65CD588}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.09-RenderTarget", "src\cs\samples\graphics\Katabasis.Samples.Graphics.09-RenderTarget\Katabasis.Samples.Graphics.09-RenderTarget.csproj", "{73AF8E08-203F-49E8-AF66-0222E65CD588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.10-MultipleRenderTargets", "src\cs\samples\graphics\Katabasis.Samples.Graphics.10-MultipleRenderTargets\Katabasis.Samples.Graphics.10-MultipleRenderTargets.csproj", "{2D4426EC-0CEF-4F60-9C19-770438E5BF15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.10-MultipleRenderTargets", "src\cs\samples\graphics\Katabasis.Samples.Graphics.10-MultipleRenderTargets\Katabasis.Samples.Graphics.10-MultipleRenderTargets.csproj", "{2D4426EC-0CEF-4F60-9C19-770438E5BF15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.11-CubeTexture3D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.11-CubeTexture3D\Katabasis.Samples.Graphics.11-CubeTexture3D.csproj", "{8AE0FE36-48FE-4AD2-9301-A0486FAF4923}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.11-CubeTexture3D", "src\cs\samples\graphics\Katabasis.Samples.Graphics.11-CubeTexture3D\Katabasis.Samples.Graphics.11-CubeTexture3D.csproj", "{8AE0FE36-48FE-4AD2-9301-A0486FAF4923}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Graphics.12-ParticlesInstancing", "src\cs\samples\graphics\Katabasis.Samples.Graphics.12-ParticlesInstancing\Katabasis.Samples.Graphics.12-ParticlesInstancing.csproj", "{1E5E25C0-0468-42F3-BD95-3EE39956B478}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Graphics.12-ParticlesInstancing", "src\cs\samples\graphics\Katabasis.Samples.Graphics.12-ParticlesInstancing\Katabasis.Samples.Graphics.12-ParticlesInstancing.csproj", "{1E5E25C0-0468-42F3-BD95-3EE39956B478}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImGui", "ImGui", "{540EFF1F-567A-48D3-A1C7-7478574579B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.ImGui.01-HelloWorld", "src\cs\samples\imgui\Katabasis.Samples.ImGui.01-HelloWorld\Katabasis.Samples.ImGui.01-HelloWorld.csproj", "{775634C0-E351-470A-A6B9-C0C1A0044D47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.ImGui.01-HelloWorld", "src\cs\samples\imgui\Katabasis.Samples.ImGui.01-HelloWorld\Katabasis.Samples.ImGui.01-HelloWorld.csproj", "{775634C0-E351-470A-A6B9-C0C1A0044D47}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Input", "Input", "{7E4019EF-1309-4959-9DDA-4F915DE6EBA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Input.01-Mouse", "src\cs\samples\input\Katabasis.Samples.Input.01-Mouse\Katabasis.Samples.Input.01-Mouse.csproj", "{0547E457-E8F8-4DF2-A6D4-705AFF26872E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Input.01-Mouse", "src\cs\samples\input\Katabasis.Samples.Input.01-Mouse\Katabasis.Samples.Input.01-Mouse.csproj", "{0547E457-E8F8-4DF2-A6D4-705AFF26872E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AEB5AA31-07C7-4AB5-95A9-F906023AA6F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Extended.Tests", "src\cs\tests\Katabasis.Extended.Tests\Katabasis.Extended.Tests.csproj", "{B4CE3FAA-7539-4E37-AE45-C70815B52A61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Extended.Tests", "src\cs\tests\Katabasis.Extended.Tests\Katabasis.Extended.Tests.csproj", "{B4CE3FAA-7539-4E37-AE45-C70815B52A61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audio", "Audio", "{6023ED4A-6070-4125-B36E-8C8EE45ABBF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Audio.01-Music", "src\cs\samples\audio\Katabasis.Samples.Audio.01-Music\Katabasis.Samples.Audio.01-Music.csproj", "{7BABA9FE-1086-4610-B4C0-1255CEFD14AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Audio.01-Music", "src\cs\samples\audio\Katabasis.Samples.Audio.01-Music\Katabasis.Samples.Audio.01-Music.csproj", "{7BABA9FE-1086-4610-B4C0-1255CEFD14AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Video", "Video", "{2097E157-703D-4374-8D5C-9774AA67D00D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Samples.Video.01-Playback", "src\cs\samples\video\Katabasis.Samples.Video.01-Playback\Katabasis.Samples.Video.01-Playback.csproj", "{16DF9AC9-9066-4C33-AA6E-B41DE41706F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Video.01-Playback", "src\cs\samples\video\Katabasis.Samples.Video.01-Playback\Katabasis.Samples.Video.01-Playback.csproj", "{16DF9AC9-9066-4C33-AA6E-B41DE41706F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bedrock", "Bedrock", "{93065BEE-1597-4D74-8B05-C031F53916B2}"
 	ProjectSection(SolutionItems) = preProject
 		ext\katabasis-bedrock\README.md = ext\katabasis-bedrock\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Bedrock", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock\Katabasis.Bedrock.csproj", "{31FA7604-66AE-47AF-8B40-57AA2AFE64D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Bedrock", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock\Katabasis.Bedrock.csproj", "{31FA7604-66AE-47AF-8B40-57AA2AFE64D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Bedrock.win-x64", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock.win-x64\Katabasis.Bedrock.win-x64.csproj", "{BC07E29C-E8BA-4BC2-A479-CF63C44AA55C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Bedrock.win-x64", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock.win-x64\Katabasis.Bedrock.win-x64.csproj", "{BC07E29C-E8BA-4BC2-A479-CF63C44AA55C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Bedrock.linux-x64", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock.linux-x64\Katabasis.Bedrock.linux-x64.csproj", "{9FE09BC4-AB66-40B6-B28A-5014CE90272E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Bedrock.linux-x64", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock.linux-x64\Katabasis.Bedrock.linux-x64.csproj", "{9FE09BC4-AB66-40B6-B28A-5014CE90272E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Katabasis.Bedrock.osx", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock.osx\Katabasis.Bedrock.osx.csproj", "{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Bedrock.osx", "ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock.osx\Katabasis.Bedrock.osx.csproj", "{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{4AEB1D15-D139-4336-84F4-0043E81CC2D0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoPong", "src\cs\samples\games\AutoPong\AutoPong.csproj", "{31655B5F-B28E-46FB-9193-A977500147E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,41 +88,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{D9763D2B-0F3D-4210-A5CC-EE206F62F111} = {412996A6-B849-4293-AB31-3A72DA4362FD}
-		{D867D6BC-E023-4FFE-981A-3C21A961FEC8} = {4512F24B-1568-444E-915A-810DF518DE81}
-		{CFBCCFCF-522F-42ED-9F42-A40D172152E9} = {4512F24B-1568-444E-915A-810DF518DE81}
-		{82696453-2D0E-496F-9D16-F0F156050ADB} = {4512F24B-1568-444E-915A-810DF518DE81}
-		{5630F52F-E189-4FA0-92DC-95687895ADA6} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
-		{2965CDF5-4884-493A-B703-56D152739B94} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{96C5178D-21D6-46E4-A3B8-BFD76DA5A13A} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{D6DC9CA1-0A1A-41F5-B097-9BDB305213A9} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{4D67004D-B675-4568-BF83-0C7923F65A87} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{C6757AFF-F21A-410B-894B-0B0E58D5FE73} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{AF64816A-2A0B-4298-9D4A-4B80BA6A8AB3} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{BDBA0860-D63A-42C6-9263-D222CD40F5B6} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{BBA15B48-2BE6-4ABD-B358-15C9611C41EE} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{73AF8E08-203F-49E8-AF66-0222E65CD588} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{2D4426EC-0CEF-4F60-9C19-770438E5BF15} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{8AE0FE36-48FE-4AD2-9301-A0486FAF4923} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{1E5E25C0-0468-42F3-BD95-3EE39956B478} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
-		{540EFF1F-567A-48D3-A1C7-7478574579B6} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
-		{775634C0-E351-470A-A6B9-C0C1A0044D47} = {540EFF1F-567A-48D3-A1C7-7478574579B6}
-		{7E4019EF-1309-4959-9DDA-4F915DE6EBA6} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
-		{0547E457-E8F8-4DF2-A6D4-705AFF26872E} = {7E4019EF-1309-4959-9DDA-4F915DE6EBA6}
-		{B4CE3FAA-7539-4E37-AE45-C70815B52A61} = {AEB5AA31-07C7-4AB5-95A9-F906023AA6F7}
-		{6023ED4A-6070-4125-B36E-8C8EE45ABBF4} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
-		{7BABA9FE-1086-4610-B4C0-1255CEFD14AC} = {6023ED4A-6070-4125-B36E-8C8EE45ABBF4}
-		{2097E157-703D-4374-8D5C-9774AA67D00D} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
-		{16DF9AC9-9066-4C33-AA6E-B41DE41706F1} = {2097E157-703D-4374-8D5C-9774AA67D00D}
-		{31FA7604-66AE-47AF-8B40-57AA2AFE64D2} = {93065BEE-1597-4D74-8B05-C031F53916B2}
-		{BC07E29C-E8BA-4BC2-A479-CF63C44AA55C} = {93065BEE-1597-4D74-8B05-C031F53916B2}
-		{9FE09BC4-AB66-40B6-B28A-5014CE90272E} = {93065BEE-1597-4D74-8B05-C031F53916B2}
-		{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37} = {93065BEE-1597-4D74-8B05-C031F53916B2}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D9763D2B-0F3D-4210-A5CC-EE206F62F111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -421,5 +390,57 @@ Global
 		{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37}.Release|x64.Build.0 = Release|Any CPU
 		{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37}.Release|x86.ActiveCfg = Release|Any CPU
 		{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37}.Release|x86.Build.0 = Release|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Debug|x64.Build.0 = Debug|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Debug|x86.Build.0 = Debug|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Release|x64.ActiveCfg = Release|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Release|x64.Build.0 = Release|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{31655B5F-B28E-46FB-9193-A977500147E8}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D9763D2B-0F3D-4210-A5CC-EE206F62F111} = {412996A6-B849-4293-AB31-3A72DA4362FD}
+		{D867D6BC-E023-4FFE-981A-3C21A961FEC8} = {4512F24B-1568-444E-915A-810DF518DE81}
+		{CFBCCFCF-522F-42ED-9F42-A40D172152E9} = {4512F24B-1568-444E-915A-810DF518DE81}
+		{82696453-2D0E-496F-9D16-F0F156050ADB} = {4512F24B-1568-444E-915A-810DF518DE81}
+		{5630F52F-E189-4FA0-92DC-95687895ADA6} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
+		{2965CDF5-4884-493A-B703-56D152739B94} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{96C5178D-21D6-46E4-A3B8-BFD76DA5A13A} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{D6DC9CA1-0A1A-41F5-B097-9BDB305213A9} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{4D67004D-B675-4568-BF83-0C7923F65A87} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{C6757AFF-F21A-410B-894B-0B0E58D5FE73} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{AF64816A-2A0B-4298-9D4A-4B80BA6A8AB3} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{BDBA0860-D63A-42C6-9263-D222CD40F5B6} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{BBA15B48-2BE6-4ABD-B358-15C9611C41EE} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{73AF8E08-203F-49E8-AF66-0222E65CD588} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{2D4426EC-0CEF-4F60-9C19-770438E5BF15} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{8AE0FE36-48FE-4AD2-9301-A0486FAF4923} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{1E5E25C0-0468-42F3-BD95-3EE39956B478} = {5630F52F-E189-4FA0-92DC-95687895ADA6}
+		{540EFF1F-567A-48D3-A1C7-7478574579B6} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
+		{775634C0-E351-470A-A6B9-C0C1A0044D47} = {540EFF1F-567A-48D3-A1C7-7478574579B6}
+		{7E4019EF-1309-4959-9DDA-4F915DE6EBA6} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
+		{0547E457-E8F8-4DF2-A6D4-705AFF26872E} = {7E4019EF-1309-4959-9DDA-4F915DE6EBA6}
+		{B4CE3FAA-7539-4E37-AE45-C70815B52A61} = {AEB5AA31-07C7-4AB5-95A9-F906023AA6F7}
+		{6023ED4A-6070-4125-B36E-8C8EE45ABBF4} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
+		{7BABA9FE-1086-4610-B4C0-1255CEFD14AC} = {6023ED4A-6070-4125-B36E-8C8EE45ABBF4}
+		{2097E157-703D-4374-8D5C-9774AA67D00D} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
+		{16DF9AC9-9066-4C33-AA6E-B41DE41706F1} = {2097E157-703D-4374-8D5C-9774AA67D00D}
+		{31FA7604-66AE-47AF-8B40-57AA2AFE64D2} = {93065BEE-1597-4D74-8B05-C031F53916B2}
+		{BC07E29C-E8BA-4BC2-A479-CF63C44AA55C} = {93065BEE-1597-4D74-8B05-C031F53916B2}
+		{9FE09BC4-AB66-40B6-B28A-5014CE90272E} = {93065BEE-1597-4D74-8B05-C031F53916B2}
+		{0E0EFADE-F6C1-4AC7-9F7D-DDE5DADC4B37} = {93065BEE-1597-4D74-8B05-C031F53916B2}
+		{4AEB1D15-D139-4336-84F4-0043E81CC2D0} = {C97F28F8-C889-4BF9-84E3-52DD0C1AB1FD}
+		{31655B5F-B28E-46FB-9193-A977500147E8} = {4AEB1D15-D139-4336-84F4-0043E81CC2D0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5D34435D-4E3B-4FA9-BA9D-630F78DA57FF}
 	EndGlobalSection
 EndGlobal
