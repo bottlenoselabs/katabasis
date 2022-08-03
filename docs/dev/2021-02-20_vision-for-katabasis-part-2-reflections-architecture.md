@@ -69,14 +69,14 @@ I plan to write down the ideas I learned in various dev logs as a form of teachi
 
 ## Coincidence?
 
-The meaning of the word *katabasis* as a trip to the underworld can be compared to the Valley of Despair from the Dunning-Kruger effect. To be considered a a true *katabasis* it must be followed by an *anabasis* which can be compared to the the Slope of Enlightenment. Once the cycle is complete it may start again. This also shares similarties with the psycology of [fixed vs growth mindset](https://en.wikipedia.org/wiki/Mindset#Fixed_and_growth_mindset):
+The meaning of the word *katabasis* as a trip to the underworld can be compared to the Valley of Despair from the Dunning-Kruger effect. The difference is that a katabasis must be journey to the "underworld"; not all Valley's of Despair are "underworlds". Also to be considered a a true *katabasis* it must be followed by an *anabasis* which can be compared to the the Slope of Enlightenment. Once the cycle is complete it may start again. This also shares similarties with the psycology of [fixed vs growth mindset](https://en.wikipedia.org/wiki/Mindset#Fixed_and_growth_mindset):
 
 - The **belief** that intelligence, knowledge, and skills, or rather the lack thereof, is not a fixed thing and can constantly be improved upon, especially in times of failure or hardship.
 
 People who don't have such a belief are in a "fixed mindset".
-Anyone who has such a belief is in a "growth mindset".
+Anyone who has such a belief and acts upon that belief is in a "growth mindset".
 
 ## The Future
 
-It's not 100% clear yet how game-dev fits into the picture of making the world a better place. To me it's just this hunch, a feeling of intuition. But this is pretty cheesy and typical of technoligsts. It is clear that game-dev can be a portal to Computer Science. It's not clear how video games can be used to advance science and culture. Some others have started discussing this possibility space such as Jonathan Blow's talk on [Video Games and the Future of Education](https://www.youtube.com/watch?v=qWFScmtiC44). More to think about and explore.
+It's not 100% clear yet how game-dev fits into the picture of making the world a better place. To me it's just this hunch, a feeling of intuition. But this is pretty cheesy and typical of technoligsts. It is clear that game-dev can be a portal to Computer Science. It's not clear how video games can be used to advance civilization in a meaningful way. There is always the argument that video games are form of art and culture, but I'm thinking more than that. Some others have started discussing this possibility space such as Jonathan Blow's talk on [Video Games and the Future of Education](https://www.youtube.com/watch?v=qWFScmtiC44). More to think about and explore.
 
