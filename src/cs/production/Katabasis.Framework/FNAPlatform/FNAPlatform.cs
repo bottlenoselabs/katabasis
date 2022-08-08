@@ -370,6 +370,11 @@ namespace bottlenoselabs.Katabasis
 
 			AppDomain.CurrentDomain.ProcessExit += SDL2_FNAPlatform.ProgramExit;
 			TitleLocation = SDL2_FNAPlatform.ProgramInit(args);
+			
+			/* Do this AFTER ProgramInit so the platform library
+ 			 * has a chance to load first!
+ 			 */
+			FNALoggerEXT.HookFNA3D();
 		}
 	}
 }
