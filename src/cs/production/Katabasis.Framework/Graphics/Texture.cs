@@ -197,6 +197,7 @@ namespace bottlenoselabs.Katabasis
 					return 8;
 				case SurfaceFormat.Dxt3:
 				case SurfaceFormat.Dxt5:
+				case SurfaceFormat.Dxt5SrgbEXT:
 					return 16;
 				case SurfaceFormat.Alpha8:
 					return 1;
@@ -213,6 +214,7 @@ namespace bottlenoselabs.Katabasis
 				case SurfaceFormat.NormalizedByte4:
 				case SurfaceFormat.Rgba1010102:
 				case SurfaceFormat.ColorBgraEXT:
+				case SurfaceFormat.ColorSrgbEXT:
 					return 4;
 				case SurfaceFormat.HalfVector4:
 				case SurfaceFormat.Rgba64:
