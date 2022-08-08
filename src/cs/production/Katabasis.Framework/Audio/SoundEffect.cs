@@ -654,9 +654,10 @@ namespace bottlenoselabs.Katabasis
 				{
 					FAudioCreate(&ctx, 0, FAUDIO_DEFAULT_PROCESSOR);
 				}
-				catch
+				catch (Exception e)
 				{
 					/* FAudio is missing, bail! */
+					FNALoggerEXT.LogWarn!.Invoke("FAudio failed to load: " + e);
 					return;
 				}
 
