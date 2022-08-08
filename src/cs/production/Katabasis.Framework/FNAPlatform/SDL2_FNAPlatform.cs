@@ -66,10 +66,6 @@ namespace bottlenoselabs.Katabasis
 
         private static bool _supportsGlobalMouse;
 
-        // For iOS high dpi support
-        private static int _retinaWidth;
-        private static int _retinaHeight;
-
         private static readonly SDL_EventFilter _win32OnPaint;
         private static SDL_EventFilter? _prevEventFilter;
 
@@ -603,21 +599,31 @@ namespace bottlenoselabs.Katabasis
             // This _should_ be the first real SDL call we make...
             SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC);
 
+            string videoDriver = SDL.SDL_GetCurrentVideoDriver();
+            
             /* A number of platforms don't support global mouse, but
              * this really only matters on desktop where the game
              * screen may not be covering the whole display.
              */
-            if (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
-                _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
-                _osVersion.Equals("Linux", StringComparison.Ordinal) ||
-                _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
-                _osVersion.Equals("OpenBSD", StringComparison.Ordinal))
+            _supportsGlobalMouse = _osVersion.Equals("Windows") ||
+                                   _osVersion.Equals("Mac OS X") ||
+                                   videoDriver.Equals("x11");
+
+            /* High-DPI is really annoying and only some platforms
+ 			 * actually let you control the drawable surface.
+ 			 */
+            if (!videoDriver.Equals("wayland") &&
+                !videoDriver.Equals("cocoa") &&
+                !videoDriver.Equals("uikit"))
             {
-                _supportsGlobalMouse = true;
-            }
-            else
-            {
-                _supportsGlobalMouse = false;
+                /* Note that this is NOT an override.
+ 				 * We can be overruled, just in case.
+ 				 */
+                SDL_SetHintWithPriority(
+                    SDL_HINT_VIDEO_HIGHDPI_DISABLED,
+                    "1",
+                    SDL_HintPriority.SDL_HINT_NORMAL
+                );
             }
 
             /* We need to change the Windows default here, as the
@@ -758,19 +764,10 @@ namespace bottlenoselabs.Katabasis
              * This is our way to communicate that it failed...
              * -flibit
              */
-            int drawX;
-            int drawY;
-            FNA3D.FNA3D_GetDrawableSize(window, &drawX, &drawY);
-            if (drawX == GraphicsDeviceManager.DefaultBackBufferWidth &&
-                drawY == GraphicsDeviceManager.DefaultBackBufferHeight)
+            initFlags = SDL_GetWindowFlags(window);
+            if ((initFlags & (uint)SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI) == 0)
             {
                 Environment.SetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI", "0");
-            }
-            else
-            {
-                // Store the full retina resolution of the display
-                _retinaWidth = drawX;
-                _retinaHeight = drawY;
             }
 
             return new FNAWindow((IntPtr)window, @"\\.\DISPLAY" + (SDL_GetWindowDisplayIndex(window) + 1));
@@ -807,24 +804,19 @@ namespace bottlenoselabs.Katabasis
             ref string resultDeviceName)
         {
             var center = false;
-            if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
-            {
-                /* For high-DPI windows, halve the size!
-                 * The drawable size is now the primary width/height, so
-                 * the window needs to accommodate the GL viewport.
-                 * -flibit
-                 */
-                clientWidth /= 2;
-                clientHeight /= 2;
-            }
-
             var windowSDL = (SDL_Window*)window;
+
+            /* The drawable size is now the primary width/height, so
+ 			 * the window needs to accommodate the GL viewport.
+ 			 * -flibit
+ 			 */
+            ScaleForWindow(window, ref clientWidth, ref clientHeight);
 
             // When windowed, set the size before moving
             if (!wantsFullscreen)
             {
                 bool resize;
-                if ((SDL_GetWindowFlags((SDL_Window*)window) & (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN) != 0)
+                if ((SDL_GetWindowFlags(windowSDL) & (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN) != 0)
                 {
                     var apiResult = SDL_SetWindowFullscreen(windowSDL, 0);
                     if (apiResult != 0)
@@ -911,6 +903,22 @@ namespace bottlenoselabs.Katabasis
                 var b = GetWindowBounds(window);
                 Mouse._windowWidth = b.Width;
                 Mouse._windowHeight = b.Height;
+            }
+        }
+
+        public static void ScaleForWindow(IntPtr window, ref int w, ref int h)
+        {
+            int ww, wh, dw, dh;
+            SDL_GetWindowSize((SDL_Window*)window, &ww, &wh);
+            FNA3D.FNA3D_GetDrawableSize((void*)window, &dw, &dh);
+            if (ww != 0 &&
+                wh != 0 &&
+                dw != 0 &&
+                dh != 0 &&
+                (ww != dw || wh != dh))
+            {
+                w = (int)(w / (ww / (float)dw));
+                h = (int)(h / (wh / (float)dh));
             }
         }
 
@@ -1067,15 +1075,8 @@ namespace bottlenoselabs.Katabasis
         {
             SDL_DisplayMode filler;
             SDL_GetCurrentDisplayMode(adapterIndex, &filler);
-
-            if (!string.IsNullOrEmpty(_osVersion) &&
-                _osVersion.Equals("iOS", StringComparison.Ordinal) &&
-                Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
-            {
-                // Provide the actual resolution in pixels, not points.
-                filler.w = _retinaWidth;
-                filler.h = _retinaHeight;
-            }
+            
+            // FIXME: iOS needs to factor in the DPI!
 
             return new DisplayMode(
                 filler.w,
@@ -1098,8 +1099,8 @@ namespace bottlenoselabs.Katabasis
             {
                 int x_tmp, y_tmp;
                 flags = SDL_GetRelativeMouseState(&x_tmp, &y_tmp);
-                x = (int)x_tmp;
-                y = (int)y_tmp;
+                x = x_tmp;
+                y = y_tmp;
             }
             else if (_supportsGlobalMouse)
             {

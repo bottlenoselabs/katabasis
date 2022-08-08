@@ -10,6 +10,8 @@ namespace bottlenoselabs.Katabasis
 {
 	internal static class FNAPlatform
 	{
+		public delegate void ScaleForWindowFunc(IntPtr window, ref int w, ref int h);
+		
 		public delegate void ApplyWindowChangesFunc(
 			IntPtr window,
 			int clientWidth,
@@ -171,6 +173,8 @@ namespace bottlenoselabs.Katabasis
 
 		public static readonly ApplyWindowChangesFunc ApplyWindowChanges;
 
+		public static readonly ScaleForWindowFunc ScaleForWindow;
+
 		public static readonly GetWindowBoundsFunc GetWindowBounds;
 
 		public static readonly GetWindowResizableFunc GetWindowResizable;
@@ -321,6 +325,7 @@ namespace bottlenoselabs.Katabasis
 			CreateWindow = SDL2_FNAPlatform.CreateWindow;
 			DisposeWindow = SDL2_FNAPlatform.DisposeWindow;
 			ApplyWindowChanges = SDL2_FNAPlatform.ApplyWindowChanges;
+			ScaleForWindow = SDL2_FNAPlatform.ScaleForWindow;
 			GetWindowBounds = SDL2_FNAPlatform.GetWindowBounds;
 			GetWindowResizable = SDL2_FNAPlatform.GetWindowResizable;
 			SetWindowResizable = SDL2_FNAPlatform.SetWindowResizable;
