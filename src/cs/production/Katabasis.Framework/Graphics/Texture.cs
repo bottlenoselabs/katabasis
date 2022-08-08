@@ -31,6 +31,26 @@ namespace bottlenoselabs.Katabasis
 
 			return levels;
 		}
+		
+		internal static int CalculateDDSLevelSize(int width, int height, SurfaceFormat format)
+		{
+			if (format == SurfaceFormat.ColorBgraEXT)
+			{
+				return (width * 32 + 7) / 8 * height;
+			}
+
+			var blockSize = 16;
+			if (format == SurfaceFormat.Dxt1)
+			{
+				blockSize = 8;
+			}
+			
+			width = Math.Max(width, 1);
+			height = Math.Max(height, 1);
+			return (width + 3) / 4 *
+			       ((height + 3) / 4) *
+			       blockSize;
+		}
 
 		// DDS loading extension, based on MojoDDS
 		internal static void ParseDDS(
@@ -38,9 +58,7 @@ namespace bottlenoselabs.Katabasis
 			out SurfaceFormat format,
 			out int width,
 			out int height,
-			out int levels,
-			out int levelSize,
-			out int blockSize)
+			out int levels)
 		{
 			// A whole bunch of magic numbers, yay DDS!
 			const uint DDS_MAGIC = 0x20534444;
@@ -142,29 +160,15 @@ namespace bottlenoselabs.Katabasis
 			}
 
 			// Determine texture format
-			blockSize = 0;
 			if ((formatFlags & DDPF_FOURCC) == DDPF_FOURCC)
 			{
-				switch (formatFourCC)
+				format = formatFourCC switch
 				{
-					case FOURCC_DXT1:
-						format = SurfaceFormat.Dxt1;
-						blockSize = 8;
-						break;
-					case FOURCC_DXT3:
-						format = SurfaceFormat.Dxt3;
-						blockSize = 16;
-						break;
-					case FOURCC_DXT5:
-						format = SurfaceFormat.Dxt5;
-						blockSize = 16;
-						break;
-					default:
-						throw new NotSupportedException("Unsupported DDS texture format");
-				}
-
-				levelSize = (width > 0 ? (width + 3) / 4 : 1) * blockSize *
-				            (height > 0 ? (height + 3) / 4 : 1);
+					FOURCC_DXT1 => SurfaceFormat.Dxt1,
+					FOURCC_DXT3 => SurfaceFormat.Dxt3,
+					FOURCC_DXT5 => SurfaceFormat.Dxt5,
+					_ => throw new NotSupportedException("Unsupported DDS texture format")
+				};
 			}
 			else if ((formatFlags & DDPF_RGB) == DDPF_RGB)
 			{
@@ -178,7 +182,6 @@ namespace bottlenoselabs.Katabasis
 				}
 
 				format = SurfaceFormat.ColorBgraEXT;
-				levelSize = (int)(((width * formatRGBBitCount) + 7) / 8 * height);
 			}
 			else
 			{

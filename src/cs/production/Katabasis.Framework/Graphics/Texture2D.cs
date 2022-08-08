@@ -44,9 +44,9 @@ namespace bottlenoselabs.Katabasis
 				Format = format;
 			}
 
-			_texture = (IntPtr)FNA3D.FNA3D_CreateTexture2D(
+			_texture = (IntPtr)FNA3D_CreateTexture2D(
 				GraphicsDevice.Device,
-				(FNA3D.FNA3D_SurfaceFormat)Format,
+				(FNA3D_SurfaceFormat)Format,
 				Width,
 				Height,
 				LevelCount,
@@ -96,9 +96,9 @@ namespace bottlenoselabs.Katabasis
 
 			var elementSize = Marshal.SizeOf(typeof(T));
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			FNA3D.FNA3D_SetTextureData2D(
+			FNA3D_SetTextureData2D(
 				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
+				(FNA3D_Texture*)_texture,
 				x,
 				y,
 				w,
@@ -137,9 +137,9 @@ namespace bottlenoselabs.Katabasis
 				h = Math.Max(Height >> level, 1);
 			}
 
-			FNA3D.FNA3D_SetTextureData2D(
+			FNA3D_SetTextureData2D(
 				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
+				(FNA3D_Texture*)_texture,
 				x,
 				y,
 				w,
@@ -199,9 +199,9 @@ namespace bottlenoselabs.Katabasis
 			ValidateGetDataFormat(Format, elementSizeInBytes);
 
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			FNA3D.FNA3D_GetTextureData2D(
+			FNA3D_GetTextureData2D(
 				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
+				(FNA3D_Texture*)_texture,
 				subX,
 				subY,
 				subW,
@@ -217,7 +217,7 @@ namespace bottlenoselabs.Katabasis
 		{
 			var len = Width * Height * GetFormatSize(Format);
 			var data = Marshal.AllocHGlobal(len);
-			FNA3D.FNA3D_GetTextureData2D(
+			FNA3D_GetTextureData2D(
 				GraphicsDevice.Device,
 				(FNA3D.FNA3D_Texture*)_texture,
 				0,
@@ -244,9 +244,9 @@ namespace bottlenoselabs.Katabasis
 		{
 			var len = Width * Height * GetFormatSize(Format);
 			var data = Marshal.AllocHGlobal(len);
-			FNA3D.FNA3D_GetTextureData2D(
+			FNA3D_GetTextureData2D(
 				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
+				(FNA3D_Texture*)_texture,
 				0,
 				0,
 				Width,
@@ -363,14 +363,7 @@ namespace bottlenoselabs.Katabasis
 			// Begin BinaryReader, ignoring a tab!
 			using BinaryReader reader = new(stream);
 
-			ParseDDS(
-				reader,
-				out var format,
-				out var width,
-				out var height,
-				out var levels,
-				out var levelSize,
-				out var blockSize);
+			ParseDDS(reader, out var format, out var width, out var height, out var levels);
 
 			// Allocate/Load texture
 			var result = new Texture2D(
@@ -384,6 +377,8 @@ namespace bottlenoselabs.Katabasis
 			{
 				for (var i = 0; i < levels; i += 1)
 				{
+					var levelSize = CalculateDDSLevelSize(width >> i, height >> i, format);
+					
 					result.SetData(
 						i,
 						null,
@@ -394,25 +389,23 @@ namespace bottlenoselabs.Katabasis
 					memoryStream.Seek(
 						levelSize,
 						SeekOrigin.Current);
-
-					levelSize = Math.Max(
-						levelSize >> 2,
-						blockSize);
 				}
 			}
 			else
 			{
 				for (var i = 0; i < levels; i += 1)
 				{
-					tex = reader.ReadBytes(levelSize);
+					tex = reader.ReadBytes(CalculateDDSLevelSize(
+						width >> i,
+						height >> i,
+						format
+					));
 					result.SetData(
 						i,
 						null,
 						tex,
 						0,
 						tex.Length);
-
-					levelSize = Math.Max(levelSize >> 2, blockSize);
 				}
 			}
 

@@ -58,9 +58,7 @@ namespace bottlenoselabs.Katabasis
 				out var format,
 				out var width,
 				out _,
-				out var levels,
-				out var levelSize,
-				out var blockSize);
+				out var levels);
 
 			// Allocate/Load texture
 			var result = new TextureCube(width, levels > 1, format);
@@ -70,9 +68,14 @@ namespace bottlenoselabs.Katabasis
 			{
 				for (var face = 0; face < 6; face += 1)
 				{
-					var mipLevelSize = levelSize;
 					for (var i = 0; i < levels; i += 1)
 					{
+						var mipLevelSize = CalculateDDSLevelSize(
+							width >> i,
+							width >> i,
+							format
+						);
+						
 						result.SetData(
 							(CubeMapFace)face,
 							i,
@@ -84,10 +87,6 @@ namespace bottlenoselabs.Katabasis
 						memoryStream.Seek(
 							mipLevelSize,
 							SeekOrigin.Current);
-
-						mipLevelSize = Math.Max(
-							mipLevelSize >> 2,
-							blockSize);
 					}
 				}
 			}
@@ -95,10 +94,13 @@ namespace bottlenoselabs.Katabasis
 			{
 				for (var face = 0; face < 6; face += 1)
 				{
-					var mipLevelSize = levelSize;
 					for (var i = 0; i < levels; i += 1)
 					{
-						tex = reader.ReadBytes(mipLevelSize);
+						tex = reader.ReadBytes(CalculateDDSLevelSize(
+							width >> i,
+							width >> i,
+							format
+						));
 						result.SetData(
 							(CubeMapFace)face,
 							i,
@@ -106,10 +108,6 @@ namespace bottlenoselabs.Katabasis
 							tex,
 							0,
 							tex.Length);
-
-						mipLevelSize = Math.Max(
-							mipLevelSize >> 2,
-							blockSize);
 					}
 				}
 			}
