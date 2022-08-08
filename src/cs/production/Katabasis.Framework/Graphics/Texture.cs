@@ -81,6 +81,7 @@ namespace bottlenoselabs.Katabasis
 			const uint FOURCC_DXT1 = 0x31545844;
 			const uint FOURCC_DXT3 = 0x33545844;
 			const uint FOURCC_DXT5 = 0x35545844;
+			const uint FOURCC_BPTC = 0x30315844;
 			// const uint FOURCC_DX10 = 0x30315844;
 			const uint pitchAndLinear = DDSD_PITCH | DDSD_LINEARSIZE;
 
@@ -167,6 +168,7 @@ namespace bottlenoselabs.Katabasis
 					FOURCC_DXT1 => SurfaceFormat.Dxt1,
 					FOURCC_DXT3 => SurfaceFormat.Dxt3,
 					FOURCC_DXT5 => SurfaceFormat.Dxt5,
+					DDPF_FOURCC => SurfaceFormat.Bc7EXT,
 					_ => throw new NotSupportedException("Unsupported DDS texture format")
 				};
 			}
@@ -198,6 +200,8 @@ namespace bottlenoselabs.Katabasis
 				case SurfaceFormat.Dxt3:
 				case SurfaceFormat.Dxt5:
 				case SurfaceFormat.Dxt5SrgbEXT:
+				case SurfaceFormat.Bc7EXT:
+				case SurfaceFormat.Bc7SrgbEXT:
 					return 16;
 				case SurfaceFormat.Alpha8:
 					return 1;
