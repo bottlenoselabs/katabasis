@@ -371,8 +371,8 @@ namespace bottlenoselabs.Katabasis
 				// Scan for other chunks
 				while (reader.PeekChar() != -1)
 				{
-					byte[] chunkIDBytes = reader.ReadBytes(4);
-					if (chunkIDBytes.Length < 4)
+					var chunkIDChars = reader.ReadChars(4);
+					if (chunkIDChars.Length < 4)
 					{
 						break; // EOL!
 					}
@@ -383,10 +383,10 @@ namespace bottlenoselabs.Katabasis
 						break; // EOL!
 					}
 
-					var chunkID = BitConverter.ToInt32(chunkIDBytes, 0);
+					var chunkSignature = new string(chunkIDChars);
 					var chunkDataSize = BitConverter.ToInt32(chunkSizeBytes, 0);
 					// "smpl", Sampler Chunk Found
-					if (chunkID == 0x736D706C)
+					if (chunkSignature == "smpl")
 					{
 						reader.ReadUInt32(); // Manufacturer
 						reader.ReadUInt32(); // Product
