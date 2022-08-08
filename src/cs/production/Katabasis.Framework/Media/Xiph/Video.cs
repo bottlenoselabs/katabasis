@@ -111,5 +111,13 @@ namespace bottlenoselabs.Katabasis
 
 			tf_setaudiotrack((OggTheora_File*)_handle, track);
 		}
+		
+		public void SetVideoTrackEXT(int track)
+		{
+			if (_handle != IntPtr.Zero)
+			{
+				tf_setvideotrack((OggTheora_File*)_handle, track);
+			}
+		}
 	}
 }
