@@ -1302,26 +1302,23 @@ namespace bottlenoselabs.Katabasis
 			// Inlined CreateOrthographicOffCenter * transformMatrix
 			var tfWidth = (float)(2.0 / viewport.Width);
 			var tfHeight = (float)(-2.0 / viewport.Height);
-			unsafe
-			{
-				var dstPtr = (float*)_spriteMatrixTransform;
-				dstPtr[0] = (tfWidth * _transformMatrix.M11) - _transformMatrix.M14;
-				dstPtr[1] = (tfWidth * _transformMatrix.M21) - _transformMatrix.M24;
-				dstPtr[2] = (tfWidth * _transformMatrix.M31) - _transformMatrix.M34;
-				dstPtr[3] = (tfWidth * _transformMatrix.M41) - _transformMatrix.M44;
-				dstPtr[4] = (tfHeight * _transformMatrix.M12) + _transformMatrix.M14;
-				dstPtr[5] = (tfHeight * _transformMatrix.M22) + _transformMatrix.M24;
-				dstPtr[6] = (tfHeight * _transformMatrix.M32) + _transformMatrix.M34;
-				dstPtr[7] = (tfHeight * _transformMatrix.M42) + _transformMatrix.M44;
-				dstPtr[8] = _transformMatrix.M13;
-				dstPtr[9] = _transformMatrix.M23;
-				dstPtr[10] = _transformMatrix.M33;
-				dstPtr[11] = _transformMatrix.M43;
-				dstPtr[12] = _transformMatrix.M14;
-				dstPtr[13] = _transformMatrix.M24;
-				dstPtr[14] = _transformMatrix.M34;
-				dstPtr[15] = _transformMatrix.M44;
-			}
+			var dstPtr = (float*)_spriteMatrixTransform;
+			dstPtr[0] = (tfWidth * _transformMatrix.M11) - _transformMatrix.M14;
+			dstPtr[1] = (tfWidth * _transformMatrix.M21) - _transformMatrix.M24;
+			dstPtr[2] = (tfWidth * _transformMatrix.M31) - _transformMatrix.M34;
+			dstPtr[3] = (tfWidth * _transformMatrix.M41) - _transformMatrix.M44;
+			dstPtr[4] = (tfHeight * _transformMatrix.M12) + _transformMatrix.M14;
+			dstPtr[5] = (tfHeight * _transformMatrix.M22) + _transformMatrix.M24;
+			dstPtr[6] = (tfHeight * _transformMatrix.M32) + _transformMatrix.M34;
+			dstPtr[7] = (tfHeight * _transformMatrix.M42) + _transformMatrix.M44;
+			dstPtr[8] = _transformMatrix.M13;
+			dstPtr[9] = _transformMatrix.M23;
+			dstPtr[10] = _transformMatrix.M33;
+			dstPtr[11] = _transformMatrix.M43;
+			dstPtr[12] = _transformMatrix.M14;
+			dstPtr[13] = _transformMatrix.M24;
+			dstPtr[14] = _transformMatrix.M34;
+			dstPtr[15] = _transformMatrix.M44;
 
 			// FIXME: When is this actually applied? -flibit
 			_spriteEffectPass.Apply();
@@ -1329,12 +1326,13 @@ namespace bottlenoselabs.Katabasis
 
 		private void DrawPrimitives(Texture texture, int baseSprite, int batchSize)
 		{
-			GraphicsDevice.Textures[0] = texture;
 			if (_customEffect != null)
 			{
-				foreach (EffectPass pass in _customEffect.CurrentTechnique!.Passes)
+				foreach (var pass in _customEffect.CurrentTechnique!.Passes)
 				{
 					pass.Apply();
+					// Set this _after_ Apply, otherwise EffectParameters override it!
+					GraphicsDevice.Textures[0] = texture;
 					GraphicsDevice.DrawIndexedPrimitives(
 						PrimitiveType.TriangleList,
 						baseSprite * 4,
@@ -1346,6 +1344,7 @@ namespace bottlenoselabs.Katabasis
 			}
 			else
 			{
+				GraphicsDevice.Textures[0] = texture;
 				GraphicsDevice.DrawIndexedPrimitives(
 					PrimitiveType.TriangleList,
 					baseSprite * 4,
