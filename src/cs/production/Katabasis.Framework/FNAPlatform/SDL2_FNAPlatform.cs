@@ -945,13 +945,7 @@ namespace bottlenoselabs.Katabasis
             Rectangle result = default;
             if ((SDL_GetWindowFlags(windowSDL) & (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN) != 0)
             {
-                /* FIXME: SDL2 b u g
-                 * SDL is a little weird about SDL_GetWindowSize.
-                 * If you call it early enough (for example,
-                 * Game.Initialize()), it reports outdated integers.
-                 * So you know what, let's just use this.
-                 * -flibit
-                 */
+                /* It's easier/safer to just use the display mode here */
                 SDL_DisplayMode mode;
                 var apiResult = SDL_GetCurrentDisplayMode(SDL_GetWindowDisplayIndex(windowSDL), &mode);
                 if (apiResult != 0)
