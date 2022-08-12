@@ -1693,15 +1693,26 @@ namespace bottlenoselabs.Katabasis
                             if (FNAPlatform.TextInputBindings.TryGetValue(key, out var textIndex))
                             {
                                 textInputControlDown[textIndex] = true;
-                                textInputControlRepeat[textIndex] = Environment.TickCount + 400;
                                 TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[textIndex]);
                             }
-                            else if (Keyboard._keys.Contains(Keys.LeftControl) && key == Keys.V)
+                            else if ((Keyboard._keys.Contains(Keys.LeftControl) | Keyboard._keys.Contains(Keys.RightControl))
+                                     && key == Keys.V)
                             {
                                 textInputControlDown[6] = true;
-                                textInputControlRepeat[6] = Environment.TickCount + 400;
                                 TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[6]);
                                 textInputSuppress = true;
+                            }
+                        }
+                        else if (evt.key.repeat > 0)
+                        {
+                            if (FNAPlatform.TextInputBindings.TryGetValue(key, out var textIndex))
+                            {
+                                TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[textIndex]);
+                            }
+                            else if ((Keyboard._keys.Contains(Keys.LeftControl) || Keyboard._keys.Contains(Keys.RightControl))
+                                     && key == Keys.V)
+                            {
+                                TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[6]);
                             }
                         }
 
@@ -1718,7 +1729,7 @@ namespace bottlenoselabs.Katabasis
                             {
                                 textInputControlDown[value] = false;
                             }
-                            else if ((!Keyboard._keys.Contains(Keys.LeftControl) && textInputControlDown[6]) ||
+                            else if ((!Keyboard._keys.Contains(Keys.LeftControl) && !Keyboard._keys.Contains(Keys.RightControl) && textInputControlDown[6]) ||
                                      key == Keys.V)
                             {
                                 textInputControlDown[6] = false;
@@ -1960,15 +1971,6 @@ namespace bottlenoselabs.Katabasis
                     case SDL_EventType.SDL_QUIT:
                         game.RunApplication = false;
                         break;
-                }
-
-                // Text Input Controls Key Handling
-                for (var i = 0; i < FNAPlatform.TextInputCharacters.Length; i += 1)
-                {
-                    if (textInputControlDown[i] && textInputControlRepeat[i] <= Environment.TickCount)
-                    {
-                        TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[i]);
-                    }
                 }
             }
         }

@@ -90,7 +90,6 @@ namespace bottlenoselabs.Katabasis
 			Game game,
 			ref GraphicsAdapter currentAdapter,
 			bool[] textInputControlDown,
-			int[] textInputControlRepeat,
 			ref bool textInputSuppress);
 
 		public delegate GraphicsAdapter RegisterGameFunc(Game game);
