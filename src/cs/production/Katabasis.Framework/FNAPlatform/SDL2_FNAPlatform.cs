@@ -566,6 +566,28 @@ namespace bottlenoselabs.Katabasis
                 "0",
                 SDL_HintPriority.SDL_HINT_OVERRIDE
             );
+            
+            // Are you even surprised this is necessary?
+            if (Environment.GetEnvironmentVariable("FNA_NUKE_STEAM_INPUT") == "1")
+            {
+                SDL_SetHintWithPriority(
+                    "SDL_GAMECONTROLLER_IGNORE_DEVICES",
+                    "",
+                    SDL_HintPriority.SDL_HINT_OVERRIDE
+                );
+                SDL_SetHintWithPriority(
+                    "SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT",
+                    "",
+                    SDL_HintPriority.SDL_HINT_OVERRIDE
+                );
+
+                // This should be redundant, but who knows...
+                SDL_SetHintWithPriority(
+                    "SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD",
+                    "0",
+                    SDL_HintPriority.SDL_HINT_OVERRIDE
+                );
+            }
 
             // Built-in SDL2 command line arguments
             // ReSharper disable once StringLiteralTypo

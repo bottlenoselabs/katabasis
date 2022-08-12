@@ -321,6 +321,15 @@ namespace bottlenoselabs.Katabasis
 					"FNA_KEYBOARD_USE_SCANCODES",
 					"1");
 			}
+			
+			if (args.TryGetValue("nukesteaminput", out arg) && arg == "1")
+			{
+				Environment.SetEnvironmentVariable(
+					"FNA_NUKE_STEAM_INPUT",
+					"1"
+				);
+			}
+
 
 			CreateWindow = SDL2_FNAPlatform.CreateWindow;
 			DisposeWindow = SDL2_FNAPlatform.DisposeWindow;
