@@ -561,32 +561,17 @@ namespace bottlenoselabs.Katabasis
               *
               * -flibit
               */
-            SDL_SetHintWithPriority(
-                SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS,
-                "0",
-                SDL_HintPriority.SDL_HINT_OVERRIDE
-            );
+            var useLabels = Environment.GetEnvironmentVariable("FNA_GAMEPAD_IGNORE_PHYSICAL_LAYOUT") == "1" ? "1" : "0";
+            SDL_SetHintWithPriority(SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS, useLabels, SDL_HintPriority.SDL_HINT_OVERRIDE);
             
             // Are you even surprised this is necessary?
             if (Environment.GetEnvironmentVariable("FNA_NUKE_STEAM_INPUT") == "1")
             {
-                SDL_SetHintWithPriority(
-                    "SDL_GAMECONTROLLER_IGNORE_DEVICES",
-                    "0x28DE/0x11FF",
-                    SDL_HintPriority.SDL_HINT_OVERRIDE
-                );
-                SDL_SetHintWithPriority(
-                    "SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT",
-                    "",
-                    SDL_HintPriority.SDL_HINT_OVERRIDE
-                );
+                SDL_SetHintWithPriority("SDL_GAMECONTROLLER_IGNORE_DEVICES", "0x28DE/0x11FF", SDL_HintPriority.SDL_HINT_OVERRIDE);
+                SDL_SetHintWithPriority("SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT", "", SDL_HintPriority.SDL_HINT_OVERRIDE);
 
                 // This should be redundant, but who knows...
-                SDL_SetHintWithPriority(
-                    "SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD",
-                    "0",
-                    SDL_HintPriority.SDL_HINT_OVERRIDE
-                );
+                SDL_SetHintWithPriority("SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD", "0", SDL_HintPriority.SDL_HINT_OVERRIDE);
             }
 
             // Built-in SDL2 command line arguments
