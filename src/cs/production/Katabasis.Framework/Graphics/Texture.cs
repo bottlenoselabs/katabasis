@@ -65,7 +65,8 @@ namespace bottlenoselabs.Katabasis
 			out SurfaceFormat format,
 			out int width,
 			out int height,
-			out int levels)
+			out int levels,
+			out bool isCube)
 		{
 			// A whole bunch of magic numbers, yay DDS!
 			const uint DDS_MAGIC = 0x20534444;
@@ -88,8 +89,7 @@ namespace bottlenoselabs.Katabasis
 			const uint FOURCC_DXT1 = 0x31545844;
 			const uint FOURCC_DXT3 = 0x33545844;
 			const uint FOURCC_DXT5 = 0x35545844;
-			const uint FOURCC_BPTC = 0x30315844;
-			// const uint FOURCC_DX10 = 0x30315844;
+			const uint FOURCC_DX10 = 0x30315844;
 			const uint pitchAndLinear = DDSD_PITCH | DDSD_LINEARSIZE;
 
 			// File should start with 'DDS '
@@ -148,11 +148,19 @@ namespace bottlenoselabs.Katabasis
 				throw new NotSupportedException("Not a texture!");
 			}
 
+			isCube = false;
+
 			var caps2 = reader.ReadUInt32();
-			if (caps2 != 0 &&
-			    (caps2 & DDSCAPS2_CUBEMAP) != DDSCAPS2_CUBEMAP)
+			if (caps2 != 0)
 			{
-				throw new NotSupportedException("Invalid caps2!");
+				if ((caps2 & DDSCAPS2_CUBEMAP) == DDSCAPS2_CUBEMAP)
+				{
+					isCube = true;
+				}
+				else
+				{
+					throw new NotSupportedException("Invalid caps2!");
+				}
 			}
 
 			reader.ReadUInt32(); // dwCaps3, unused
@@ -180,6 +188,7 @@ namespace bottlenoselabs.Katabasis
 					FOURCC_DXT3 => SurfaceFormat.Dxt3,
 					FOURCC_DXT5 => SurfaceFormat.Dxt5,
 					DDPF_FOURCC => SurfaceFormat.Bc7EXT,
+					FOURCC_DX10 => SurfaceFormatDX10(reader),
 					_ => throw new NotSupportedException("Unsupported DDS texture format")
 				};
 			}
@@ -200,6 +209,58 @@ namespace bottlenoselabs.Katabasis
 			{
 				throw new NotSupportedException("Unsupported DDS texture format");
 			}
+		}
+
+		private static SurfaceFormat SurfaceFormatDX10(BinaryReader reader)
+		{
+			// If the fourCC is DX10, there is an extra header with additional format information.
+			var dxgiFormat = reader.ReadUInt32();
+			
+			// These values are taken from the DXGI_FORMAT enum.
+			var result = dxgiFormat switch
+			{
+				2 => SurfaceFormat.Vector4,
+				10 => SurfaceFormat.HalfVector4,
+				71 => SurfaceFormat.Dxt1,
+				74 => SurfaceFormat.Dxt3,
+				77 => SurfaceFormat.Dxt5,
+				98 => SurfaceFormat.Bc7EXT,
+				99 => SurfaceFormat.Bc7SrgbEXT,
+				_ => throw new NotSupportedException("Unsupported DDS texture format")
+			};
+			
+			var resourceDimension = reader.ReadUInt32();
+			// These values are taken from the D3D10_RESOURCE_DIMENSION enum.
+			switch (resourceDimension)
+			{
+				case 0: // Unknown
+				case 1: // Buffer
+					throw new NotSupportedException(
+						"Unsupported DDS texture format"
+					);
+			}
+
+			/*
+			  * This flag seemingly only indicates if the texture is a cube map.
+			  * This is already determined above. Cool!
+			  */
+			var miscFlag = reader.ReadUInt32();
+
+			/*
+			  * Indicates the number of elements in the texture array.
+			  * We don't support texture arrays so just throw if it's greater than 1.
+			  */
+			var arraySize = reader.ReadUInt32();
+			if (arraySize > 1)
+			{
+				throw new NotSupportedException(
+					"Unsupported DDS texture format"
+				);
+			}
+
+			reader.ReadUInt32(); // reserved
+
+			return result;
 		}
 
 		internal static int GetFormatSize(SurfaceFormat format)

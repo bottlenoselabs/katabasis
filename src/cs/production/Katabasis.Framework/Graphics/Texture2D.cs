@@ -383,7 +383,12 @@ namespace bottlenoselabs.Katabasis
             // Begin BinaryReader, ignoring a tab!
             using BinaryReader reader = new(stream);
 
-            ParseDDS(reader, out var format, out var width, out var height, out var levels);
+            ParseDDS(reader, out var format, out var width, out var height, out var levels, out var isCube);
+            
+            if (isCube)
+            {
+                throw new FormatException("This file contains cube map data!");
+            }
 
             // Allocate/Load texture
             var result = new Texture2D(
