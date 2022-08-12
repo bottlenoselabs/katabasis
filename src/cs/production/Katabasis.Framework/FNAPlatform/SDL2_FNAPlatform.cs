@@ -810,7 +810,7 @@ namespace bottlenoselabs.Katabasis
  			 * the window needs to accommodate the GL viewport.
  			 * -flibit
  			 */
-            ScaleForWindow(window, ref clientWidth, ref clientHeight);
+            ScaleForWindow(window, false, ref clientWidth, ref clientHeight);
 
             // When windowed, set the size before moving
             if (!wantsFullscreen)
@@ -906,19 +906,29 @@ namespace bottlenoselabs.Katabasis
             }
         }
 
-        public static void ScaleForWindow(IntPtr window, ref int w, ref int h)
+        public static void ScaleForWindow(IntPtr window, bool invert, ref int w, ref int h)
         {
             int ww, wh, dw, dh;
             SDL_GetWindowSize((SDL_Window*)window, &ww, &wh);
             FNA3D.FNA3D_GetDrawableSize((void*)window, &dw, &dh);
-            if (ww != 0 &&
-                wh != 0 &&
-                dw != 0 &&
-                dh != 0 &&
-                (ww != dw || wh != dh))
+            if (ww == 0 ||
+                wh == 0 ||
+                dw == 0 ||
+                dh == 0 ||
+                (ww == dw && wh == dh))
             {
-                w = (int)(w / (ww / (float)dw));
-                h = (int)(h / (wh / (float)dh));
+                return;
+            }
+
+            if (invert)
+            {
+                w = (int) (w * (dw / (float) ww));
+                h = (int) (h * (dh / (float) wh));
+            }
+            else
+            {
+                w = (int) (w / (dw / (float) ww));
+                h = (int) (h / (dh / (float) wh));
             }
         }
 

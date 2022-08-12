@@ -320,7 +320,7 @@ namespace bottlenoselabs.Katabasis
 			_resizedBackBufferWidth = size.Width;
 			_resizedBackBufferHeight = size.Height;
 			
-			FNAPlatform.ScaleForWindow(window.Handle, ref _resizedBackBufferWidth, ref _resizedBackBufferHeight);
+			FNAPlatform.ScaleForWindow(window.Handle, true, ref _resizedBackBufferWidth, ref _resizedBackBufferHeight);
 
 			_useResizedBackBuffer = true;
 			ApplyChanges();

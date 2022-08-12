@@ -10,7 +10,7 @@ namespace bottlenoselabs.Katabasis
 {
 	internal static class FNAPlatform
 	{
-		public delegate void ScaleForWindowFunc(IntPtr window, ref int w, ref int h);
+		public delegate void ScaleForWindowFunc(IntPtr window, bool invert, ref int w, ref int h);
 		
 		public delegate void ApplyWindowChangesFunc(
 			IntPtr window,
