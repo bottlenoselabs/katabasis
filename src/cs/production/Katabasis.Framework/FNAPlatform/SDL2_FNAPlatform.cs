@@ -619,9 +619,9 @@ namespace bottlenoselabs.Katabasis
             }
 
             // This _should_ be the first real SDL call we make...
-            SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC);
+            SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
 
-            string videoDriver = SDL.SDL_GetCurrentVideoDriver();
+            string videoDriver = SDL_GetCurrentVideoDriver();
             
             /* A number of platforms don't support global mouse, but
              * this really only matters on desktop where the game
