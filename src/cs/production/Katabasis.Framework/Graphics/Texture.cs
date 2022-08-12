@@ -34,22 +34,29 @@ namespace bottlenoselabs.Katabasis
 		
 		internal static int CalculateDDSLevelSize(int width, int height, SurfaceFormat format)
 		{
-			if (format == SurfaceFormat.ColorBgraEXT)
+			switch (format)
 			{
-				return (width * 32 + 7) / 8 * height;
-			}
-
-			var blockSize = 16;
-			if (format == SurfaceFormat.Dxt1)
-			{
-				blockSize = 8;
-			}
+				case SurfaceFormat.ColorBgraEXT:
+					return (width * 32 + 7) / 8 * height;
+				case SurfaceFormat.HalfVector4:
+					return (width * 64 + 7) / 8 * height;
+				case SurfaceFormat.Vector4:
+					return (width * 128 + 7) / 8 * height;
+				default:
+				{
+					var blockSize = 16;
+					if (format == SurfaceFormat.Dxt1)
+					{
+						blockSize = 8;
+					}
 			
-			width = Math.Max(width, 1);
-			height = Math.Max(height, 1);
-			return (width + 3) / 4 *
-			       ((height + 3) / 4) *
-			       blockSize;
+					width = Math.Max(width, 1);
+					height = Math.Max(height, 1);
+					return (width + 3) / 4 *
+					       ((height + 3) / 4) *
+					       blockSize;
+				}
+			}
 		}
 
 		// DDS loading extension, based on MojoDDS
@@ -165,6 +172,10 @@ namespace bottlenoselabs.Katabasis
 			{
 				format = formatFourCC switch
 				{
+					// D3DFMT_A16B16G16R16F
+					0x71 => SurfaceFormat.HalfVector4,
+					// D3DFMT_A32B32G32R32F
+					0x74 => SurfaceFormat.Vector4,
 					FOURCC_DXT1 => SurfaceFormat.Dxt1,
 					FOURCC_DXT3 => SurfaceFormat.Dxt3,
 					FOURCC_DXT5 => SurfaceFormat.Dxt5,
