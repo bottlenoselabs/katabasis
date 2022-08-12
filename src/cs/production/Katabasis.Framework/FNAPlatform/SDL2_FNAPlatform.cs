@@ -1909,7 +1909,16 @@ namespace bottlenoselabs.Katabasis
                             INTERNAL_HandleOrientationChange(
                                 orientation,
                                 game.GraphicsDevice,
+                                currentAdapter,
                                 (FNAWindow)game.Window);
+                        }
+                        else
+                        {
+                            // Just reset, this is probably a hotplug
+                            game.GraphicsDevice.Reset(
+                                game.GraphicsDevice.PresentationParameters,
+                                currentAdapter
+                            );
                         }
 
                         break;
@@ -2180,6 +2189,7 @@ namespace bottlenoselabs.Katabasis
             private static void INTERNAL_HandleOrientationChange(
                 DisplayOrientation orientation,
                 GraphicsDevice graphicsDevice,
+                GraphicsAdapter graphicsAdapter,
                 FNAWindow window)
             {
                 // Flip the backbuffer dimensions if needed
@@ -2203,7 +2213,7 @@ namespace bottlenoselabs.Katabasis
                 graphicsDevice.PresentationParameters.DisplayOrientation = orientation;
                 window.CurrentOrientation = orientation;
 
-                graphicsDevice.Reset();
+                graphicsDevice.Reset(graphicsDevice.PresentationParameters, graphicsAdapter);
                 window.INTERNAL_OnOrientationChanged();
             }
 
