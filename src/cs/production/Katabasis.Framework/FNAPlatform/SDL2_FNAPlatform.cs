@@ -572,7 +572,7 @@ namespace bottlenoselabs.Katabasis
             {
                 SDL_SetHintWithPriority(
                     "SDL_GAMECONTROLLER_IGNORE_DEVICES",
-                    "",
+                    "0x28DE/0x11FF",
                     SDL_HintPriority.SDL_HINT_OVERRIDE
                 );
                 SDL_SetHintWithPriority(
