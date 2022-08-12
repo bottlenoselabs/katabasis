@@ -427,7 +427,9 @@ namespace bottlenoselabs.Katabasis
 
 		protected virtual void Initialize()
 		{
-			GraphicsDeviceManager.Instance.DeviceDisposing += (o, e) => UnloadContent();
+			var graphicsDeviceManager = GraphicsDeviceManager.Instance;
+			graphicsDeviceManager.DeviceDisposing += (o, e) => UnloadContent();
+			graphicsDeviceManager.DeviceCreated += (o, e) => LoadContent();
 			LoadContent();
 		}
 
