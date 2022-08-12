@@ -120,7 +120,17 @@ namespace bottlenoselabs.Katabasis
 			_channels = mixFormat.Format.nChannels;
 
 			// All XACT references have to go through here...
-			_notificationDesc = default;
+			var notificationDesc = default(FACTNotificationDescription);
+			notificationDesc.flags = FACT_FLAG_NOTIFICATION_PERSIST;
+			notificationDesc.type = FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
+			FACTAudioEngine_RegisterNotification(handle, &notificationDesc);
+			
+			notificationDesc.type = FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
+			FACTAudioEngine_RegisterNotification(handle, &notificationDesc);
+			notificationDesc.type = FACTNOTIFICATIONTYPE_CUEDESTROYED;
+			FACTAudioEngine_RegisterNotification(handle, &notificationDesc);
+
+			_notificationDesc = notificationDesc;
 		}
 
 		public ReadOnlyCollection<RendererDetail> RendererDetails => new(_rendererDetails!);
@@ -273,84 +283,11 @@ namespace bottlenoselabs.Katabasis
 
 		public void Update() => FACTAudioEngine_DoWork(_handle);
 
-		internal void RegisterWaveBank(IntPtr ptr, WeakReference reference)
+		internal void RegisterPointer(IntPtr ptr, WeakReference reference)
 		{
-			_notificationDesc.type = FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
-			_notificationDesc.pWaveBank = (FACTWaveBank*)ptr;
-			FACTAudioEngine_RegisterNotification(_handle, (FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
 			lock (_xactPointers)
 			{
 				_xactPointers.Add(ptr, reference);
-			}
-		}
-
-		internal void RegisterSoundBank(IntPtr ptr, WeakReference reference)
-		{
-			_notificationDesc.type = FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
-			_notificationDesc.pSoundBank = (FACTSoundBank*)ptr;
-			FACTAudioEngine_RegisterNotification(_handle, (FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
-			lock (_xactPointers)
-			{
-				_xactPointers.Add(ptr, reference);
-			}
-		}
-
-		internal void RegisterCue(IntPtr ptr, WeakReference reference)
-		{
-			_notificationDesc.type = FACTNOTIFICATIONTYPE_CUEDESTROYED;
-			_notificationDesc.pCue = (FACTCue*)ptr;
-			FACTAudioEngine_RegisterNotification(_handle, (FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
-			lock (_xactPointers)
-			{
-				_xactPointers.Add(ptr, reference);
-			}
-		}
-
-		internal void UnregisterWaveBank(IntPtr ptr)
-		{
-			lock (_xactPointers)
-			{
-				if (!_xactPointers.ContainsKey(ptr))
-				{
-					return;
-				}
-
-				_notificationDesc.type = FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
-				_notificationDesc.pWaveBank = (FACTWaveBank*)ptr;
-				FACTAudioEngine_UnRegisterNotification(_handle, (FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
-				_xactPointers.Remove(ptr);
-			}
-		}
-
-		internal void UnregisterSoundBank(IntPtr ptr)
-		{
-			lock (_xactPointers)
-			{
-				if (!_xactPointers.ContainsKey(ptr))
-				{
-					return;
-				}
-
-				_notificationDesc.type = FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
-				_notificationDesc.pSoundBank = (FACTSoundBank*)ptr;
-				FACTAudioEngine_UnRegisterNotification(_handle, (FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
-				_xactPointers.Remove(ptr);
-			}
-		}
-
-		internal void UnregisterCue(IntPtr ptr)
-		{
-			lock (_xactPointers)
-			{
-				if (!_xactPointers.ContainsKey(ptr))
-				{
-					return;
-				}
-
-				_notificationDesc.type = FACTNOTIFICATIONTYPE_CUEDESTROYED;
-				_notificationDesc.pCue = (FACTCue*)ptr;
-				FACTAudioEngine_UnRegisterNotification(_handle, (FACTNotificationDescription*)Unsafe.AsPointer(ref _notificationDesc));
-				_xactPointers.Remove(ptr);
 			}
 		}
 

@@ -47,7 +47,7 @@ namespace bottlenoselabs.Katabasis
 
 			_engine = audioEngine;
 			_selfReference = new WeakReference(this, true);
-			_engine.RegisterWaveBank(_handle, _selfReference);
+			_engine.RegisterPointer(_handle, _selfReference);
 			IsDisposed = false;
 		}
 
@@ -82,14 +82,14 @@ namespace bottlenoselabs.Katabasis
 			var settings = default(FACTStreamingParameters);
 			settings.file = (void*)_bankData;
 			FACTAudioEngine_CreateStreamingWaveBank(
-				(FACTAudioEngine*)audioEngine._handle,
+				audioEngine._handle,
 				(FACTStreamingParameters*)Unsafe.AsPointer(ref settings),
 				&waveBank);
 			_handle = (IntPtr)waveBank;
 
 			_engine = audioEngine;
 			_selfReference = new WeakReference(this, true);
-			_engine.RegisterWaveBank(_handle, _selfReference);
+			_engine.RegisterPointer(_handle, _selfReference);
 			IsDisposed = false;
 		}
 
@@ -173,7 +173,6 @@ namespace bottlenoselabs.Katabasis
 					// If this is disposed, stop leaking memory!
 					if (!_engine.IsDisposed)
 					{
-						_engine.UnregisterWaveBank(_handle);
 						FACTWaveBank_Destroy((FACTWaveBank*)_handle);
 					}
 

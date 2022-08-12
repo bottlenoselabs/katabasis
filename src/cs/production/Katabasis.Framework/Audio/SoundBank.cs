@@ -49,7 +49,7 @@ namespace bottlenoselabs.Katabasis
 				(int)_dspSettings.SrcChannelCount *
 				(int)_dspSettings.DstChannelCount);
 
-			_engine.RegisterSoundBank(_handle, _selfReference);
+			_engine.RegisterPointer(_handle, _selfReference);
 			IsDisposed = false;
 		}
 
@@ -168,6 +168,15 @@ namespace bottlenoselabs.Katabasis
 			IsDisposed = true;
 			_handle = IntPtr.Zero;
 			_selfReference = null;
+
+			var pMatrixCoefficients = (IntPtr)_dspSettings.pMatrixCoefficients;
+			if (pMatrixCoefficients == IntPtr.Zero)
+			{
+				return;
+			}
+
+			Marshal.FreeHGlobal(pMatrixCoefficients);
+			_dspSettings.pMatrixCoefficients = (float*)IntPtr.Zero;
 		}
 
 		protected void Dispose(bool disposing)
@@ -181,9 +190,7 @@ namespace bottlenoselabs.Katabasis
 					// If this is disposed, stop leaking memory!
 					if (!_engine.IsDisposed)
 					{
-						_engine.UnregisterSoundBank(_handle);
 						FACTSoundBank_Destroy((FACTSoundBank*)_handle);
-						Marshal.FreeHGlobal((IntPtr)_dspSettings.pMatrixCoefficients);
 					}
 
 					OnSoundBankDestroyed();

@@ -22,7 +22,7 @@ namespace bottlenoselabs.Katabasis
 			_bank = soundBank;
 
 			_selfReference = new WeakReference(this, true);
-			_bank._engine.RegisterCue(_handle, _selfReference);
+			_bank._engine.RegisterPointer(_handle, _selfReference);
 		}
 
 		public bool IsCreated
@@ -205,7 +205,6 @@ namespace bottlenoselabs.Katabasis
 					// If this is Disposed, stop leaking memory!
 					if (!_bank._engine.IsDisposed)
 					{
-						_bank._engine.UnregisterCue(_handle);
 						FACTCue_Destroy((FACTCue*)_handle);
 					}
 
