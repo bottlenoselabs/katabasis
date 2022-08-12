@@ -1673,7 +1673,6 @@ namespace bottlenoselabs.Katabasis
             Game game,
             ref GraphicsAdapter currentAdapter,
             bool[] textInputControlDown,
-            int[] textInputControlRepeat,
             ref bool textInputSuppress)
         {
             SDL_Event evt;
