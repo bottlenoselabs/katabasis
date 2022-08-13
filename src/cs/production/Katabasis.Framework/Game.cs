@@ -15,7 +15,6 @@ namespace bottlenoselabs.Katabasis
 		private readonly GameTime _gameTime;
 		private readonly Stopwatch _gameTimer;
 		private readonly bool[] _textInputControlDown;
-		private readonly int[] _textInputControlRepeat;
 		private TimeSpan _accumulatedElapsedTime;
 		private GraphicsAdapter? _currentAdapter;
 		private bool _forceElapsedTimeToZero;
@@ -58,7 +57,6 @@ namespace bottlenoselabs.Katabasis
 			}
 
 			_textInputControlDown = new bool[FNAPlatform.TextInputCharacters.Length];
-			_textInputControlRepeat = new int[FNAPlatform.TextInputCharacters.Length];
 
 			_hasInitialized = false;
 			_suppressDraw = false;
@@ -265,7 +263,6 @@ namespace bottlenoselabs.Katabasis
 				this,
 				ref _currentAdapter!,
 				_textInputControlDown,
-				_textInputControlRepeat,
 				ref _textInputSuppress);
 
 			// Do not allow any update to take longer than our maximum.
@@ -427,7 +424,9 @@ namespace bottlenoselabs.Katabasis
 
 		protected virtual void Initialize()
 		{
-			GraphicsDeviceManager.Instance.DeviceDisposing += (o, e) => UnloadContent();
+			var graphicsDeviceManager = GraphicsDeviceManager.Instance;
+			graphicsDeviceManager.DeviceDisposing += (o, e) => UnloadContent();
+			graphicsDeviceManager.DeviceCreated += (o, e) => LoadContent();
 			LoadContent();
 		}
 

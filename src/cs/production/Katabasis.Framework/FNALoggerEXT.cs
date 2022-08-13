@@ -36,11 +36,14 @@ namespace bottlenoselabs.Katabasis
 			LogInfo ??= Console.WriteLine;
 			LogWarn ??= Console.WriteLine;
 			LogError ??= Console.WriteLine;
+		}
 
+		internal static void HookFNA3D()
+		{
 			/* Try to hook into the FNA3D logging system */
 			try
 			{
-				FNA3D.FNA3D_HookLogFunctions(
+				FNA3D_HookLogFunctions(
 					LogInfoFunc,
 					LogWarnFunc,
 					LogErrorFunc);

@@ -10,6 +10,8 @@ namespace bottlenoselabs.Katabasis
 {
 	internal static class FNAPlatform
 	{
+		public delegate void ScaleForWindowFunc(IntPtr window, bool invert, ref int w, ref int h);
+		
 		public delegate void ApplyWindowChangesFunc(
 			IntPtr window,
 			int clientWidth,
@@ -88,7 +90,6 @@ namespace bottlenoselabs.Katabasis
 			Game game,
 			ref GraphicsAdapter currentAdapter,
 			bool[] textInputControlDown,
-			int[] textInputControlRepeat,
 			ref bool textInputSuppress);
 
 		public delegate GraphicsAdapter RegisterGameFunc(Game game);
@@ -170,6 +171,8 @@ namespace bottlenoselabs.Katabasis
 		public static readonly DisposeWindowFunc DisposeWindow;
 
 		public static readonly ApplyWindowChangesFunc ApplyWindowChanges;
+
+		public static readonly ScaleForWindowFunc ScaleForWindow;
 
 		public static readonly GetWindowBoundsFunc GetWindowBounds;
 
@@ -290,10 +293,10 @@ namespace bottlenoselabs.Katabasis
 					arg);
 			}
 
-			if (args.TryGetValue("disablelateswaptear", out arg) && arg == "1")
+			if (args.TryGetValue("enablelateswaptear", out arg) && arg == "1")
 			{
 				Environment.SetEnvironmentVariable(
-					"FNA3D_DISABLE_LATESWAPTEAR",
+					"FNA3D_ENABLE_LATESWAPTEAR",
 					"1");
 			}
 
@@ -317,10 +320,20 @@ namespace bottlenoselabs.Katabasis
 					"FNA_KEYBOARD_USE_SCANCODES",
 					"1");
 			}
+			
+			if (args.TryGetValue("nukesteaminput", out arg) && arg == "1")
+			{
+				Environment.SetEnvironmentVariable(
+					"FNA_NUKE_STEAM_INPUT",
+					"1"
+				);
+			}
+
 
 			CreateWindow = SDL2_FNAPlatform.CreateWindow;
 			DisposeWindow = SDL2_FNAPlatform.DisposeWindow;
 			ApplyWindowChanges = SDL2_FNAPlatform.ApplyWindowChanges;
+			ScaleForWindow = SDL2_FNAPlatform.ScaleForWindow;
 			GetWindowBounds = SDL2_FNAPlatform.GetWindowBounds;
 			GetWindowResizable = SDL2_FNAPlatform.GetWindowResizable;
 			SetWindowResizable = SDL2_FNAPlatform.SetWindowResizable;
@@ -370,6 +383,11 @@ namespace bottlenoselabs.Katabasis
 
 			AppDomain.CurrentDomain.ProcessExit += SDL2_FNAPlatform.ProgramExit;
 			TitleLocation = SDL2_FNAPlatform.ProgramInit(args);
+			
+			/* Do this AFTER ProgramInit so the platform library
+ 			 * has a chance to load first!
+ 			 */
+			FNALoggerEXT.HookFNA3D();
 		}
 	}
 }

@@ -371,8 +371,8 @@ namespace bottlenoselabs.Katabasis
 				// Scan for other chunks
 				while (reader.PeekChar() != -1)
 				{
-					byte[] chunkIDBytes = reader.ReadBytes(4);
-					if (chunkIDBytes.Length < 4)
+					var chunkIDChars = reader.ReadChars(4);
+					if (chunkIDChars.Length < 4)
 					{
 						break; // EOL!
 					}
@@ -383,10 +383,10 @@ namespace bottlenoselabs.Katabasis
 						break; // EOL!
 					}
 
-					var chunkID = BitConverter.ToInt32(chunkIDBytes, 0);
+					var chunkSignature = new string(chunkIDChars);
 					var chunkDataSize = BitConverter.ToInt32(chunkSizeBytes, 0);
 					// "smpl", Sampler Chunk Found
-					if (chunkID == 0x736D706C)
+					if (chunkSignature == "smpl")
 					{
 						reader.ReadUInt32(); // Manufacturer
 						reader.ReadUInt32(); // Product
@@ -447,17 +447,37 @@ namespace bottlenoselabs.Katabasis
 				samplerLoopEnd - samplerLoopStart);
 		}
 
+		private static readonly object createLock = new();
 		internal static FAudioContext Device()
 		{
+			/* Ideally the device has been made, just return it. */
 			if (FAudioContext.Context != null)
 			{
 				return FAudioContext.Context;
 			}
-
-			FAudioContext.Create();
-			if (FAudioContext.Context == null)
+			
+			/* From here on out, it gets weird... */
+			lock (createLock)
 			{
-				throw new NoAudioHardwareException();
+				/* If this trips it's because another thread
+ 				 * got here first. We do the check above to
+ 				 * avoid the mutex lock for the 99.99% of the
+ 				 * time where it's not necessary.
+ 				 */
+				if (FAudioContext.Context != null)
+				{
+					return FAudioContext.Context;
+				}
+
+				/* If you're here, you were the first caller!
+				  * that, or there genuinely is no hardware and
+				  * you're about to get a lot more of these.
+				  */
+				FAudioContext.Create();
+				if (FAudioContext.Context == null)
+				{
+					throw new NoAudioHardwareException();
+				}
 			}
 
 			return FAudioContext.Context;
@@ -654,9 +674,10 @@ namespace bottlenoselabs.Katabasis
 				{
 					FAudioCreate(&ctx, 0, FAUDIO_DEFAULT_PROCESSOR);
 				}
-				catch
+				catch (Exception e)
 				{
 					/* FAudio is missing, bail! */
+					FNALoggerEXT.LogWarn!.Invoke("FAudio failed to load: " + e);
 					return;
 				}
 

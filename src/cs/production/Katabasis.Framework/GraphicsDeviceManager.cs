@@ -319,11 +319,8 @@ namespace bottlenoselabs.Katabasis
 			var size = window!.ClientBounds;
 			_resizedBackBufferWidth = size.Width;
 			_resizedBackBufferHeight = size.Height;
-			if (Environment.GetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI") == "1")
-			{
-				_resizedBackBufferWidth *= 2;
-				_resizedBackBufferHeight *= 2;
-			}
+			
+			FNAPlatform.ScaleForWindow(window.Handle, true, ref _resizedBackBufferWidth, ref _resizedBackBufferHeight);
 
 			_useResizedBackBuffer = true;
 			ApplyChanges();

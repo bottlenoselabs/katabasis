@@ -74,7 +74,10 @@ namespace bottlenoselabs.Katabasis
 			base.Play();
 			lock (FrameworkDispatcher.Streams)
 			{
-				FrameworkDispatcher.Streams.Add(this);
+				if (!FrameworkDispatcher.Streams.Contains(this))
+				{
+					FrameworkDispatcher.Streams.Add(this);
+				}
 			}
 		}
 

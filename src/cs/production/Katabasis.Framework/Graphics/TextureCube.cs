@@ -1,5 +1,6 @@
 // Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -7,312 +8,329 @@ using System.Runtime.InteropServices;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
-	public unsafe class TextureCube : Texture
-	{
-		public TextureCube(int size, bool mipMap, SurfaceFormat format)
-		{
-			GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
-			Size = size;
-			LevelCount = mipMap ? CalculateMipLevels(size) : 1;
+    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
+    public unsafe class TextureCube : Texture
+    {
+        public TextureCube(int size, bool mipMap, SurfaceFormat format)
+        {
+            GraphicsDevice = GraphicsDeviceManager.Instance.GraphicsDevice;
+            Size = size;
+            LevelCount = mipMap ? CalculateMipLevels(size) : 1;
 
-			// TODO: Use QueryRenderTargetFormat!
-			if (this is IRenderTarget &&
-			    format != SurfaceFormat.Color &&
-			    format != SurfaceFormat.Rgba1010102 &&
-			    format != SurfaceFormat.Rg32 &&
-			    format != SurfaceFormat.Rgba64 &&
-			    format != SurfaceFormat.Single &&
-			    format != SurfaceFormat.Vector2 &&
-			    format != SurfaceFormat.Vector4 &&
-			    format != SurfaceFormat.HalfSingle &&
-			    format != SurfaceFormat.HalfVector2 &&
-			    format != SurfaceFormat.HalfVector4 &&
-			    format != SurfaceFormat.HdrBlendable)
-			{
-				Format = SurfaceFormat.Color;
-			}
-			else
-			{
-				Format = format;
-			}
+            // TODO: Use QueryRenderTargetFormat!
+            if (this is IRenderTarget)
+            {
+                if (format == SurfaceFormat.ColorSrgbEXT)
+                {
+                    if (FNA3D.FNA3D_SupportsSRGBRenderTargets(GraphicsDevice.Device) == 0)
+                    {
+                        // Renderable but not on this device
+                        Format = SurfaceFormat.Color;
+                    }
+                    else
+                    {
+                        Format = format;
+                    }
+                }
+                else if (format != SurfaceFormat.Color &&
+                         format != SurfaceFormat.Rgba1010102 &&
+                         format != SurfaceFormat.Rg32 &&
+                         format != SurfaceFormat.Rgba64 &&
+                         format != SurfaceFormat.Single &&
+                         format != SurfaceFormat.Vector2 &&
+                         format != SurfaceFormat.Vector4 &&
+                         format != SurfaceFormat.HalfSingle &&
+                         format != SurfaceFormat.HalfVector2 &&
+                         format != SurfaceFormat.HalfVector4 &&
+                         format != SurfaceFormat.HdrBlendable)
+                {
+                    // Not a renderable format period
+                    Format = SurfaceFormat.Color;
+                }
+                else
+                {
+                    Format = format;
+                }
+            }
+            else
+            {
+                Format = format;
+            }
 
-			_texture = (IntPtr)FNA3D.FNA3D_CreateTextureCube(
-				GraphicsDevice.Device,
-				(FNA3D.FNA3D_SurfaceFormat)Format,
-				Size,
-				LevelCount,
-				(byte)(this is IRenderTarget ? 1 : 0));
-		}
+            _texture = (IntPtr)FNA3D.FNA3D_CreateTextureCube(
+                GraphicsDevice.Device,
+                (FNA3D.FNA3D_SurfaceFormat)Format,
+                Size,
+                LevelCount,
+                (byte)(this is IRenderTarget ? 1 : 0));
+        }
 
-		public int Size { get; }
+        public int Size { get; }
 
-		// ReSharper disable once InconsistentNaming
-		public static TextureCube DDSFromStreamEXT(Stream stream)
-		{
-			// Begin BinaryReader, ignoring a tab!
-			using BinaryReader reader = new(stream);
+        // ReSharper disable once InconsistentNaming
+        public static TextureCube DDSFromStreamEXT(Stream stream)
+        {
+            // Begin BinaryReader, ignoring a tab!
+            using BinaryReader reader = new(stream);
 
-			ParseDDS(
-				reader,
-				out var format,
-				out var width,
-				out _,
-				out var levels,
-				out var levelSize,
-				out var blockSize);
+            ParseDDS(reader, out var format, out var width, out _, out var levels, out var isCube);
+            
+            if (!isCube)
+            {
+                throw new FormatException("This file does not contain cube data!");
+            }
 
-			// Allocate/Load texture
-			var result = new TextureCube(width, levels > 1, format);
+            // Allocate/Load texture
+            var result = new TextureCube(width, levels > 1, format);
 
-			if (stream is MemoryStream memoryStream &&
-			    memoryStream.TryGetBuffer(out byte[] tex))
-			{
-				for (var face = 0; face < 6; face += 1)
-				{
-					var mipLevelSize = levelSize;
-					for (var i = 0; i < levels; i += 1)
-					{
-						result.SetData(
-							(CubeMapFace)face,
-							i,
-							null,
-							tex,
-							(int)memoryStream.Seek(0, SeekOrigin.Current),
-							mipLevelSize);
+            if (stream is MemoryStream memoryStream &&
+                memoryStream.TryGetBuffer(out byte[] tex))
+            {
+                for (var face = 0; face < 6; face += 1)
+                {
+                    for (var i = 0; i < levels; i += 1)
+                    {
+                        var mipLevelSize = CalculateDDSLevelSize(
+                            width >> i,
+                            width >> i,
+                            format
+                        );
 
-						memoryStream.Seek(
-							mipLevelSize,
-							SeekOrigin.Current);
+                        result.SetData(
+                            (CubeMapFace)face,
+                            i,
+                            null,
+                            tex,
+                            (int)memoryStream.Seek(0, SeekOrigin.Current),
+                            mipLevelSize);
 
-						mipLevelSize = Math.Max(
-							mipLevelSize >> 2,
-							blockSize);
-					}
-				}
-			}
-			else
-			{
-				for (var face = 0; face < 6; face += 1)
-				{
-					var mipLevelSize = levelSize;
-					for (var i = 0; i < levels; i += 1)
-					{
-						tex = reader.ReadBytes(mipLevelSize);
-						result.SetData(
-							(CubeMapFace)face,
-							i,
-							null,
-							tex,
-							0,
-							tex.Length);
+                        memoryStream.Seek(
+                            mipLevelSize,
+                            SeekOrigin.Current);
+                    }
+                }
+            }
+            else
+            {
+                for (var face = 0; face < 6; face += 1)
+                {
+                    for (var i = 0; i < levels; i += 1)
+                    {
+                        tex = reader.ReadBytes(CalculateDDSLevelSize(
+                            width >> i,
+                            width >> i,
+                            format
+                        ));
+                        result.SetData(
+                            (CubeMapFace)face,
+                            i,
+                            null,
+                            tex,
+                            0,
+                            tex.Length);
+                    }
+                }
+            }
 
-						mipLevelSize = Math.Max(
-							mipLevelSize >> 2,
-							blockSize);
-					}
-				}
-			}
+            // End BinaryReader
 
-			// End BinaryReader
+            // Finally.
+            return result;
+        }
 
-			// Finally.
-			return result;
-		}
+        public void SetData<T>(CubeMapFace cubeMapFace, T[] data)
+            where T : struct =>
+            SetData(
+                cubeMapFace,
+                0,
+                null,
+                data,
+                0,
+                data.Length);
 
-		public void SetData<T>(CubeMapFace cubeMapFace, T[] data)
-			where T : struct =>
-			SetData(
-				cubeMapFace,
-				0,
-				null,
-				data,
-				0,
-				data.Length);
+        public void SetData<T>(
+            CubeMapFace cubeMapFace,
+            T[] data,
+            int startIndex,
+            int elementCount)
+            where T : struct =>
+            SetData(
+                cubeMapFace,
+                0,
+                null,
+                data,
+                startIndex,
+                elementCount);
 
-		public void SetData<T>(
-			CubeMapFace cubeMapFace,
-			T[] data,
-			int startIndex,
-			int elementCount)
-			where T : struct =>
-			SetData(
-				cubeMapFace,
-				0,
-				null,
-				data,
-				startIndex,
-				elementCount);
+        public void SetData<T>(
+            CubeMapFace cubeMapFace,
+            int level,
+            Rectangle? rect,
+            T[] data,
+            int startIndex,
+            int elementCount)
+            where T : struct
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
 
-		public void SetData<T>(
-			CubeMapFace cubeMapFace,
-			int level,
-			Rectangle? rect,
-			T[] data,
-			int startIndex,
-			int elementCount)
-			where T : struct
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
+            int xOffset, yOffset, width, height;
+            if (rect.HasValue)
+            {
+                xOffset = rect.Value.X;
+                yOffset = rect.Value.Y;
+                width = rect.Value.Width;
+                height = rect.Value.Height;
+            }
+            else
+            {
+                xOffset = 0;
+                yOffset = 0;
+                width = Math.Max(1, Size >> level);
+                height = Math.Max(1, Size >> level);
+            }
 
-			int xOffset, yOffset, width, height;
-			if (rect.HasValue)
-			{
-				xOffset = rect.Value.X;
-				yOffset = rect.Value.Y;
-				width = rect.Value.Width;
-				height = rect.Value.Height;
-			}
-			else
-			{
-				xOffset = 0;
-				yOffset = 0;
-				width = Math.Max(1, Size >> level);
-				height = Math.Max(1, Size >> level);
-			}
+            var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            FNA3D.FNA3D_SetTextureDataCube(
+                GraphicsDevice.Device,
+                (FNA3D.FNA3D_Texture*)_texture,
+                xOffset,
+                yOffset,
+                width,
+                height,
+                (FNA3D.FNA3D_CubeMapFace)cubeMapFace,
+                level,
+                (void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
+                elementCount * elementSizeInBytes);
 
-			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
-			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			FNA3D.FNA3D_SetTextureDataCube(
-				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
-				xOffset,
-				yOffset,
-				width,
-				height,
-				(FNA3D.FNA3D_CubeMapFace)cubeMapFace,
-				level,
-				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
-				elementCount * elementSizeInBytes);
+            handle.Free();
+        }
 
-			handle.Free();
-		}
+        // ReSharper disable once InconsistentNaming
+        public void SetDataPointerEXT(
+            CubeMapFace cubeMapFace,
+            int level,
+            Rectangle? rect,
+            IntPtr data,
+            int dataLength)
+        {
+            if (data == IntPtr.Zero)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
 
-		// ReSharper disable once InconsistentNaming
-		public void SetDataPointerEXT(
-			CubeMapFace cubeMapFace,
-			int level,
-			Rectangle? rect,
-			IntPtr data,
-			int dataLength)
-		{
-			if (data == IntPtr.Zero)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
+            int xOffset, yOffset, width, height;
+            if (rect.HasValue)
+            {
+                xOffset = rect.Value.X;
+                yOffset = rect.Value.Y;
+                width = rect.Value.Width;
+                height = rect.Value.Height;
+            }
+            else
+            {
+                xOffset = 0;
+                yOffset = 0;
+                width = Math.Max(1, Size >> level);
+                height = Math.Max(1, Size >> level);
+            }
 
-			int xOffset, yOffset, width, height;
-			if (rect.HasValue)
-			{
-				xOffset = rect.Value.X;
-				yOffset = rect.Value.Y;
-				width = rect.Value.Width;
-				height = rect.Value.Height;
-			}
-			else
-			{
-				xOffset = 0;
-				yOffset = 0;
-				width = Math.Max(1, Size >> level);
-				height = Math.Max(1, Size >> level);
-			}
+            FNA3D.FNA3D_SetTextureDataCube(
+                GraphicsDevice.Device,
+                (FNA3D.FNA3D_Texture*)_texture,
+                xOffset,
+                yOffset,
+                width,
+                height,
+                (FNA3D.FNA3D_CubeMapFace)cubeMapFace,
+                level,
+                (void*)data,
+                dataLength);
+        }
 
-			FNA3D.FNA3D_SetTextureDataCube(
-				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
-				xOffset,
-				yOffset,
-				width,
-				height,
-				(FNA3D.FNA3D_CubeMapFace)cubeMapFace,
-				level,
-				(void*)data,
-				dataLength);
-		}
+        public void GetData<T>(
+            CubeMapFace cubeMapFace,
+            T[] data)
+            where T : struct =>
+            GetData(
+                cubeMapFace,
+                0,
+                null,
+                data,
+                0,
+                data.Length);
 
-		public void GetData<T>(
-			CubeMapFace cubeMapFace,
-			T[] data)
-			where T : struct =>
-			GetData(
-				cubeMapFace,
-				0,
-				null,
-				data,
-				0,
-				data.Length);
+        public void GetData<T>(
+            CubeMapFace cubeMapFace,
+            T[] data,
+            int startIndex,
+            int elementCount)
+            where T : struct =>
+            GetData(
+                cubeMapFace,
+                0,
+                null,
+                data,
+                startIndex,
+                elementCount);
 
-		public void GetData<T>(
-			CubeMapFace cubeMapFace,
-			T[] data,
-			int startIndex,
-			int elementCount)
-			where T : struct =>
-			GetData(
-				cubeMapFace,
-				0,
-				null,
-				data,
-				startIndex,
-				elementCount);
+        public void GetData<T>(
+            CubeMapFace cubeMapFace,
+            int level,
+            Rectangle? rect,
+            T[] data,
+            int startIndex,
+            int elementCount)
+            where T : struct
+        {
+            if (data == null || data.Length == 0)
+            {
+                throw new ArgumentException("data cannot be null");
+            }
 
-		public void GetData<T>(
-			CubeMapFace cubeMapFace,
-			int level,
-			Rectangle? rect,
-			T[] data,
-			int startIndex,
-			int elementCount)
-			where T : struct
-		{
-			if (data == null || data.Length == 0)
-			{
-				throw new ArgumentException("data cannot be null");
-			}
+            if (data.Length < startIndex + elementCount)
+            {
+                throw new ArgumentException(
+                    "The data passed has a length of " + data.Length +
+                    " but " + elementCount + " pixels have been requested.");
+            }
 
-			if (data.Length < startIndex + elementCount)
-			{
-				throw new ArgumentException(
-					"The data passed has a length of " + data.Length +
-					" but " + elementCount + " pixels have been requested.");
-			}
+            int subX, subY, subW, subH;
+            if (rect == null)
+            {
+                subX = 0;
+                subY = 0;
+                subW = Size >> level;
+                subH = Size >> level;
+            }
+            else
+            {
+                subX = rect.Value.X;
+                subY = rect.Value.Y;
+                subW = rect.Value.Width;
+                subH = rect.Value.Height;
+            }
 
-			int subX, subY, subW, subH;
-			if (rect == null)
-			{
-				subX = 0;
-				subY = 0;
-				subW = Size >> level;
-				subH = Size >> level;
-			}
-			else
-			{
-				subX = rect.Value.X;
-				subY = rect.Value.Y;
-				subW = rect.Value.Width;
-				subH = rect.Value.Height;
-			}
+            var elementSizeInBytes = Marshal.SizeOf(typeof(T));
+            ValidateGetDataFormat(Format, elementSizeInBytes);
 
-			var elementSizeInBytes = Marshal.SizeOf(typeof(T));
-			ValidateGetDataFormat(Format, elementSizeInBytes);
+            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            FNA3D.FNA3D_GetTextureDataCube(
+                GraphicsDevice.Device,
+                (FNA3D.FNA3D_Texture*)_texture,
+                subX,
+                subY,
+                subW,
+                subH,
+                (FNA3D.FNA3D_CubeMapFace)cubeMapFace,
+                level,
+                (void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
+                elementCount * elementSizeInBytes);
 
-			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			FNA3D.FNA3D_GetTextureDataCube(
-				GraphicsDevice.Device,
-				(FNA3D.FNA3D_Texture*)_texture,
-				subX,
-				subY,
-				subW,
-				subH,
-				(FNA3D.FNA3D_CubeMapFace)cubeMapFace,
-				level,
-				(void*)(handle.AddrOfPinnedObject() + (startIndex * elementSizeInBytes)),
-				elementCount * elementSizeInBytes);
-
-			handle.Free();
-		}
-	}
+            handle.Free();
+        }
+    }
 }
