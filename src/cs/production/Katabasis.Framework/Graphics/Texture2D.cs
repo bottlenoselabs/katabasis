@@ -98,6 +98,15 @@ namespace bottlenoselabs.Katabasis
             int elementCount)
             where T : struct
         {
+            if (startIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+            if (data.Length < (elementCount + startIndex))
+            {
+                throw new ArgumentOutOfRangeException(nameof(elementCount));
+            }
+            
             int x, y, w, h;
             if (rect.HasValue)
             {
@@ -115,6 +124,13 @@ namespace bottlenoselabs.Katabasis
             }
 
             var elementSize = Marshal.SizeOf(typeof(T));
+            var requiredBytes = w * h * GetFormatSize(Format) / GetBlockSizeSquared(Format);
+            var availableBytes = elementCount * elementSize;
+            if (requiredBytes > availableBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rect), "The region you are trying to upload is larger than the amount of data you provided.");
+            }
+            
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
             FNA3D_SetTextureData2D(
                 GraphicsDevice.Device,
