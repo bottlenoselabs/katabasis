@@ -10,7 +10,8 @@ Katabasis is built for [programmers](https://en.wikipedia.org/wiki/Programmer) t
 ## News
 
 To see what's new, check the development log! [docs/dev/LOG.md](docs/dev/LOG.md)  
-Lastest update: - - [2022-08-01: C2CS Update & Katabasis.Bedrock](docs/dev/2022-08-01_c2cs-update-katabasis-bedrock.md)
+Lastest update: 
+- [2022-08-15: NuGet packages revisited](docs/dev/2022-08-15_nuget-packages-revisited.md)
 
 ## Background: Why?
 

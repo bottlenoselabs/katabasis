@@ -11,12 +11,13 @@ Adding Katabasis to your project by cloning the source code instead of using NuG
 1. Download and install [.NET 6](https://dotnet.microsoft.com/download).
 2. If you are on Windows, [install Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 3. Clone the repository with submodules: `git clone --recurse-submodules https://github.com/lithiumtoast/katabasis.git`.
-4. Run `bash ./library.sh` in terminal / powershell / command prompt from the root of the repository to download/build the native library dependencies.
+4. Install CMake and make sure it's in your PATH.
+5. Run `bash ./library.sh` in terminal / powershell / command prompt from the root of the repository to download/build the native library dependencies.
 
 ## Visual Studio / Rider / MonoDevelop
 
-Open `./src/dotnet/Katabasis.sln`
+Open `./Katabasis.sln`
 
 ## Command Line Interface (CLI)
 
-`dotnet build ./src/dotnet/Katabasis.sln`
+`dotnet build`

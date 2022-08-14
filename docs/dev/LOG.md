@@ -4,6 +4,8 @@ Developer notes about the latest news and changes to Katabasis.
 
 ## August 2022
 
+- [2022-08-15: NuGet packages revisited](2022-08-15_nuget-packages-revisited.md)
+
 - [2022-08-01: C2CS Update & Katabasis.Bedrock](2022-08-01_c2cs-update-katabasis-bedrock.md)
 
 ## Septemeber 2021
