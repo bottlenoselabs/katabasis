@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
@@ -102,11 +102,12 @@ namespace bottlenoselabs.Katabasis
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex));
             }
+
             if (data.Length < (elementCount + startIndex))
             {
                 throw new ArgumentOutOfRangeException(nameof(elementCount));
             }
-            
+
             int x, y, w, h;
             if (rect.HasValue)
             {
@@ -130,7 +131,7 @@ namespace bottlenoselabs.Katabasis
             {
                 throw new ArgumentOutOfRangeException(nameof(rect), "The region you are trying to upload is larger than the amount of data you provided.");
             }
-            
+
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
             FNA3D_SetTextureData2D(
                 GraphicsDevice.Device,
@@ -400,7 +401,7 @@ namespace bottlenoselabs.Katabasis
             using BinaryReader reader = new(stream);
 
             ParseDDS(reader, out var format, out var width, out var height, out var levels, out var isCube);
-            
+
             if (isCube)
             {
                 throw new FormatException("This file contains cube map data!");
@@ -436,17 +437,8 @@ namespace bottlenoselabs.Katabasis
             {
                 for (var i = 0; i < levels; i += 1)
                 {
-                    tex = reader.ReadBytes(CalculateDDSLevelSize(
-                        width >> i,
-                        height >> i,
-                        format
-                    ));
-                    result.SetData(
-                        i,
-                        null,
-                        tex,
-                        0,
-                        tex.Length);
+                    tex = reader.ReadBytes(CalculateDDSLevelSize(width >> i, height >> i, format));
+                    result.SetData(i, null, tex, 0, tex.Length);
                 }
             }
 

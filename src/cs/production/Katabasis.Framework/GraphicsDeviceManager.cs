@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -319,7 +319,7 @@ namespace bottlenoselabs.Katabasis
 			var size = window!.ClientBounds;
 			_resizedBackBufferWidth = size.Width;
 			_resizedBackBufferHeight = size.Height;
-			
+
 			FNAPlatform.ScaleForWindow(window.Handle, true, ref _resizedBackBufferWidth, ref _resizedBackBufferHeight);
 
 			_useResizedBackBuffer = true;

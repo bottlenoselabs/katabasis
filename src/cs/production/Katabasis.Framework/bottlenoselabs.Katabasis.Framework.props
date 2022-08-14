@@ -1,0 +1,24 @@
+<Project>
+
+    <!-- NuGet package references -->
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+    </ItemGroup>
+
+    <!-- Compile content files from the NuGet package after it is installed (expanded on disk) -->
+    <PropertyGroup>
+        <KatabasisFrameworkContentDirectoryPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)/../content'))</KatabasisFrameworkContentDirectoryPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="$(KatabasisFrameworkContentDirectoryPath)/**/*.*">
+            <Pack>false</Pack>
+            <Link>Properties/bottlenoselabs/Katabasis.Framework/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Content>
+        <Content Remove="$(KatabasisFrameworkContentDirectoryPath)/**/*.cs">
+        </Content>
+        <Compile Include="$(KatabasisFrameworkContentDirectoryPath)/**/*.cs" >
+            <Link>Properties/bottlenoselabs/Katabasis.Framework/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
+
+</Project>

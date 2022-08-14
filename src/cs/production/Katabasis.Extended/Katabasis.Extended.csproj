@@ -20,7 +20,7 @@
 
 	<!-- Disable warnins -->
 	<PropertyGroup>
-		<NoWarn>CA1051</NoWarn>
+		<NoWarn>$(NoWarn);CA1051</NoWarn>
 	</PropertyGroup>
 
 </Project>

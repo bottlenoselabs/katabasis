@@ -1,4 +1,4 @@
-﻿// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+﻿// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
@@ -295,7 +295,7 @@ namespace bottlenoselabs.Katabasis.Extended
         /// <param name="first">The first axis-aligned-bounding-box.</param>
         /// <param name="second">The second axis-aligned-bounding-box.</param>
         /// <returns>
-        ///     <c>true</c> if the <paramref name="first" /> intersects with the <see cref="second" />; otherwise, <c>false</c>.
+        ///     <c>true</c> if the <paramref name="first" /> intersects with the <paramref name="second"/>; otherwise, <c>false</c>.
         /// </returns>
         public static bool Intersects(ref AABB2 first, ref AABB2 second)
         {
@@ -319,7 +319,7 @@ namespace bottlenoselabs.Katabasis.Extended
         /// <param name="first">The first axis-aligned-bounding-box.</param>
         /// <param name="second">The second axis-aligned-bounding-box.</param>
         /// <returns>
-        ///     <c>true</c> if the <paramref name="first" /> intersects with the <see cref="second" />; otherwise, <c>false</c>.
+        ///     <c>true</c> if the <paramref name="first" /> intersects with the <paramref name="second"/>; otherwise, <c>false</c>.
         /// </returns>
         [ExcludeFromCodeCoverage]
         public static bool Intersects(AABB2 first, AABB2 second)

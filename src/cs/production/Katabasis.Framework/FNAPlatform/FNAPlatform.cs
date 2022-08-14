@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace bottlenoselabs.Katabasis
 	internal static class FNAPlatform
 	{
 		public delegate void ScaleForWindowFunc(IntPtr window, bool invert, ref int w, ref int h);
-		
+
 		public delegate void ApplyWindowChangesFunc(
 			IntPtr window,
 			int clientWidth,
@@ -281,54 +281,38 @@ namespace bottlenoselabs.Katabasis
 			LaunchParameters args = new();
 			if (args.TryGetValue("enablehighdpi", out var arg) && arg == "1")
 			{
-				Environment.SetEnvironmentVariable(
-					"FNA_GRAPHICS_ENABLE_HIGHDPI",
-					"1");
+				Environment.SetEnvironmentVariable("FNA_GRAPHICS_ENABLE_HIGHDPI", "1");
 			}
 
 			if (args.TryGetValue("gldevice", out arg))
 			{
-				Environment.SetEnvironmentVariable(
-					"FNA3D_FORCE_DRIVER",
-					arg);
+				Environment.SetEnvironmentVariable("FNA3D_FORCE_DRIVER", arg);
 			}
 
 			if (args.TryGetValue("enablelateswaptear", out arg) && arg == "1")
 			{
-				Environment.SetEnvironmentVariable(
-					"FNA3D_ENABLE_LATESWAPTEAR",
-					"1");
+				Environment.SetEnvironmentVariable("FNA3D_ENABLE_LATESWAPTEAR", "1");
 			}
 
 			if (args.TryGetValue("mojoshaderprofile", out arg))
 			{
-				Environment.SetEnvironmentVariable(
-					"FNA3D_MOJOSHADER_PROFILE",
-					arg);
+				Environment.SetEnvironmentVariable("FNA3D_MOJOSHADER_PROFILE", arg);
 			}
 
 			if (args.TryGetValue("backbufferscalenearest", out arg) && arg == "1")
 			{
-				Environment.SetEnvironmentVariable(
-					"FNA3D_BACKBUFFER_SCALE_NEAREST",
-					"1");
+				Environment.SetEnvironmentVariable("FNA3D_BACKBUFFER_SCALE_NEAREST", "1");
 			}
 
 			if (args.TryGetValue("usescancodes", out arg) && arg == "1")
 			{
-				Environment.SetEnvironmentVariable(
-					"FNA_KEYBOARD_USE_SCANCODES",
-					"1");
-			}
-			
-			if (args.TryGetValue("nukesteaminput", out arg) && arg == "1")
-			{
-				Environment.SetEnvironmentVariable(
-					"FNA_NUKE_STEAM_INPUT",
-					"1"
-				);
+				Environment.SetEnvironmentVariable("FNA_KEYBOARD_USE_SCANCODES", "1");
 			}
 
+			if (args.TryGetValue("nukesteaminput", out arg) && arg == "1")
+			{
+				Environment.SetEnvironmentVariable("FNA_NUKE_STEAM_INPUT", "1");
+			}
 
 			CreateWindow = SDL2_FNAPlatform.CreateWindow;
 			DisposeWindow = SDL2_FNAPlatform.DisposeWindow;
@@ -383,7 +367,7 @@ namespace bottlenoselabs.Katabasis
 
 			AppDomain.CurrentDomain.ProcessExit += SDL2_FNAPlatform.ProgramExit;
 			TitleLocation = SDL2_FNAPlatform.ProgramInit(args);
-			
+
 			/* Do this AFTER ProgramInit so the platform library
  			 * has a chance to load first!
  			 */

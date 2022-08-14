@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.IO;
@@ -11,8 +11,7 @@ namespace bottlenoselabs.Katabasis.Samples
 		// AUTOPONG by MrGrak MiT License 2022
 		// Lithium is an absolute legend
 
-		public static SpriteBatch SB;
-		public static Game GAME;
+		public static SpriteBatch SB = null!;
 
 		public static int GameBoundsX = 1280;
 		public static int GameBoundsY = 720;
@@ -25,28 +24,27 @@ namespace bottlenoselabs.Katabasis.Samples
 		public static Vector2 BallPosition;
 		public static float BallSpeed = 15.0f;
 
-		public static Texture2D Texture;
-		public static Rectangle DrawRec = new Rectangle(0, 0, 3, 3);
+		public static Texture2D Texture = null!;
 
 		static Random Rand = new();
-		public static byte HitCounter = 0;
+		public static byte HitCounter;
 
 		public static int PointsLeft;
 		public static int PointsRight;
 		public static int PointsPerGame = 4;
 
-		public static AudioSource SoundFX;
-		public static int JingleCounter = 0;
+		public static AudioSource SoundFX = null!;
+		public static int JingleCounter;
 
+		public static void LoadContent()
+		{
+			Texture = new Texture2D(1, 1);
+			Texture.SetData(new[] { Color.White });
+			SoundFX = new AudioSource();
+		}
 
 		public static void Reset()
 		{
-			if (Texture == null)
-			{   //create texture to draw with if it doesn't exist
-				Texture = new Texture2D(1, 1);
-				Texture.SetData<Color>(new Color[] { Color.White });
-			}
-
 			int PaddleHeight = 100;
 			PaddleLeft = new Rectangle(0 + 10, 150, 20, PaddleHeight);
 			PaddleRight = new Rectangle(GameBoundsX - 30, 150, 20, PaddleHeight);
@@ -57,8 +55,6 @@ namespace bottlenoselabs.Katabasis.Samples
 
 			PointsLeft = 0; PointsRight = 0;
 			JingleCounter = 0;
-
-			if (SoundFX == null) { SoundFX = new AudioSource(); }
 		}
 
 		public static void Update()
@@ -265,7 +261,6 @@ namespace bottlenoselabs.Katabasis.Samples
 			Src.DSEI.SubmitBuffer(Src.Buffer);
 			Src.DSEI.Play();
 		}
-
 	}
 
 	public enum WaveType { Sin, Tan, Square, Noise }
@@ -299,9 +294,9 @@ namespace bottlenoselabs.Katabasis.Samples
 
 		protected override void LoadContent()
 		{
-			AutoPong.GAME = this;
 			IsMouseVisible = true;
 			AutoPong.SB = new SpriteBatch();
+			AutoPong.LoadContent();
 			AutoPong.Reset();
 		}
 

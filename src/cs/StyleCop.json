@@ -5,7 +5,7 @@
         "useTabs": true
       },
       "documentationRules": {
-        "companyName": "BottlenoseLabs (https://github.com/bottlenoselabs)",
+        "companyName": "Bottlenose Labs Inc. (https://github.com/bottlenoselabs)",
         "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the Git repository root directory for full license information.",
         "variables": {
           "licenseName": "MS-PL",

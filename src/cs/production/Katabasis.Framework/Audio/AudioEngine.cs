@@ -1,10 +1,10 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static bottlenoselabs.FAudio;
 
@@ -124,7 +124,7 @@ namespace bottlenoselabs.Katabasis
 			notificationDesc.flags = FACT_FLAG_NOTIFICATION_PERSIST;
 			notificationDesc.type = FACTNOTIFICATIONTYPE_WAVEBANKDESTROYED;
 			FACTAudioEngine_RegisterNotification(handle, &notificationDesc);
-			
+
 			notificationDesc.type = FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED;
 			FACTAudioEngine_RegisterNotification(handle, &notificationDesc);
 			notificationDesc.type = FACTNOTIFICATIONTYPE_CUEDESTROYED;
@@ -189,6 +189,7 @@ namespace bottlenoselabs.Katabasis
 
 					break;
 				}
+
 				case FACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED:
 				{
 					var target = notification->soundBank.pSoundBank;
@@ -207,6 +208,7 @@ namespace bottlenoselabs.Katabasis
 
 					break;
 				}
+
 				case FACTNOTIFICATIONTYPE_CUEDESTROYED:
 				{
 					var target = notification->cue.pCue;

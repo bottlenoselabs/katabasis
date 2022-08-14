@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -31,17 +31,17 @@ namespace bottlenoselabs.Katabasis
 
 			return levels;
 		}
-		
+
 		internal static int CalculateDDSLevelSize(int width, int height, SurfaceFormat format)
 		{
 			switch (format)
 			{
 				case SurfaceFormat.ColorBgraEXT:
-					return (width * 32 + 7) / 8 * height;
+					return ((width * 32) + 7) / 8 * height;
 				case SurfaceFormat.HalfVector4:
-					return (width * 64 + 7) / 8 * height;
+					return ((width * 64) + 7) / 8 * height;
 				case SurfaceFormat.Vector4:
-					return (width * 128 + 7) / 8 * height;
+					return ((width * 128) + 7) / 8 * height;
 				default:
 				{
 					var blockSize = 16;
@@ -49,7 +49,7 @@ namespace bottlenoselabs.Katabasis
 					{
 						blockSize = 8;
 					}
-			
+
 					width = Math.Max(width, 1);
 					height = Math.Max(height, 1);
 					return (width + 3) / 4 *
@@ -215,7 +215,7 @@ namespace bottlenoselabs.Katabasis
 		{
 			// If the fourCC is DX10, there is an extra header with additional format information.
 			var dxgiFormat = reader.ReadUInt32();
-			
+
 			// These values are taken from the DXGI_FORMAT enum.
 			var result = dxgiFormat switch
 			{
@@ -228,16 +228,14 @@ namespace bottlenoselabs.Katabasis
 				99 => SurfaceFormat.Bc7SrgbEXT,
 				_ => throw new NotSupportedException("Unsupported DDS texture format")
 			};
-			
+
 			var resourceDimension = reader.ReadUInt32();
 			// These values are taken from the D3D10_RESOURCE_DIMENSION enum.
 			switch (resourceDimension)
 			{
 				case 0: // Unknown
 				case 1: // Buffer
-					throw new NotSupportedException(
-						"Unsupported DDS texture format"
-					);
+					throw new NotSupportedException("Unsupported DDS texture format");
 			}
 
 			/*
@@ -253,16 +251,14 @@ namespace bottlenoselabs.Katabasis
 			var arraySize = reader.ReadUInt32();
 			if (arraySize > 1)
 			{
-				throw new NotSupportedException(
-					"Unsupported DDS texture format"
-				);
+				throw new NotSupportedException("Unsupported DDS texture format");
 			}
 
 			reader.ReadUInt32(); // reserved
 
 			return result;
 		}
-		
+
 		protected static int GetBlockSizeSquared(SurfaceFormat format)
 		{
 			switch (format)

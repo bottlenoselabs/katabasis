@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Collections.Generic;
@@ -88,13 +88,11 @@ namespace bottlenoselabs.Katabasis
 		 * clears to colors where all components are either 0 or 255.
 		 * Despite XNA4 using Purple here, we use black (in Release) to avoid
 		 * performance warnings on Intel/Mesa.
-		 *
- 		 * Also, these are NOT readonly, for weird performance reasons -flibit
 		 */
 #if DEBUG
-		private static Vector4 DiscardColor = new Color(68, 34, 136, 255).ToVector4();
+		private static readonly Vector4 DiscardColor = new Color(68, 34, 136, 255).ToVector4();
 #else
-		private static Vector4 DiscardColor = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+		private static readonly Vector4 DiscardColor = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 #endif
 
 		public bool IsDisposed { get; private set; }

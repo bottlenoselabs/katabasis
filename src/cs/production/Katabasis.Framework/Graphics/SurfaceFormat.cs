@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 namespace bottlenoselabs.Katabasis;
@@ -109,7 +109,7 @@ public enum SurfaceFormat
     HdrBlendable,
 
     /// <summary>
-    ///     Unsigned 32-bit ABGR pixel format for store 8 bits per channel (XNA3)
+    ///     Unsigned 32-bit ABGR pixel format for store 8 bits per channel (XNA3).
     /// </summary>
     ColorBgraEXT,
 
@@ -126,7 +126,7 @@ public enum SurfaceFormat
     Dxt5SrgbEXT,
 
     /// <summary>
-    ///     BC7 block texture format
+    ///     BC7 block texture format.
     /// </summary>
     Bc7EXT,
 

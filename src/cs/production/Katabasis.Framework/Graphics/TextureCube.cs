@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
@@ -74,7 +74,7 @@ namespace bottlenoselabs.Katabasis
             using BinaryReader reader = new(stream);
 
             ParseDDS(reader, out var format, out var width, out _, out var levels, out var isCube);
-            
+
             if (!isCube)
             {
                 throw new FormatException("This file does not contain cube data!");
@@ -90,11 +90,7 @@ namespace bottlenoselabs.Katabasis
                 {
                     for (var i = 0; i < levels; i += 1)
                     {
-                        var mipLevelSize = CalculateDDSLevelSize(
-                            width >> i,
-                            width >> i,
-                            format
-                        );
+                        var mipLevelSize = CalculateDDSLevelSize(width >> i, width >> i, format);
 
                         result.SetData(
                             (CubeMapFace)face,
@@ -116,11 +112,7 @@ namespace bottlenoselabs.Katabasis
                 {
                     for (var i = 0; i < levels; i += 1)
                     {
-                        tex = reader.ReadBytes(CalculateDDSLevelSize(
-                            width >> i,
-                            width >> i,
-                            format
-                        ));
+                        tex = reader.ReadBytes(CalculateDDSLevelSize(width >> i, width >> i, format));
                         result.SetData(
                             (CubeMapFace)face,
                             i,

@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
@@ -491,8 +491,7 @@ namespace bottlenoselabs.Katabasis
             };
 
         public static void ShowRuntimeError(string title, string message) =>
-            SDL_ShowSimpleMessageBox((uint)SDL_MessageBoxFlags.SDL_MESSAGEBOX_ERROR, title, message,
-                (SDL_Window*)IntPtr.Zero);
+            SDL_ShowSimpleMessageBox((uint)SDL_MessageBoxFlags.SDL_MESSAGEBOX_ERROR, title, message, (SDL_Window*)IntPtr.Zero);
 
         public static string ProgramInit(LaunchParameters args)
         {
@@ -563,13 +562,12 @@ namespace bottlenoselabs.Katabasis
               */
             var useLabels = Environment.GetEnvironmentVariable("FNA_GAMEPAD_IGNORE_PHYSICAL_LAYOUT") == "1" ? "1" : "0";
             SDL_SetHintWithPriority(SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS, useLabels, SDL_HintPriority.SDL_HINT_OVERRIDE);
-            
+
             // Are you even surprised this is necessary?
             if (Environment.GetEnvironmentVariable("FNA_NUKE_STEAM_INPUT") == "1")
             {
                 SDL_SetHintWithPriority("SDL_GAMECONTROLLER_IGNORE_DEVICES", "0x28DE/0x11FF", SDL_HintPriority.SDL_HINT_OVERRIDE);
-                SDL_SetHintWithPriority("SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT", "", SDL_HintPriority.SDL_HINT_OVERRIDE);
-
+                SDL_SetHintWithPriority("SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT", string.Empty, SDL_HintPriority.SDL_HINT_OVERRIDE);
                 // This should be redundant, but who knows...
                 SDL_SetHintWithPriority("SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD", "0", SDL_HintPriority.SDL_HINT_OVERRIDE);
             }
@@ -607,7 +605,7 @@ namespace bottlenoselabs.Katabasis
             SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
 
             string videoDriver = SDL_GetCurrentVideoDriver();
-            
+
             /* A number of platforms don't support global mouse, but
              * this really only matters on desktop where the game
              * screen may not be covering the whole display.
@@ -626,11 +624,7 @@ namespace bottlenoselabs.Katabasis
                 /* Note that this is NOT an override.
  				 * We can be overruled, just in case.
  				 */
-                SDL_SetHintWithPriority(
-                    SDL_HINT_VIDEO_HIGHDPI_DISABLED,
-                    "1",
-                    SDL_HintPriority.SDL_HINT_NORMAL
-                );
+                SDL_SetHintWithPriority(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1", SDL_HintPriority.SDL_HINT_NORMAL);
             }
 
             /* We need to change the Windows default here, as the
@@ -929,13 +923,13 @@ namespace bottlenoselabs.Katabasis
 
             if (invert)
             {
-                w = (int) (w * (dw / (float) ww));
-                h = (int) (h * (dh / (float) wh));
+                w = (int)(w * (dw / (float)ww));
+                h = (int)(h * (dh / (float)wh));
             }
             else
             {
-                w = (int) (w / (dw / (float) ww));
-                h = (int) (h / (dh / (float) wh));
+                w = (int)(w / (dw / (float)ww));
+                h = (int)(h / (dh / (float)wh));
             }
         }
 
@@ -1086,7 +1080,7 @@ namespace bottlenoselabs.Katabasis
         {
             SDL_DisplayMode filler;
             SDL_GetCurrentDisplayMode(adapterIndex, &filler);
-            
+
             // FIXME: iOS needs to factor in the DPI!
 
             return new DisplayMode(
@@ -1688,7 +1682,8 @@ namespace bottlenoselabs.Katabasis
                                 textInputControlDown[textIndex] = true;
                                 TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[textIndex]);
                             }
-                            else if ((Keyboard._keys.Contains(Keys.LeftControl) | Keyboard._keys.Contains(Keys.RightControl))
+                            else if ((Keyboard._keys.Contains(Keys.LeftControl) |
+                                      Keyboard._keys.Contains(Keys.RightControl))
                                      && key == Keys.V)
                             {
                                 textInputControlDown[6] = true;
@@ -1702,7 +1697,8 @@ namespace bottlenoselabs.Katabasis
                             {
                                 TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[textIndex]);
                             }
-                            else if ((Keyboard._keys.Contains(Keys.LeftControl) || Keyboard._keys.Contains(Keys.RightControl))
+                            else if ((Keyboard._keys.Contains(Keys.LeftControl) ||
+                                      Keyboard._keys.Contains(Keys.RightControl))
                                      && key == Keys.V)
                             {
                                 TextInputEXT.OnTextInput(FNAPlatform.TextInputCharacters[6]);
@@ -1722,7 +1718,8 @@ namespace bottlenoselabs.Katabasis
                             {
                                 textInputControlDown[value] = false;
                             }
-                            else if ((!Keyboard._keys.Contains(Keys.LeftControl) && !Keyboard._keys.Contains(Keys.RightControl) && textInputControlDown[6]) ||
+                            else if ((!Keyboard._keys.Contains(Keys.LeftControl) &&
+                                      !Keyboard._keys.Contains(Keys.RightControl) && textInputControlDown[6]) ||
                                      key == Keys.V)
                             {
                                 textInputControlDown[6] = false;
@@ -1787,11 +1784,7 @@ namespace bottlenoselabs.Katabasis
                                 if (SDL_GetCurrentVideoDriver() == "x11")
                                 {
                                     // If we alt-tab away, we lose the 'fullscreen desktop' flag on some WMs
-                                    SDL_SetWindowFullscreen(
-                                        (SDL_Window*)game.Window.Handle,
-                                        game.GraphicsDevice.PresentationParameters.IsFullScreen
-                                            ? (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP
-                                            : 0);
+                                    SDL_SetWindowFullscreen((SDL_Window*)game.Window.Handle, game.GraphicsDevice.PresentationParameters.IsFullScreen ? (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
                                 }
 
                                 // Disable the screensaver when we're back.
@@ -1828,7 +1821,8 @@ namespace bottlenoselabs.Katabasis
                                  */
                                 var flags = SDL_GetWindowFlags((SDL_Window*)game.Window.Handle);
                                 if ((flags & (uint)SDL_WindowFlags.SDL_WINDOW_RESIZABLE) != 0 &&
-                                    (flags & (uint)SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS | (uint)SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS) != 0)
+                                    (flags & (uint)SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS |
+                                     (uint)SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS) != 0)
                                 {
                                     ((FNAWindow)game.Window).INTERNAL_ClientSizeChanged();
                                 }
@@ -1909,10 +1903,7 @@ namespace bottlenoselabs.Katabasis
                         else
                         {
                             // Just reset, this is probably a hotplug
-                            game.GraphicsDevice.Reset(
-                                game.GraphicsDevice.PresentationParameters,
-                                currentAdapter
-                            );
+                            game.GraphicsDevice.Reset(game.GraphicsDevice.PresentationParameters, currentAdapter);
                         }
 
                         break;
@@ -1948,6 +1939,7 @@ namespace bottlenoselabs.Katabasis
 
                         break;
                     }
+
                     // Quit
                     case SDL_EventType.SDL_TEXTEDITING:
                     {
@@ -1970,6 +1962,7 @@ namespace bottlenoselabs.Katabasis
 
                         break;
                     }
+
                     case SDL_EventType.SDL_QUIT:
                         game.RunApplication = false;
                         break;
@@ -1978,645 +1971,629 @@ namespace bottlenoselabs.Katabasis
         }
 
         private static void INTERNAL_SetIcon(SDL_Window* window, string title)
+        {
+            string fileIn;
+
+            /* If the game's using SDL2_image, provide the option to use a PNG
+             * instead of a BMP. Nice for anyone who cares about transparency.
+             * -flibit
+             */
+            try
             {
-                string fileIn;
-
-                /* If the game's using SDL2_image, provide the option to use a PNG
-                 * instead of a BMP. Nice for anyone who cares about transparency.
-                 * -flibit
-                 */
-                try
-                {
-                    fileIn = INTERNAL_GetIconName(title + ".png");
-                    if (!string.IsNullOrEmpty(fileIn))
-                    {
-                        IntPtr pixels;
-                        SDL_Surface* icon;
-                        using (var stream = TitleContainer.OpenStream(fileIn))
-                        {
-                            pixels = FNA.ReadImageStream(
-                                stream,
-                                out var w,
-                                out var h,
-                                out _);
-
-                            icon = SDL_CreateRGBSurfaceFrom(
-                                (void*)pixels,
-                                w,
-                                h,
-                                8 * 4,
-                                w * 4,
-                                0x000000FF,
-                                0x0000FF00,
-                                0x00FF0000,
-                                0xFF000000);
-                        }
-
-                        SDL_SetWindowIcon(window, icon);
-                        SDL_FreeSurface(icon);
-                        FNA3D.FNA3D_Image_Free((byte*)pixels);
-                        return;
-                    }
-                }
-                catch (DllNotFoundException)
-                {
-                    // Not that big a deal guys.
-                }
-
-                fileIn = INTERNAL_GetIconName(title + ".bmp");
+                fileIn = INTERNAL_GetIconName(title + ".png");
                 if (!string.IsNullOrEmpty(fileIn))
                 {
-                    throw new NotImplementedException("SDL_image not yet supported. If you come here upvote a ticket!");
-                    // var icon = SDL_LoadBMP(fileIn);
-                    // SDL_SetWindowIcon(window, icon);
-                    // SDL_FreeSurface(icon);
+                    IntPtr pixels;
+                    SDL_Surface* icon;
+                    using (var stream = TitleContainer.OpenStream(fileIn))
+                    {
+                        pixels = FNA.ReadImageStream(
+                            stream,
+                            out var w,
+                            out var h,
+                            out _);
+
+                        icon = SDL_CreateRGBSurfaceFrom(
+                            (void*)pixels,
+                            w,
+                            h,
+                            8 * 4,
+                            w * 4,
+                            0x000000FF,
+                            0x0000FF00,
+                            0x00FF0000,
+                            0xFF000000);
+                    }
+
+                    SDL_SetWindowIcon(window, icon);
+                    SDL_FreeSurface(icon);
+                    FNA3D.FNA3D_Image_Free((byte*)pixels);
+                    return;
                 }
             }
-
-            private static string INTERNAL_GetIconName(string title)
+            catch (DllNotFoundException)
             {
-                string fileIn = Path.Combine(TitleLocation.Path, title);
-                if (File.Exists(fileIn))
-                {
-                    // If the title and filename work, it just works. Fine.
-                    return fileIn;
-                }
+                // Not that big a deal guys.
+            }
 
-                // But sometimes the title has invalid characters inside.
-                fileIn = Path.Combine(
-                    TitleLocation.Path,
-                    INTERNAL_StripBadChars(title));
+            fileIn = INTERNAL_GetIconName(title + ".bmp");
+            if (!string.IsNullOrEmpty(fileIn))
+            {
+                throw new NotImplementedException("SDL_image not yet supported. If you come here upvote a ticket!");
+                // var icon = SDL_LoadBMP(fileIn);
+                // SDL_SetWindowIcon(window, icon);
+                // SDL_FreeSurface(icon);
+            }
+        }
 
-                if (File.Exists(fileIn))
-                {
-                    return fileIn;
-                }
+        private static string INTERNAL_GetIconName(string title)
+        {
+            string fileIn = Path.Combine(TitleLocation.Path, title);
+            if (File.Exists(fileIn))
+            {
+                // If the title and filename work, it just works. Fine.
+                return fileIn;
+            }
 
+            // But sometimes the title has invalid characters inside.
+            fileIn = Path.Combine(
+                TitleLocation.Path,
+                INTERNAL_StripBadChars(title));
+
+            if (File.Exists(fileIn))
+            {
+                return fileIn;
+            }
+
+            return string.Empty;
+        }
+
+        private static string INTERNAL_StripBadChars(string path)
+        {
+            /* In addition to the filesystem's invalid charset, we need to
+             * blacklist the Windows standard set too, no matter what.
+             * -flibit
+             */
+            char[] hardCodeBadChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
+            List<char> badChars = new();
+            badChars.AddRange(Path.GetInvalidFileNameChars());
+            badChars.AddRange(hardCodeBadChars);
+
+            string stripChars = path;
+            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+            foreach (var c in badChars)
+            {
+                stripChars = stripChars.Replace(c.ToString(), string.Empty);
+            }
+
+            return stripChars;
+        }
+
+        private static string? MonoPathRootWorkaround(string? storageRoot)
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                // This is what we should be doing everywhere...
+                return Path.GetPathRoot(storageRoot);
+            }
+
+            // This is stolen from Mono's Path.cs
+            if (storageRoot == null)
+            {
+                return null;
+            }
+
+            if (storageRoot.Trim().Length == 0)
+            {
+                throw new ArgumentException("The specified path is not of a legal form.");
+            }
+
+            if (!Path.IsPathRooted(storageRoot) && !storageRoot.Contains(":"))
+            {
                 return string.Empty;
             }
 
-            private static string INTERNAL_StripBadChars(string path)
+            /* FIXME: Mono b u g!
+             *
+             * For Unix, the Mono Path.GetPathRoot is pretty lazy:
+             * https://github.com/mono/mono/blob/master/mcs/class/corlib/System.IO/Path.cs#L443
+             * It should actually be checking the drives and
+             * comparing them to the provided path.
+             * If a Mono maintainer is reading this, please steal
+             * this code so we don't have to hack around Mono!
+             *
+             * -flibit
+             */
+            int drive = -1, length = 0;
+            string[] drives = Environment.GetLogicalDrives();
+            for (var i = 0; i < drives.Length; i += 1)
             {
-                /* In addition to the filesystem's invalid charset, we need to
-                 * blacklist the Windows standard set too, no matter what.
-                 * -flibit
-                 */
-                char[] hardCodeBadChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
-                List<char> badChars = new();
-                badChars.AddRange(Path.GetInvalidFileNameChars());
-                badChars.AddRange(hardCodeBadChars);
-
-                string stripChars = path;
-                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                foreach (var c in badChars)
+                if (string.IsNullOrEmpty(drives[i]))
                 {
-                    stripChars = stripChars.Replace(c.ToString(), string.Empty);
+                    // ... What?
+                    continue;
                 }
 
-                return stripChars;
+                string name = drives[i];
+                if (name[^1] != Path.DirectorySeparatorChar)
+                {
+                    name += Path.DirectorySeparatorChar;
+                }
+
+                if (storageRoot.StartsWith(name, StringComparison.CurrentCulture) &&
+                    name.Length > length)
+                {
+                    drive = i;
+                    length = name.Length;
+                }
             }
 
-            private static string? MonoPathRootWorkaround(string? storageRoot)
+            // Uh
+            return drive >= 0 ? drives[drive] : Path.GetPathRoot(storageRoot);
+        }
+
+        public static IntPtr ReadToPointer(string path, out ulong size)
+        {
+            ulong size2;
+            var result = SDL_LoadFile(path, &size2);
+            size = size2;
+            return (IntPtr)result;
+        }
+
+        public static void FreeFilePointer(IntPtr file)
+        {
+            SDL_free(file);
+        }
+
+        private static int MeasureStringLength(byte* ptr)
+        {
+            int bytes;
+            for (bytes = 0; *ptr != 0; ptr += 1, bytes += 1)
             {
-                if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-                {
-                    // This is what we should be doing everywhere...
-                    return Path.GetPathRoot(storageRoot);
-                }
+            }
 
-                // This is stolen from Mono's Path.cs
-                if (storageRoot == null)
-                {
-                    return null;
-                }
+            return bytes;
+        }
 
-                if (storageRoot.Trim().Length == 0)
-                {
-                    throw new ArgumentException("The specified path is not of a legal form.");
-                }
+        private static DisplayOrientation INTERNAL_ConvertOrientation(SDL_DisplayOrientation orientation)
+        {
+            switch (orientation)
+            {
+                case SDL_DisplayOrientation.SDL_ORIENTATION_LANDSCAPE:
+                    return DisplayOrientation.LandscapeLeft;
 
-                if (!Path.IsPathRooted(storageRoot) && !storageRoot.Contains(":"))
-                {
-                    return string.Empty;
-                }
+                case SDL_DisplayOrientation.SDL_ORIENTATION_LANDSCAPE_FLIPPED:
+                    return DisplayOrientation.LandscapeRight;
 
-                /* FIXME: Mono b u g!
+                case SDL_DisplayOrientation.SDL_ORIENTATION_PORTRAIT:
+                    return DisplayOrientation.Portrait;
+
+                default:
+                    throw new NotSupportedException("FNA does not support this device orientation.");
+            }
+        }
+
+        private static void INTERNAL_HandleOrientationChange(
+            DisplayOrientation orientation,
+            GraphicsDevice graphicsDevice,
+            GraphicsAdapter graphicsAdapter,
+            FNAWindow window)
+        {
+            // Flip the backbuffer dimensions if needed
+            var width = graphicsDevice.PresentationParameters.BackBufferWidth;
+            var height = graphicsDevice.PresentationParameters.BackBufferHeight;
+            var min = Math.Min(width, height);
+            var max = Math.Max(width, height);
+
+            if (orientation == DisplayOrientation.Portrait)
+            {
+                graphicsDevice.PresentationParameters.BackBufferWidth = min;
+                graphicsDevice.PresentationParameters.BackBufferHeight = max;
+            }
+            else
+            {
+                graphicsDevice.PresentationParameters.BackBufferWidth = max;
+                graphicsDevice.PresentationParameters.BackBufferHeight = min;
+            }
+
+            // Update the graphics device and window
+            graphicsDevice.PresentationParameters.DisplayOrientation = orientation;
+            window.CurrentOrientation = orientation;
+
+            graphicsDevice.Reset(graphicsDevice.PresentationParameters, graphicsAdapter);
+            window.INTERNAL_OnOrientationChanged();
+        }
+
+        [DllImport("__Native", CallingConvention = CallingConvention.Cdecl)]
+        [SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
+        [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
+        private static extern void emscripten_set_main_loop(
+            em_callback_func func,
+            int fps,
+            int simulate_infinite_loop);
+
+        [DllImport("__Native", CallingConvention = CallingConvention.Cdecl)]
+        [SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
+        private static extern void emscripten_cancel_main_loop();
+
+        [MonoPInvokeCallback(typeof(em_callback_func))]
+        private static void RunEmscriptenMainLoop()
+        {
+            _emscriptenGame!.RunOneFrame();
+
+            // FIXME: Is this even needed...?
+            if (!_emscriptenGame.RunApplication)
+            {
+                _emscriptenGame.Exit();
+                emscripten_cancel_main_loop();
+            }
+        }
+
+        private static string GetBaseDirectory()
+        {
+            if (Environment.GetEnvironmentVariable("FNA_SDL2_FORCE_BASE_PATH") != "1")
+            {
+                // If your platform uses a CLR, you want to be in this list!
+                if (!string.IsNullOrEmpty(_osVersion) &&
+                    (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
+                     _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
+                     _osVersion.Equals("Linux", StringComparison.Ordinal) ||
+                     _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
+                     _osVersion.Equals("OpenBSD", StringComparison.Ordinal) ||
+                     _osVersion.Equals("NetBSD", StringComparison.Ordinal)))
+                {
+                    return AppDomain.CurrentDomain.BaseDirectory;
+                }
+            }
+
+            string result = SDL_GetBasePath();
+            if (string.IsNullOrEmpty(result))
+            {
+                result = AppDomain.CurrentDomain.BaseDirectory;
+            }
+
+            if (string.IsNullOrEmpty(result))
+            {
+                /* In the chance that there is no base directory,
+                 * return the working directory and hope for the best.
                  *
-                 * For Unix, the Mono Path.GetPathRoot is pretty lazy:
-                 * https://github.com/mono/mono/blob/master/mcs/class/corlib/System.IO/Path.cs#L443
-                 * It should actually be checking the drives and
-                 * comparing them to the provided path.
-                 * If a Mono maintainer is reading this, please steal
-                 * this code so we don't have to hack around Mono!
+                 * If we've reached this, the game has either been
+                 * started from its directory, or a wrapper has set up
+                 * the working directory to the game dir for us.
                  *
-                 * -flibit
+                 * Note about Android:
+                 *
+                 * There is no way from the C# side of things to cleanly
+                 * obtain where the game is located without looking at an
+                 * instance of System.Diagnostics.StackTrace or without
+                 * some interop between the Java and C# side of things.
+                 * We're assuming that either the environment itself is
+                 * setting one of the possible base paths to point to the
+                 * game dir, or that the Java side has called into the C#
+                 * side to set Environment.CurrentDirectory.
+                 *
+                 * In the best case, nothing would be set and the game
+                 * wouldn't use the title location in the first place, as
+                 * the assets would be read directly from the .apk / .obb
+                 * -ade
                  */
-                int drive = -1, length = 0;
-                string[] drives = Environment.GetLogicalDrives();
-                for (var i = 0; i < drives.Length; i += 1)
+                result = Environment.CurrentDirectory;
+            }
+
+            return result;
+        }
+
+        private static void INTERNAL_AddInstance(int dev)
+        {
+            var which = -1;
+            for (var i = 0; i < _devices.Length; i += 1)
+            {
+                if (_devices[i] == IntPtr.Zero)
                 {
-                    if (string.IsNullOrEmpty(drives[i]))
-                    {
-                        // ... What?
-                        continue;
-                    }
-
-                    string name = drives[i];
-                    if (name[^1] != Path.DirectorySeparatorChar)
-                    {
-                        name += Path.DirectorySeparatorChar;
-                    }
-
-                    if (storageRoot.StartsWith(name, StringComparison.CurrentCulture) &&
-                        name.Length > length)
-                    {
-                        drive = i;
-                        length = name.Length;
-                    }
-                }
-
-                // Uh
-                return drive >= 0 ? drives[drive] : Path.GetPathRoot(storageRoot);
-            }
-
-            public static IntPtr ReadToPointer(string path, out ulong size)
-            {
-                ulong size2;
-                var result = SDL_LoadFile(path, &size2);
-                size = size2;
-                return (IntPtr)result;
-            }
-
-            public static void FreeFilePointer(IntPtr file)
-            {
-                SDL_free(file);
-            }
-
-            private static int MeasureStringLength(byte* ptr)
-            {
-                int bytes;
-                for (bytes = 0; *ptr != 0; ptr += 1, bytes += 1)
-                {
-                }
-
-                return bytes;
-            }
-
-            private static DisplayOrientation INTERNAL_ConvertOrientation(SDL_DisplayOrientation orientation)
-            {
-                switch (orientation)
-                {
-                    case SDL_DisplayOrientation.SDL_ORIENTATION_LANDSCAPE:
-                        return DisplayOrientation.LandscapeLeft;
-
-                    case SDL_DisplayOrientation.SDL_ORIENTATION_LANDSCAPE_FLIPPED:
-                        return DisplayOrientation.LandscapeRight;
-
-                    case SDL_DisplayOrientation.SDL_ORIENTATION_PORTRAIT:
-                        return DisplayOrientation.Portrait;
-
-                    default:
-                        throw new NotSupportedException("FNA does not support this device orientation.");
+                    which = i;
+                    break;
                 }
             }
 
-            private static void INTERNAL_HandleOrientationChange(
-                DisplayOrientation orientation,
-                GraphicsDevice graphicsDevice,
-                GraphicsAdapter graphicsAdapter,
-                FNAWindow window)
+            if (which == -1)
             {
-                // Flip the backbuffer dimensions if needed
-                var width = graphicsDevice.PresentationParameters.BackBufferWidth;
-                var height = graphicsDevice.PresentationParameters.BackBufferHeight;
-                var min = Math.Min(width, height);
-                var max = Math.Max(width, height);
-
-                if (orientation == DisplayOrientation.Portrait)
-                {
-                    graphicsDevice.PresentationParameters.BackBufferWidth = min;
-                    graphicsDevice.PresentationParameters.BackBufferHeight = max;
-                }
-                else
-                {
-                    graphicsDevice.PresentationParameters.BackBufferWidth = max;
-                    graphicsDevice.PresentationParameters.BackBufferHeight = min;
-                }
-
-                // Update the graphics device and window
-                graphicsDevice.PresentationParameters.DisplayOrientation = orientation;
-                window.CurrentOrientation = orientation;
-
-                graphicsDevice.Reset(graphicsDevice.PresentationParameters, graphicsAdapter);
-                window.INTERNAL_OnOrientationChanged();
+                return; // Ignoring more than 4 controllers.
             }
 
-            [DllImport("__Native", CallingConvention = CallingConvention.Cdecl)]
-            [SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter",
-                Justification = "emscripten")]
-            [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
-            private static extern void emscripten_set_main_loop(
-                em_callback_func func,
-                int fps,
-                int simulate_infinite_loop);
+            // Clear the error buffer. We're about to do a LOT of dangerous stuff.
+            SDL_ClearError();
 
-            [DllImport("__Native", CallingConvention = CallingConvention.Cdecl)]
-            [SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter",
-                Justification = "emscripten")]
-            private static extern void emscripten_cancel_main_loop();
+            // Open the device!
+            _devices[which] = (IntPtr)SDL_GameControllerOpen(dev);
 
-            [MonoPInvokeCallback(typeof(em_callback_func))]
-            private static void RunEmscriptenMainLoop()
+            // We use this when dealing with GUID initialization.
+            var thisJoystick = SDL_GameControllerGetJoystick((SDL_GameController*)_devices[which]);
+
+            // Pair up the instance ID to the player index.
+            // FIXME: Remove check after 2.0.4? -flibit
+            var thisInstance = SDL_JoystickInstanceID(thisJoystick);
+            if (_instanceList.ContainsKey(thisInstance))
             {
-                _emscriptenGame!.RunOneFrame();
-
-                // FIXME: Is this even needed...?
-                if (!_emscriptenGame.RunApplication)
-                {
-                    _emscriptenGame.Exit();
-                    emscripten_cancel_main_loop();
-                }
+                // Duplicate? Usually this is OSX being dumb, but...?
+                _devices[which] = IntPtr.Zero;
+                return;
             }
 
-            private static string GetBaseDirectory()
-            {
-                if (Environment.GetEnvironmentVariable("FNA_SDL2_FORCE_BASE_PATH") != "1")
-                {
-                    // If your platform uses a CLR, you want to be in this list!
-                    if (!string.IsNullOrEmpty(_osVersion) &&
-                        (_osVersion.Equals("Windows", StringComparison.Ordinal) ||
-                         _osVersion.Equals("Mac OS X", StringComparison.Ordinal) ||
-                         _osVersion.Equals("Linux", StringComparison.Ordinal) ||
-                         _osVersion.Equals("FreeBSD", StringComparison.Ordinal) ||
-                         _osVersion.Equals("OpenBSD", StringComparison.Ordinal) ||
-                         _osVersion.Equals("NetBSD", StringComparison.Ordinal)))
-                    {
-                        return AppDomain.CurrentDomain.BaseDirectory;
-                    }
-                }
+            _instanceList.Add(thisInstance, which);
 
-                string result = SDL_GetBasePath();
-                if (string.IsNullOrEmpty(result))
-                {
-                    result = AppDomain.CurrentDomain.BaseDirectory;
-                }
+            // Start with a fresh state.
+            _states[which] = default;
+            _states[which].IsConnected = true;
 
-                if (string.IsNullOrEmpty(result))
-                {
-                    /* In the chance that there is no base directory,
-                     * return the working directory and hope for the best.
-                     *
-                     * If we've reached this, the game has either been
-                     * started from its directory, or a wrapper has set up
-                     * the working directory to the game dir for us.
-                     *
-                     * Note about Android:
-                     *
-                     * There is no way from the C# side of things to cleanly
-                     * obtain where the game is located without looking at an
-                     * instance of System.Diagnostics.StackTrace or without
-                     * some interop between the Java and C# side of things.
-                     * We're assuming that either the environment itself is
-                     * setting one of the possible base paths to point to the
-                     * game dir, or that the Java side has called into the C#
-                     * side to set Environment.CurrentDirectory.
-                     *
-                     * In the best case, nothing would be set and the game
-                     * wouldn't use the title location in the first place, as
-                     * the assets would be read directly from the .apk / .obb
-                     * -ade
-                     */
-                    result = Environment.CurrentDirectory;
-                }
+            // Initialize the haptics for the joystick, if applicable.
+            var hasRumble = SDL_GameControllerRumble(
+                (SDL_GameController*)_devices[which],
+                0,
+                0,
+                0) == 0;
 
-                return result;
-            }
+            var hasTriggerRumble = SDL_GameControllerRumbleTriggers(
+                (SDL_GameController*)_devices[which],
+                0,
+                0,
+                0) == 0;
 
-            private static void INTERNAL_AddInstance(int dev)
-            {
-                var which = -1;
-                for (var i = 0; i < _devices.Length; i += 1)
-                {
-                    if (_devices[i] == IntPtr.Zero)
-                    {
-                        which = i;
-                        break;
-                    }
-                }
+            // An SDL_GameController _should_ always be complete...
+            var caps = default(GamePadCapabilities);
+            caps.IsConnected = true;
+            caps.GamePadType = _gamepadType[(int)SDL_JoystickGetType(thisJoystick)];
+            var gameController = (SDL_GameController*)_devices[which];
+            caps.HasAButton = SDL_GameControllerGetBindForButton(
+                                  gameController,
+                                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A).bindType !=
+                              SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                if (which == -1)
-                {
-                    return; // Ignoring more than 4 controllers.
-                }
+            caps.HasBButton = SDL_GameControllerGetBindForButton(
+                                  gameController,
+                                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B).bindType !=
+                              SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                // Clear the error buffer. We're about to do a LOT of dangerous stuff.
-                SDL_ClearError();
+            caps.HasXButton = SDL_GameControllerGetBindForButton(
+                                  gameController,
+                                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X).bindType !=
+                              SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                // Open the device!
-                _devices[which] = (IntPtr)SDL_GameControllerOpen(dev);
+            caps.HasYButton = SDL_GameControllerGetBindForButton(
+                                  gameController,
+                                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y).bindType !=
+                              SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                // We use this when dealing with GUID initialization.
-                var thisJoystick = SDL_GameControllerGetJoystick((SDL_GameController*)_devices[which]);
+            caps.HasBackButton = SDL_GameControllerGetBindForButton(
+                                     gameController,
+                                     SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK).bindType !=
+                                 SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                // Pair up the instance ID to the player index.
-                // FIXME: Remove check after 2.0.4? -flibit
-                var thisInstance = SDL_JoystickInstanceID(thisJoystick);
-                if (_instanceList.ContainsKey(thisInstance))
-                {
-                    // Duplicate? Usually this is OSX being dumb, but...?
-                    _devices[which] = IntPtr.Zero;
-                    return;
-                }
+            caps.HasBigButton = SDL_GameControllerGetBindForButton(
+                                    gameController,
+                                    SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE).bindType !=
+                                SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                _instanceList.Add(thisInstance, which);
-
-                // Start with a fresh state.
-                _states[which] = default;
-                _states[which].IsConnected = true;
-
-                // Initialize the haptics for the joystick, if applicable.
-                var hasRumble = SDL_GameControllerRumble(
-                    (SDL_GameController*)_devices[which],
-                    0,
-                    0,
-                    0) == 0;
-
-                var hasTriggerRumble = SDL_GameControllerRumbleTriggers(
-                    (SDL_GameController*)_devices[which],
-                    0,
-                    0,
-                    0) == 0;
-
-                // An SDL_GameController _should_ always be complete...
-                var caps = default(GamePadCapabilities);
-                caps.IsConnected = true;
-                caps.GamePadType = _gamepadType[(int)SDL_JoystickGetType(thisJoystick)];
-                var gameController = (SDL_GameController*)_devices[which];
-                caps.HasAButton = SDL_GameControllerGetBindForButton(
+            caps.HasStartButton = SDL_GameControllerGetBindForButton(
                                       gameController,
-                                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A).bindType !=
+                                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START).bindType !=
                                   SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasBButton = SDL_GameControllerGetBindForButton(
-                                      gameController,
-                                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B).bindType !=
-                                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasXButton = SDL_GameControllerGetBindForButton(
-                                      gameController,
-                                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X).bindType !=
-                                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasYButton = SDL_GameControllerGetBindForButton(
-                                      gameController,
-                                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y).bindType !=
-                                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasBackButton = SDL_GameControllerGetBindForButton(
-                                         gameController,
-                                         SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK).bindType !=
-                                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasBigButton = SDL_GameControllerGetBindForButton(
-                                        gameController,
-                                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_GUIDE).bindType !=
-                                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasStartButton = SDL_GameControllerGetBindForButton(
+            caps.HasLeftStickButton = SDL_GameControllerGetBindForButton(
                                           gameController,
-                                          SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START).bindType !=
+                                          SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK).bindType !=
                                       SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasLeftStickButton = SDL_GameControllerGetBindForButton(
-                                              gameController,
-                                              SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSTICK).bindType !=
-                                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasRightStickButton = SDL_GameControllerGetBindForButton(
-                                               gameController,
-                                               SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK).bindType !=
-                                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasLeftShoulderButton = SDL_GameControllerGetBindForButton(
-                                                     gameController,
-                                                     SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
-                                                 .bindType !=
-                                             SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasRightShoulderButton = SDL_GameControllerGetBindForButton(
-                                                      gameController,
-                                                      SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)
-                                                  .bindType !=
-                                              SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasDPadUpButton = SDL_GameControllerGetBindForButton(
+            caps.HasRightStickButton = SDL_GameControllerGetBindForButton(
                                            gameController,
-                                           SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP).bindType !=
+                                           SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSTICK).bindType !=
                                        SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasDPadDownButton = SDL_GameControllerGetBindForButton(
-                                             gameController,
-                                             SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN).bindType !=
+            caps.HasLeftShoulderButton = SDL_GameControllerGetBindForButton(
+                                                 gameController,
+                                                 SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
+                                             .bindType !=
                                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasDPadLeftButton = SDL_GameControllerGetBindForButton(
-                                             gameController,
-                                             SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT).bindType !=
-                                         SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasDPadRightButton = SDL_GameControllerGetBindForButton(
-                                              gameController,
-                                              SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT).bindType !=
+            caps.HasRightShoulderButton = SDL_GameControllerGetBindForButton(
+                                                  gameController,
+                                                  SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)
+                                              .bindType !=
                                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasLeftXThumbStick = SDL_GameControllerGetBindForAxis(
-                                              gameController,
-                                              SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX).bindType !=
-                                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasDPadUpButton = SDL_GameControllerGetBindForButton(
+                                       gameController,
+                                       SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP).bindType !=
+                                   SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasLeftYThumbStick = SDL_GameControllerGetBindForAxis(
-                                              gameController,
-                                              SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY).bindType !=
-                                          SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasDPadDownButton = SDL_GameControllerGetBindForButton(
+                                         gameController,
+                                         SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN).bindType !=
+                                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasRightXThumbStick = SDL_GameControllerGetBindForAxis(
-                                               gameController,
-                                               SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX).bindType !=
-                                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasDPadLeftButton = SDL_GameControllerGetBindForButton(
+                                         gameController,
+                                         SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT).bindType !=
+                                     SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasRightYThumbStick = SDL_GameControllerGetBindForAxis(
-                                               gameController,
-                                               SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY).bindType !=
-                                           SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
-
-                caps.HasLeftTrigger = SDL_GameControllerGetBindForAxis(
+            caps.HasDPadRightButton = SDL_GameControllerGetBindForButton(
                                           gameController,
-                                          SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT).bindType !=
+                                          SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT).bindType !=
                                       SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasRightTrigger = SDL_GameControllerGetBindForAxis(
-                        gameController,
-                        SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
-                    .bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasLeftXThumbStick = SDL_GameControllerGetBindForAxis(
+                                          gameController,
+                                          SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX).bindType !=
+                                      SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasLeftVibrationMotor = hasRumble;
-                caps.HasRightVibrationMotor = hasRumble;
-                caps.HasVoiceSupport = false;
-                caps.HasLightBarEXT = SDL_GameControllerHasLED(gameController) == true;
-                caps.HasTriggerVibrationMotorsEXT = hasTriggerRumble;
-                caps.HasMisc1EXT =
-                    SDL_GameControllerGetBindForButton(gameController,
-                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1).bindType !=
-                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasLeftYThumbStick = SDL_GameControllerGetBindForAxis(
+                                          gameController,
+                                          SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY).bindType !=
+                                      SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasPaddle1EXT =
-                    SDL_GameControllerGetBindForButton(gameController,
-                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1).bindType !=
-                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasRightXThumbStick = SDL_GameControllerGetBindForAxis(
+                                           gameController,
+                                           SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX).bindType !=
+                                       SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasPaddle2EXT =
-                    SDL_GameControllerGetBindForButton(gameController,
-                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2).bindType !=
-                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasRightYThumbStick = SDL_GameControllerGetBindForAxis(
+                                           gameController,
+                                           SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY).bindType !=
+                                       SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasPaddle3EXT =
-                    SDL_GameControllerGetBindForButton(gameController,
-                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3).bindType !=
-                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasLeftTrigger = SDL_GameControllerGetBindForAxis(
+                                      gameController,
+                                      SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT).bindType !=
+                                  SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasPaddle4EXT =
-                    SDL_GameControllerGetBindForButton(gameController,
-                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4).bindType !=
-                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasRightTrigger = SDL_GameControllerGetBindForAxis(
+                    gameController,
+                    SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+                .bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasTouchPadEXT =
-                    SDL_GameControllerGetBindForButton(gameController,
-                        SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD).bindType !=
-                    SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+            caps.HasLeftVibrationMotor = hasRumble;
+            caps.HasRightVibrationMotor = hasRumble;
+            caps.HasVoiceSupport = false;
+            caps.HasLightBarEXT = SDL_GameControllerHasLED(gameController) == true;
+            caps.HasTriggerVibrationMotorsEXT = hasTriggerRumble;
+            caps.HasMisc1EXT =
+                SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MISC1).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                caps.HasGyroEXT = SDL_GameControllerHasSensor(gameController, SDL_SensorType.SDL_SENSOR_GYRO) == true;
-                caps.HasAccelerometerEXT =
-                    SDL_GameControllerHasSensor(gameController, SDL_SensorType.SDL_SENSOR_ACCEL) == true;
-                _capabilities[which] = caps;
+            caps.HasPaddle1EXT =
+                SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE1).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                // ReSharper disable once CommentTypo
-                /* Store the GUID string for this device
-                 * FIXME: Replace GetGUIDEXT string with 3 short values -flibit
-                 */
-                var vendor = SDL_JoystickGetVendor(thisJoystick);
-                var product = SDL_JoystickGetProduct(thisJoystick);
-                if (vendor == 0x00 && product == 0x00)
-                {
-                    _guids[which] = "xinput";
-                }
-                else
-                {
-                    _guids[which] = $"{vendor & 0xFF:x2}{vendor >> 8:x2}{product & 0xFF:x2}{product >> 8:x2}";
-                }
+            caps.HasPaddle2EXT =
+                SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                // Print controller information to stdout.
-                string deviceInfo;
-                string mapping = SDL_GameControllerMapping(gameController);
-                if (string.IsNullOrEmpty(mapping))
-                {
-                    deviceInfo = "Mapping not found";
-                }
-                else
-                {
-                    deviceInfo = "Mapping: " + mapping;
-                }
+            caps.HasPaddle3EXT =
+                SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
 
-                var gameControllerName = (string)SDL_GameControllerName(gameController);
-                var guid = _guids[which];
-                FNALoggerEXT.LogInfo!($"Controller {which}: {gameControllerName}, GUID: {guid}, {deviceInfo}");
+            caps.HasPaddle4EXT =
+                SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+
+            caps.HasTouchPadEXT =
+                SDL_GameControllerGetBindForButton(gameController, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD).bindType != SDL_GameControllerBindType.SDL_CONTROLLER_BINDTYPE_NONE;
+
+            caps.HasGyroEXT = SDL_GameControllerHasSensor(gameController, SDL_SensorType.SDL_SENSOR_GYRO) == true;
+            caps.HasAccelerometerEXT =
+                SDL_GameControllerHasSensor(gameController, SDL_SensorType.SDL_SENSOR_ACCEL) == true;
+            _capabilities[which] = caps;
+
+            // ReSharper disable once CommentTypo
+            /* Store the GUID string for this device
+             * FIXME: Replace GetGUIDEXT string with 3 short values -flibit
+             */
+            var vendor = SDL_JoystickGetVendor(thisJoystick);
+            var product = SDL_JoystickGetProduct(thisJoystick);
+            if (vendor == 0x00 && product == 0x00)
+            {
+                _guids[which] = "xinput";
+            }
+            else
+            {
+                _guids[which] = $"{vendor & 0xFF:x2}{vendor >> 8:x2}{product & 0xFF:x2}{product >> 8:x2}";
             }
 
-            private static void INTERNAL_RemoveInstance(int dev)
+            // Print controller information to stdout.
+            string deviceInfo;
+            string mapping = SDL_GameControllerMapping(gameController);
+            if (string.IsNullOrEmpty(mapping))
             {
-                if (!_instanceList.TryGetValue(dev, out var output))
-                {
-                    // Odds are, this is controller 5+ getting removed.
-                    return;
-                }
-
-                _instanceList.Remove(dev);
-                SDL_GameControllerClose((SDL_GameController*)_devices[output]);
-                _devices[output] = IntPtr.Zero;
-                _states[output] = default;
-                _guids[output] = string.Empty;
-
-                // A lot of errors can happen here, but honestly, they can be ignored...
-                SDL_ClearError();
-
-                FNALoggerEXT.LogInfo!("Removed device, player: " + output);
+                deviceInfo = "Mapping not found";
+            }
+            else
+            {
+                deviceInfo = "Mapping: " + mapping;
             }
 
-            private static string[] GenStringArray()
-            {
-                string[] result = new string[GamePad.GamePadCount];
-                for (var i = 0; i < result.Length; i += 1)
-                {
-                    result[i] = string.Empty;
-                }
+            var gameControllerName = (string)SDL_GameControllerName(gameController);
+            var guid = _guids[which];
+            FNALoggerEXT.LogInfo!($"Controller {which}: {gameControllerName}, GUID: {guid}, {deviceInfo}");
+        }
 
-                return result;
+        private static void INTERNAL_RemoveInstance(int dev)
+        {
+            if (!_instanceList.TryGetValue(dev, out var output))
+            {
+                // Odds are, this is controller 5+ getting removed.
+                return;
             }
 
-            private static Keys ToXNAKey(ref SDL_Keysym key)
+            _instanceList.Remove(dev);
+            SDL_GameControllerClose((SDL_GameController*)_devices[output]);
+            _devices[output] = IntPtr.Zero;
+            _states[output] = default;
+            _guids[output] = string.Empty;
+
+            // A lot of errors can happen here, but honestly, they can be ignored...
+            SDL_ClearError();
+
+            FNALoggerEXT.LogInfo!("Removed device, player: " + output);
+        }
+
+        private static string[] GenStringArray()
+        {
+            string[] result = new string[GamePad.GamePadCount];
+            for (var i = 0; i < result.Length; i += 1)
             {
-                Keys retVal;
-                if (UseScancodes)
+                result[i] = string.Empty;
+            }
+
+            return result;
+        }
+
+        private static Keys ToXNAKey(ref SDL_Keysym key)
+        {
+            Keys retVal;
+            if (UseScancodes)
+            {
+                if (_scanMap.TryGetValue((int)key.scancode, out retVal))
                 {
-                    if (_scanMap.TryGetValue((int)key.scancode, out retVal))
+                    return retVal;
+                }
+            }
+            else
+            {
+                if (_keyMap.TryGetValue(key.sym, out retVal))
+                {
+                    return retVal;
+                }
+            }
+
+            FNALoggerEXT.LogWarn!(
+                "KEY/SCANCODE MISSING FROM SDL2->XNA DICTIONARY: " +
+                key.sym + " " +
+                key.scancode);
+
+            return Keys.None;
+        }
+
+        [UnmanagedCallersOnly]
+        private static int Win32OnPaint(void* userdata, SDL_Event* evt)
+        {
+            if (evt->type == (uint)SDL_EventType.SDL_WINDOWEVENT &&
+                evt->window.@event == (int)SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED)
+            {
+                foreach (Game game in _activeGames)
+                {
+                    if (game.Window != null &&
+                        evt->window.windowID == SDL_GetWindowID((SDL_Window*)game.Window.Handle))
                     {
-                        return retVal;
+                        game.RedrawWindow();
+                        return 0;
                     }
                 }
-                else
-                {
-                    if (_keyMap.TryGetValue(key.sym, out retVal))
-                    {
-                        return retVal;
-                    }
-                }
-
-                FNALoggerEXT.LogWarn!(
-                    "KEY/SCANCODE MISSING FROM SDL2->XNA DICTIONARY: " +
-                    key.sym + " " +
-                    key.scancode);
-
-                return Keys.None;
             }
 
-            [UnmanagedCallersOnly]
-            private static int Win32OnPaint(void* userdata, SDL_Event* evt)
+            if (_prevEventFilter != null)
             {
-                if (evt->type == (uint)SDL_EventType.SDL_WINDOWEVENT &&
-                    evt->window.@event == (int)SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED)
-                {
-                    foreach (Game game in _activeGames)
-                    {
-                        if (game.Window != null &&
-                            evt->window.windowID == SDL_GetWindowID((SDL_Window*)game.Window.Handle))
-                        {
-                            game.RedrawWindow();
-                            return 0;
-                        }
-                    }
-                }
-
-                if (_prevEventFilter != null)
-                {
-                    return _prevEventFilter.Value.Data.Pointer(userdata, evt);
-                }
-
-                return 1;
+                return _prevEventFilter.Value.Data.Pointer(userdata, evt);
             }
 
-            [SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter",
-                Justification = "emscripten")]
-            [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
+            return 1;
+        }
 
+        [SuppressMessage("StyleCop.Naming", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "emscripten")]
+        [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "emscripten")]
         private delegate void em_callback_func();
 
         public static void GetMousePosition(IntPtr window, int x, int y)

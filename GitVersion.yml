@@ -1,0 +1,11 @@
+assembly-versioning-scheme: None
+mode: ContinuousDeployment
+tag-prefix: "[vV]"
+continuous-delivery-fallback-tag: ""
+branches:
+  develop:
+    regex: '^main$'
+    increment: Patch
+    tag: 'pre'
+  main:
+    regex: '^notused$'

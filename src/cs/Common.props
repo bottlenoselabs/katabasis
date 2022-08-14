@@ -1,14 +1,14 @@
 <Project>
 
-    <!-- MSBuild.Tools settings -->
+    <!-- bottlenoselabs.MSBuild.Tools settings -->
     <PropertyGroup>    
 		  <CodeAnalysisRuleSetFilePath>$(MSBuildThisFileDirectory)/CodeAnalysis.ruleset</CodeAnalysisRuleSetFilePath>
 		  <StyleCopSettingsFilePath>$(MSBuildThisFileDirectory)/StyleCop.json</StyleCopSettingsFilePath>
     </PropertyGroup>
 
-    <!-- NuGet -->
+    <!-- NuGet packages -->
     <ItemGroup>
-      <None Include="$(MSBuildThisFileDirectory)NuGet.config" Link="Properties/NuGet.config" />
+      <PackageReference Include="bottlenoselabs.MSBuild.Tools" Version="1.1.6" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

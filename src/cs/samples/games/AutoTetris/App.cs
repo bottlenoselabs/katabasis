@@ -1,4 +1,4 @@
-// Copyright (c) BottlenoseLabs (https://github.com/bottlenoselabs). All rights reserved.
+// Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.IO;
@@ -41,10 +41,8 @@ namespace bottlenoselabs.Katabasis.Samples
 		//write ai that will play tetris on it's own if player doesn't
 		//supply inputs after a timer has expired (auto plays)
 
-
-
-		public static SpriteBatch SB;
-		public static Game GAME;
+		public static SpriteBatch SB = null!;
+		public static Game GAME = null!;
 
 		public static int TileSize = 16;
 		public static int GameTileWidth = 14;
@@ -52,7 +50,7 @@ namespace bottlenoselabs.Katabasis.Samples
 		public static int GameBoundsX = TileSize * GameTileWidth;
 		public static int GameBoundsY = TileSize * GameTileHeight;
 
-		public static Texture2D Texture;
+		public static Texture2D Texture = null!;
 		public static Rectangle DrawRec = new Rectangle(0, 0, 3, 3);
 		static Random Rand = new();
 
@@ -62,8 +60,8 @@ namespace bottlenoselabs.Katabasis.Samples
 		public static int CurrentShapeX = 0;
 		public static int CurrentShapeY = 0;
 
-		public static List<Rectangle> CurrentShape;
-		public static List<Rectangle> PlacedShapes;
+		public static readonly List<Rectangle> CurrentShape = new();
+		public static readonly List<Rectangle> PlacedShapes = new();
 
 		public static int GravityTimer = 0;
 		public static int GravityTargetFrames = 30;
@@ -72,25 +70,21 @@ namespace bottlenoselabs.Katabasis.Samples
 		public static KeyboardState PreviousKeyboardState;
 		public static int InputLimiter = 0;
 
-
+		public static void LoadContent()
+		{
+			Texture = new Texture2D(1, 1);
+			Texture.SetData(new[] { Color.White });
+		}
+		
 		public static void Reset()
 		{
-			if (Texture == null)
-			{   //create texture to draw with if it doesn't exist
-				Texture = new Texture2D(1, 1);
-				Texture.SetData<Color>(new Color[] { Color.White });
-			}
+			CurrentShape.Clear();
+			CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
+			CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
+			CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
+			CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
 
-			if (CurrentShape == null)
-			{   //shapes always have 4 recs
-				CurrentShape = new List<Rectangle>();
-				CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
-				CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
-				CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
-				CurrentShape.Add(new Rectangle(-100, -100, TileSize, TileSize));
-			}
-
-			PlacedShapes = new List<Rectangle>();
+			PlacedShapes.Clear();
 
 			CurrentShapeX = TileSize * 4;
 			CurrentShapeY = TileSize;
@@ -405,6 +399,7 @@ namespace bottlenoselabs.Katabasis.Samples
 			AutoTetris.GAME = this;
 			IsMouseVisible = true;
 			AutoTetris.SB = new SpriteBatch();
+			AutoTetris.LoadContent();
 			AutoTetris.Reset();
 		}
 

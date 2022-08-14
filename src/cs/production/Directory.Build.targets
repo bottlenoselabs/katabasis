@@ -1,5 +1,10 @@
 <Project>
 
-    <Import Project="../Common.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)/../Common.targets" />
+
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <IncludeSymbols>false</IncludeSymbols>
+    </PropertyGroup>
 
 </Project>

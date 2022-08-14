@@ -4,12 +4,11 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<AssemblyName>bottlenoselabs.Katabasis.Framework</AssemblyName>
 		<RootNamespace>bottlenoselabs.Katabasis</RootNamespace>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<!-- My-MSBuild settings -->
+	<!-- bottlenoselabs.MSBuild.Tools settings -->
 	<PropertyGroup>
 		<EnableRootNamespace>false</EnableRootNamespace>
 		<EnableAnalyzers>true</EnableAnalyzers>
@@ -18,11 +17,11 @@
 	</PropertyGroup>
 	
 	<!-- Project referneces -->
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\ext\katabasis-bedrock\src\cs\production\Katabasis.Bedrock\Katabasis.Bedrock.csproj" />
-	</ItemGroup>
 
 	<!-- NuGet package references -->
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+	</ItemGroup>
 
 	<!-- Stock effects files emedded into assembly -->
 	<ItemGroup>
@@ -31,6 +30,101 @@
 		<EmbeddedResource Include="ImGui\Main.fxb" />
 		<EmbeddedResource Include="Katabasis/Graphics/Effect/StockEffects/FXB/*.fxb" />
 		<None Remove="Katabasis\Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
+	</ItemGroup>
+
+	<!-- C# bindings and/or wrappers for native assemblies -->
+	<ItemGroup>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/SDL-cs/SDL.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/SDL/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/FAudio-cs/FAudio.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/FAudio/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/FAudio-cs/src/cs/production/FAudio/**/*.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/FAudio/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/FNA3D-cs/FNA3D.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/FNA3D/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/Theorafile-cs/Theorafile.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/Theorafile-cs/src/cs/production/Theorafile/**/*.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/imgui-cs/imgui.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+	</ItemGroup>
+
+	<!-- NuGet -->
+	<PropertyGroup>
+		<IsPackable>true</IsPackable>
+		<RepositoryUrl>https://github.com/bottlenoselabs/katabasis</RepositoryUrl>
+		<PackageDescription>Katabasis: XNA re-imagined; Framework. Contains the C# code which is platform agnostic.</PackageDescription>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<IncludeSymbols>false</IncludeSymbols>
+		<CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+		<CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+		<DevelopmentDependency>true</DevelopmentDependency>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/SDL-cs/SDL.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/SDL/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/SDL/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/FAudio-cs/FAudio.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/FAudio/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/FAudio/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/FAudio-cs/src/cs/production/FAudio/**/*.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/FAudio/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/FAudio/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/FNA3D-cs/FNA3D.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/FNA3D/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/FNA3D/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/Theorafile-cs/Theorafile.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/Theorafile-cs/src/cs/production/Theorafile/**/*.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/imgui-cs/imgui.cs">
+			<PackagePath>content/bottlenoselabs/Katabasis.Bedrock/ImGui/Theorafile/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Content Include="$(MSBuildThisFileDirectory)/**/*.*">
+			<Pack>true</Pack>
+			<PackagePath>content/</PackagePath>
+			<Link>Properties/bottlenoselabs/$(MSBuildThisFileName)/%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Update="$(MSBuildThisFileDirectory)/bottlenoselabs.Katabasis.Framework.props">
+			<PackagePath>build/</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</Content>
+		<Content Update="$(MSBuildThisFileDirectory)/bottlenoselabs.Katabasis.Framework.targets">
+			<PackagePath>build/</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</Content>
+		<Content Remove="$(MSBuildThisFileDirectory)/obj/**/*" />
+		<Content Remove="$(MSBuildThisFileDirectory)/bin/**/*" />
+		<Content Remove="$(MSBuildThisFileDirectory)/*.csproj*" />
 	</ItemGroup>
 
 </Project>

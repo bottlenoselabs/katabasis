@@ -21,15 +21,80 @@ on:
 
 jobs:
 
-  build-job:
-    name: "GitVersion"
+  native-job:
+    name: "Build native libraries ${{ matrix.platform.rid }}"
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      matrix:
+        platform:
+        - { name: Windows (x64), os: windows-latest, rid: win-x64 }
+        - { name: Linux (x64), os: ubuntu-latest, rid: linux-x64 }
+        - { name: macOS (x64+arm64), os: macos-latest, rid: osx }
+    steps:
+
+    - name: "Clone Git repository"
+      uses: actions/checkout@v3
+      with:
+        submodules: 'false'
+
+    - name: "Update Git submodules"
+      shell: bash
+      run: |
+        git submodule update --init --recursive
+        git submodule update --remote --merge ./ext/katabasis-bedrock
+
+    - name: "Set variables"
+      id: vars
+      shell: bash
+      run: |
+        cd ./ext/katabasis-bedrock
+        HASH="$(git rev-parse HEAD)"
+        echo "HASH: $HASH"
+        echo ::set-output name=katabasis_bedrock_hash::$HASH
+
+    - name: "Cache native libraries"
+      id: cache-libs
+      uses: actions/cache@v3
+      with:
+        path: "./ext/katabasis-bedrock/lib"
+        key: "libs-${{ matrix.platform.rid }}-${{ hashFiles('library.sh') }}-${{ steps.vars.outputs.katabasis_bedrock_hash }}"
+
+    - name: "Install Windows dependencies"
+      if: ${{ steps.cache-libs.outputs.cache-hit != 'true' && runner.os == 'Windows' }}
+      run: |
+        choco install ninja
+
+    - name: "Install macOS dependencies"
+      if: ${{ steps.cache-libs.outputs.cache-hit != 'true' && runner.os == 'macOS' }}
+      run: |
+        brew install ninja
+
+    - name: "Install Linux dependencies"
+      if: ${{ steps.cache-libs.outputs.cache-hit != 'true' && runner.os == 'Linux' }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install ninja-build
+
+    - name: "Build native libraries"
+      if: steps.cache-libs.outputs.cache-hit != 'true'
+      shell: bash
+      run: ./library.sh
+
+    - name: "Upload native libraries"
+      uses: actions/upload-artifact@v2
+      with:
+        name: "native-libraries-${{ matrix.platform.rid }}"
+        path: './ext/katabasis-bedrock/lib/${{ matrix.platform.rid }}'
+
+  dotnet-job:
+    name: ".NET"
     runs-on: ubuntu-latest
+    needs: [native-job]
 
     steps:
     - name: "Checkout Git repository"
       uses: actions/checkout@v3
       with:
-        ref: ${{ env.GITHUB_REF }}
         submodules: 'recursive'
 
     - name: "Fetch all history for all tags and branches"
@@ -44,11 +109,42 @@ jobs:
       id: gitversion
       uses: gittools/actions/gitversion/execute@v0.9.7
 
+    - name: "Download native libraries: win-x64"
+      uses: actions/download-artifact@v1
+      with:
+        name: "native-libraries-win-x64"
+        path: './ext/katabasis-bedrock/lib/win-x64'
+
+    - name: "Download native libraries: osx"
+      uses: actions/download-artifact@v1
+      with:
+        name: "native-libraries-osx"
+        path: './ext/katabasis-bedrock/lib/osx'
+
+    - name: "Download native libraries: linux-x64"
+      uses: actions/download-artifact@v1
+      with:
+        name: "native-libraries-linux-x64"
+        path: './ext/katabasis-bedrock/lib/linux-x64'
+
     - name: "Build solution"
-      run: dotnet build --nologo --configuration Release /p:Version='${{ steps.gitversion.outputs.nuGetVersionV2 }}"'
+      run: dotnet build --nologo --configuration Release /p:Version='${{ steps.gitversion.outputs.nuGetVersionV2 }}'
 
     - name: "Test solution"
       run: dotnet test --nologo --configuration Release --no-build
+
+    - name: "Pack solution"
+      run: dotnet pack --nologo --configuration Release --no-build /p:Version='${{ steps.gitversion.outputs.nuGetVersionV2 }}'
+
+    - name: "Upload NuGet packages: MyGet"
+      shell: bash
+      if: ${{ github.event_name == 'push' || startsWith(github.ref, 'refs/tags/v') }}
+      run: dotnet nuget push "${{ github.workspace }}/**/*.nupkg" --source https://www.myget.org/F/bottlenoselabs/api/v3/index.json --skip-duplicate --api-key ${{ secrets.MYGET_ACCESS_TOKEN }}
+
+    - name: "Upload NuGet packages: NuGet"
+      shell: bash
+      if: "${{ startsWith(github.ref, 'refs/tags/v') }}"
+      run: dotnet nuget push "${{ github.workspace }}/**/*.nupkg" --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_ACCESS_TOKEN }}
 
 
 

@@ -5,6 +5,7 @@
     <!-- MSBuild settings -->
     <PropertyGroup>
         <IsPackable>false</IsPackable>
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
     </PropertyGroup>
 
     <!-- Dynamic link libraries -->
