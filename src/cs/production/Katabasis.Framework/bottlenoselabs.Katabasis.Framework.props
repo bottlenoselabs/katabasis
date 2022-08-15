@@ -25,12 +25,15 @@
     <ItemGroup>
         <EmbeddedResource Include="$(KatabasisFrameworkContentDirectoryPath)/Graphics/Effect/Sprite/SpriteEffect.fxb">
             <LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.SpriteEffect.fxb</LogicalName>
+            <Link>Properties/bottlenoselabs/Katabasis.Framework/Graphics/Effect/Sprite/SpriteEffect.fxb</Link>
         </EmbeddedResource>
         <EmbeddedResource Include="$(KatabasisFrameworkContentDirectoryPath)/Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb" >
             <LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.YUVToRGBAEffect.fxb</LogicalName>
+            <Link>Properties/bottlenoselabs/Katabasis.Framework/Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb</Link>
         </EmbeddedResource>
         <EmbeddedResource Include="$(KatabasisFrameworkContentDirectoryPath)/ImGui/Main.fxb">
             <LogicalName>bottlenoselabs.Katabasis.ImGui.Main.fxb</LogicalName>
+            <Link>Properties/bottlenoselabs/Katabasis.Framework/ImGui/Main.fxb</Link>
         </EmbeddedResource>
     </ItemGroup>
 
