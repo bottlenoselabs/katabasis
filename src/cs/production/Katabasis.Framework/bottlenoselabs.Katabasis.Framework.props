@@ -24,7 +24,7 @@
     <!-- Stock effects files emedded into assembly -->
     <ItemGroup>
         <EmbeddedResource Include="$(KatabasisFrameworkContentDirectoryPath)/Graphics/Effect/Sprite/SpriteEffect.fxb">
-            <LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.SpriteEffect.fxb</LogicalName>
+            <LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.Sprite.SpriteEffect.fxb</LogicalName>
             <Link>Properties/bottlenoselabs/Katabasis.Framework/Graphics/Effect/Sprite/SpriteEffect.fxb</Link>
         </EmbeddedResource>
         <EmbeddedResource Include="$(KatabasisFrameworkContentDirectoryPath)/Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb" >

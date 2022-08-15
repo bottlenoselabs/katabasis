@@ -4,9 +4,10 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<RootNamespace />
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
-	<!-- My-MSBuild settings -->
+	<!-- bottlenoselabs.MSBuild.Tools settings -->
 	<PropertyGroup>
 		<EnableRootNamespace>false</EnableRootNamespace>
 		<EnableAnalyzers>true</EnableAnalyzers>

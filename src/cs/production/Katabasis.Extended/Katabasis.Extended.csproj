@@ -3,9 +3,10 @@
 	<!-- MSBuild project settings -->
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
-	<!-- My-MSBuild settings -->
+	<!-- bottlenoselabs.MSBuild.Tools settings -->
 	<PropertyGroup>
 		<EnableAnalyzers>true</EnableAnalyzers>
 		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
