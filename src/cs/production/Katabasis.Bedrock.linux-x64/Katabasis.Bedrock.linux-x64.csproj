@@ -9,7 +9,7 @@
 
     <!-- Dynamic link libraries -->
     <ItemGroup>
-        <Content Include="$(GitRepositoryPath)/lib/linux-x64/*.so">
+        <Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/lib/linux-x64/*.so">
             <Link>%(Filename)%(Extension)</Link>
             <PackagePath>runtimes/linux-x64/native/%(Filename)%(Extension)</PackagePath>
             <Pack>true</Pack>

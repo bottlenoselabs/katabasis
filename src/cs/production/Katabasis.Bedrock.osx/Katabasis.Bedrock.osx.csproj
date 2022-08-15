@@ -9,7 +9,7 @@
 
     <!-- Dynamic link libraries -->
     <ItemGroup>
-        <Content Include="$(GitRepositoryPath)/lib/osx/*.dylib">
+        <Content Include="$(GitRepositoryPath)/ext/katabasis-bedrock/lib/osx/*.dylib">
             <Link>%(Filename)%(Extension)</Link>
             <PackagePath>runtimes/osx/native/%(Filename)%(Extension)</PackagePath>
             <Pack>true</Pack>
