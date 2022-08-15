@@ -1,0 +1,13 @@
+<Project>
+    
+    <PropertyGroup>
+        <KatabasisContentDirectoryPath_OSX>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)/..'))</KatabasisContentDirectoryPath_OSX>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(KatabasisContentDirectoryPath_OSX)/**/*.dylib">
+            <Pack>false</Pack>
+            <Link>Properties/bottlenoselabs/Katabasis.Bedrock.osx/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </None>
+    </ItemGroup>
+
+</Project>

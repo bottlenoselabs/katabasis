@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- MSBuild Settings -->
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace />
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <!-- Dynamic link libraries -->
+    <ItemGroup>
+        <Content Include="$(GitRepositoryPath)/lib/win-x64/*.dll">
+            <Link>%(Filename)%(Extension)</Link>
+            <PackagePath>runtimes/win-x64/native/%(Filename)%(Extension)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <!-- NuGet -->
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <RepositoryUrl>https://github.com/bottlenoselabs/katabasis</RepositoryUrl>
+        <PackageDescription>Katabasis: XNA re-imagined; Bedrock Windows x64. Contains the native platform libraries for the `win-x64` .NET RID.</PackageDescription>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IncludeSymbols>false</IncludeSymbols>
+        <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+        <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+        <DevelopmentDependency>true</DevelopmentDependency>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Update="$(MSBuildThisFileDirectory)/bottlenoselabs.Katabasis.Bedrock.win-x64.props">
+            <Pack>true</Pack>
+            <PackagePath>build/</PackagePath>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+        </None>
+        <None Update="$(MSBuildThisFileDirectory)/bottlenoselabs.Katabasis.Bedrock.win-x64.targets">
+            <Pack>true</Pack>
+            <PackagePath>build/</PackagePath>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+        </None>
+    </ItemGroup>
+
+</Project>

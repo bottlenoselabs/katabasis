@@ -1,0 +1,13 @@
+<Project>
+    
+    <PropertyGroup>
+        <KatabasisContentDirectoryPath_LINUX_X64>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)/..'))</KatabasisContentDirectoryPath_LINUX_X64>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(KatabasisContentDirectoryPath_LINUX_X64)/**/*.so">
+            <Pack>false</Pack>
+            <Link>Properties/bottlenoselabs/Katabasis.Bedrock.linux-x64/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </None>
+    </ItemGroup>
+
+</Project>

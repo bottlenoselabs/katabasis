@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- MSBuild Settings -->
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace />
+        <RuntimeIdentifier>osx</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <!-- Dynamic link libraries -->
+    <ItemGroup>
+        <Content Include="$(GitRepositoryPath)/lib/osx/*.dylib">
+            <Link>%(Filename)%(Extension)</Link>
+            <PackagePath>runtimes/osx/native/%(Filename)%(Extension)</PackagePath>
+            <Pack>true</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <!-- NuGet -->
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <RepositoryUrl>https://github.com/bottlenoselabs/katabasis</RepositoryUrl>
+        <PackageDescription>Katabasis: XNA re-imagined; Bedrock macOS. Contains the native platform libraries for the `osx` .NET RID. The `.dylib` files are built for `osx-x64` and `osx-arm64`.</PackageDescription>
+        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IncludeSymbols>false</IncludeSymbols>
+        <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+        <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+        <DevelopmentDependency>true</DevelopmentDependency>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Update="$(MSBuildThisFileDirectory)/bottlenoselabs.Katabasis.Bedrock.osx.props">
+            <Pack>true</Pack>
+            <PackagePath>build/</PackagePath>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+        </None>
+        <None Update="$(MSBuildThisFileDirectory)/bottlenoselabs.Katabasis.Bedrock.osx.targets">
+            <Pack>true</Pack>
+            <PackagePath>build/</PackagePath>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+        </None>
+    </ItemGroup>
+
+</Project>
