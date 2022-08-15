@@ -28,7 +28,6 @@
 		<EmbeddedResource Include="Graphics\Effect\Sprite\SpriteEffect.fxb" />
 		<EmbeddedResource Include="Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
 		<EmbeddedResource Include="ImGui\Main.fxb" />
-		<EmbeddedResource Include="Katabasis/Graphics/Effect/StockEffects/FXB/*.fxb" />
 		<None Remove="Katabasis\Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
 	</ItemGroup>
 
