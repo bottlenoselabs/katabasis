@@ -25,10 +25,15 @@
 
 	<!-- Stock effects files emedded into assembly -->
 	<ItemGroup>
-		<EmbeddedResource Include="Graphics\Effect\Sprite\SpriteEffect.fxb" />
-		<EmbeddedResource Include="Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
-		<EmbeddedResource Include="ImGui\Main.fxb" />
-		<None Remove="Katabasis\Graphics\Effect\YUVToRGBA\YUVToRGBAEffect.fxb" />
+		<EmbeddedResource Include="Graphics/Effect/Sprite/SpriteEffect.fxb">
+			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.Sprite.SpriteEffect.fxb</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb" >
+			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.YUVToRGBAEffect.fxb</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="ImGui/Main.fxb">
+			<LogicalName>bottlenoselabs.Katabasis.ImGui.Main.fxb</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<!-- C# bindings and/or wrappers for native assemblies -->
