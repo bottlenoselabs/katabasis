@@ -1,5 +1,13 @@
 # Documentation
 
+## Getting Started
+
+For a quick and easy guide for getting started with Katabasis: [GETTING-STARTED.md](GETTING-STARTED.md).
+
+## Frequently Answered Questions (FAQ)
+
+Frequently answered questions from GitHub issues / pull requests, Discord, or elsewhere about Katabasis: [FAQ.md](FAQ.md).
+
 ## Architecture
 
 Details about how C# is viable for game development, which graphics APIs are used, and which platforms are supported:

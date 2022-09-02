@@ -13,4 +13,4 @@ For a complete list of the release versions, see the [tags on this repository](h
 
 ## Pre-Releases
 
-Rolling builds are the *next minor* version with a prefix of the build. E.g., if the current version is `0.1`, the next version would be `0.2`. So, the version of a pre-release would look something like `0.2-alpha0158`.
+Rolling builds are the *next minor* version with a prefix of the build. E.g., if the current version is `0.1`, the next version would be `0.2`. So, the version of a pre-release would look something like `0.2-pre0158`.
