@@ -25,7 +25,7 @@ Katabasis is a fork of [FNA](https://github.com/FNA-XNA/FNA) adapted to be more 
 
 ## Developers: Documentation
 
-For documentation, see [docs/README.md](docs/README.md). This includes architecture, development logs, how to build from source, NuGet packages, samples, migration guides from MonoGame/FNA, and versioning.
+For documentation, see [docs/README.md](docs/README.md). This includes frequently answered questions (FAQ), architecture, development logs, how to build from source, NuGet packages, samples, migration guides from MonoGame/FNA, versioning, and more!
 
 ## License
 
