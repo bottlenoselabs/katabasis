@@ -15,7 +15,7 @@
 		<EnableAnalyzersStyleCop>true</EnableAnalyzersStyleCop>
 		<EnableCodeCoverage>false</EnableCodeCoverage>
 	</PropertyGroup>
-	
+
 	<!-- Project referneces -->
 
 	<!-- NuGet package references -->
@@ -28,8 +28,8 @@
 		<EmbeddedResource Include="Graphics/Effect/Sprite/SpriteEffect.fxb">
 			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.Sprite.SpriteEffect.fxb</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb" >
-			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.YUVToRGBAEffect.fxb</LogicalName>
+		<EmbeddedResource Include="Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb">
+			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.YUVToRGBA.YUVToRGBAEffect.fxb</LogicalName>
 		</EmbeddedResource>
 		<EmbeddedResource Include="ImGui/Main.fxb">
 			<LogicalName>bottlenoselabs.Katabasis.ImGui.Main.fxb</LogicalName>
@@ -63,6 +63,10 @@
 			<Pack>false</Pack>
 		</Compile>
 		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/imgui-cs/imgui.cs">
+			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<Pack>false</Pack>
+		</Compile>
+		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/imgui-cs/src/cs/production/imgui/**/*.cs">
 			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
 			<Pack>false</Pack>
 		</Compile>
@@ -111,7 +115,7 @@
 			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Content>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Content Include="$(MSBuildThisFileDirectory)/**/*.*">
 			<Pack>true</Pack>
