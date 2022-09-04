@@ -4,7 +4,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using bottlenoselabs.Katabasis.ImGui;
-using static bottlenoselabs.imgui;
+using static bottlenoselabs.ImGui;
 
 namespace bottlenoselabs.Katabasis.Samples
 {
@@ -53,7 +53,7 @@ namespace bottlenoselabs.Katabasis.Samples
 				igText(
 					$"Application average {1000f / igGetIO()->Framerate:F3} ms/frame ({igGetIO()->Framerate:F1} FPS)");
 			}
-			
+
 			// show the ImGui test window
 			if (_showTestWindow)
 			{
