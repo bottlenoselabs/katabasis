@@ -66,10 +66,10 @@
 			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
 			<Pack>false</Pack>
 		</Compile>
-		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/imgui-cs/src/cs/production/imgui/**/*.cs">
-			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>
-			<Pack>false</Pack>
-		</Compile>
+<!--		<Compile Include="$(GitRepositoryPath)/ext/katabasis-bedrock/ext/imgui-cs/src/cs/production/imgui/**/*.cs">-->
+<!--			<Link>Properties/bottlenoselabs/Katabasis.Bedrock/ImGui/%(RecursiveDir)%(Filename)%(Extension)</Link>-->
+<!--			<Pack>false</Pack>-->
+<!--		</Compile>-->
 	</ItemGroup>
 
 	<!-- NuGet -->
