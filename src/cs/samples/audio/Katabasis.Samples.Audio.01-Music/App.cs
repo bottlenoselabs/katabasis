@@ -7,7 +7,7 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using bottlenoselabs.Katabasis.ImGui;
-using static bottlenoselabs.imgui;
+using static bottlenoselabs.ImGui;
 
 namespace bottlenoselabs.Katabasis.Samples
 {
@@ -55,7 +55,7 @@ namespace bottlenoselabs.Katabasis.Samples
 		protected override void Update(GameTime gameTime)
 		{
 			_activeSong = _activeSongIndex == -1 ? null : _songs[_activeSongIndex];
-			
+
 			base.Update(gameTime);
 		}
 
@@ -66,7 +66,7 @@ namespace bottlenoselabs.Katabasis.Samples
 			DrawUserInterface();
 			_imGuiRenderer.End();
 		}
-		
+
 		protected virtual unsafe void DrawUserInterface()
 		{
 			igSetWindowSize_Vec2(new Vector2(400), default);
@@ -95,7 +95,7 @@ Current song: {songName}
 					MediaPlayer.Play(_activeSong);
 				}
 				igEndDisabled();
-				
+
 				igSameLine(default, -1);
 
 				var canPlay = _musicState != MediaState.Playing && _activeSong != null;
@@ -106,7 +106,9 @@ Current song: {songName}
 					MediaPlayer.Play(_activeSong!);
 				}
 				igEndDisabled();
-				
+
+				var x = igGetVersion();
+
 				igSameLine(default, -1);
 
 				var canPause = _musicState == MediaState.Playing;
@@ -117,7 +119,7 @@ Current song: {songName}
 					MediaPlayer.Pause();
 				}
 				igEndDisabled();
-				
+
 				igSameLine(default, -1);
 
 				var canResume = _musicState == MediaState.Paused;
@@ -128,9 +130,9 @@ Current song: {songName}
 					MediaPlayer.Resume();
 				}
 				igEndDisabled();
-				
+
 				igSameLine(default, -1);
-				
+
 				var canMoveNext = _songs.Length > 1;
 				igBeginDisabled(!canMoveNext);
 				var moveNextClicked = igButton(">", new Vector2(50));
@@ -141,9 +143,9 @@ Current song: {songName}
 					MediaPlayer.Play(_activeSong);
 				}
 				igEndDisabled();
-				
+
 				igSameLine(default, -1);
-				
+
 				igCheckbox("Repeat", (Runtime.CBool*)Unsafe.AsPointer(ref _isRepeating));
 				MediaPlayer.IsRepeating = _isRepeating;
 

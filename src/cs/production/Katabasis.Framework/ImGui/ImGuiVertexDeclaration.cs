@@ -15,7 +15,7 @@ namespace bottlenoselabs.Katabasis.ImGui
         {
             unsafe
             {
-                Size = sizeof(imgui.ImDrawVert);
+                Size = sizeof(bottlenoselabs.ImGui.ImDrawVert);
             }
 
             if (Size != 20)
