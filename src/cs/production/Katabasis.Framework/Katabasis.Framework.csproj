@@ -74,7 +74,7 @@
 
 	<!-- NuGet -->
 	<PropertyGroup>
-		<IsPackable>true</IsPackable>
+		<IsPackable>false</IsPackable>
 		<RepositoryUrl>https://github.com/bottlenoselabs/katabasis</RepositoryUrl>
 		<PackageDescription>Katabasis: XNA re-imagined; Framework. Contains the C# code which is platform agnostic.</PackageDescription>
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
