@@ -4,14 +4,6 @@ using System;
 
 namespace bottlenoselabs.Katabasis.Samples
 {
-	public enum WaveType
-	{
-		Sin,
-		Tan,
-		Square,
-		Noise
-	}
-
 	public class App : Game
 	{
 		public App()

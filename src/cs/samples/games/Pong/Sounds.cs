@@ -4,6 +4,14 @@ namespace bottlenoselabs.Katabasis.Samples;
 
 public static class Sounds
 {
+	public enum WaveType
+	{
+		Sin,
+		Tan,
+		Square,
+		Noise
+	}
+
 	private static readonly Random Rand = new();
 	private static AudioSource _source = null!;
 	private static int _jingleCounter;
