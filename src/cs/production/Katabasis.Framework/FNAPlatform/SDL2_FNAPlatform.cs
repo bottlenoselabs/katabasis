@@ -602,7 +602,10 @@ namespace bottlenoselabs.Katabasis
             }
 
             // This _should_ be the first real SDL call we make...
-            SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
+            if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
+            {
+	            throw new Exception("SDL_Init failed: " + SDL.SDL_GetError());
+            }
 
             string videoDriver = SDL_GetCurrentVideoDriver();
 
