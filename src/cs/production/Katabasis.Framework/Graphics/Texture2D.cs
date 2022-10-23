@@ -252,9 +252,16 @@ namespace bottlenoselabs.Katabasis
 
         public void SaveAsJpeg(Stream stream, int width, int height)
         {
-            var len = Width * Height * GetFormatSize(Format);
-            var data = Marshal.AllocHGlobal(len);
-            FNA3D_GetTextureData2D(
+	        string qualityString = Environment.GetEnvironmentVariable("FNA_GRAPHICS_JPEG_SAVE_QUALITY");
+	        int quality;
+	        if (qualityString == null || !int32.TryParse(qualityString, out quality))
+	        {
+		        quality = 100; // FIXME: What does XNA pick for quality? -flibit
+	        }
+
+	        var len = Width * Height * GetFormatSize(Format);
+	        var data = Marshal.AllocHGlobal(len);
+	        FNA3D_GetTextureData2D(
                 GraphicsDevice.Device,
                 (FNA3D.FNA3D_Texture*)_texture,
                 0,
@@ -265,16 +272,16 @@ namespace bottlenoselabs.Katabasis
                 (void*)data,
                 len);
 
-            FNA.WriteJPGStream(
+	        FNA.WriteJPGStream(
                 stream,
                 Width,
                 Height,
                 width,
                 height,
                 data,
-                100);
+                quality);
 
-            Marshal.FreeHGlobal(data);
+	        Marshal.FreeHGlobal(data);
         }
 
         public void SaveAsPng(Stream stream, int width, int height)
