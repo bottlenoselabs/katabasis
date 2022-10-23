@@ -1,7 +1,6 @@
 // Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
-using System.IO;
 using System.Numerics;
 
 namespace bottlenoselabs.Katabasis.Samples
@@ -9,9 +8,13 @@ namespace bottlenoselabs.Katabasis.Samples
 	public static class AutoPong
 	{
 		// AUTOPONG by MrGrak MiT License 2022
-		// Lithium is an absolute legend
 
-		public static SpriteBatch SB = null!;
+		public struct PlayerState
+		{
+			public int Points;
+		}
+
+		public static SpriteBatch SpriteBatch = null!;
 
 		public static int GameBoundsX = 1280;
 		public static int GameBoundsY = 720;
@@ -26,48 +29,68 @@ namespace bottlenoselabs.Katabasis.Samples
 
 		public static Texture2D Texture = null!;
 
-		static Random Rand = new();
+		private static readonly Random Rand = new();
 		public static byte HitCounter;
 
-		public static int PointsLeft;
-		public static int PointsRight;
+		public static PlayerState Player1State;
+		public static PlayerState Player2State;
 		public static int PointsPerGame = 4;
 
-		public static AudioSource SoundFX = null!;
+		public static AudioSource Sound = null!;
 		public static int JingleCounter;
 
 		public static void LoadContent()
 		{
 			Texture = new Texture2D(1, 1);
 			Texture.SetData(new[] { Color.White });
-			SoundFX = new AudioSource();
+			Sound = new AudioSource();
 		}
 
 		public static void Reset()
 		{
-			int PaddleHeight = 100;
-			PaddleLeft = new Rectangle(0 + 10, 150, 20, PaddleHeight);
-			PaddleRight = new Rectangle(GameBoundsX - 30, 150, 20, PaddleHeight);
+			const int PADDLE_HEIGHT = 100;
+			PaddleLeft = new Rectangle(0 + 10, 150, 20, PADDLE_HEIGHT);
+			PaddleRight = new Rectangle(GameBoundsX - 30, 150, 20, PADDLE_HEIGHT);
 
-			BallPosition = new Vector2(GameBoundsX / 3, 200);
+			BallPosition = new Vector2(GameBoundsX / 3.0f, 200);
 			Ball = new Rectangle((int)BallPosition.X, (int)BallPosition.Y, 10, 10);
 			BallVelocity = new Vector2(1, 0.1f);
 
-			PointsLeft = 0; PointsRight = 0;
+			Player1State.Points = 0;
+			Player2State.Points = 0;
 			JingleCounter = 0;
 		}
 
 		public static void Update()
 		{
+			UpdateBall();
+			SimulateLeftPaddleInput();
+			SimulateRightPaddleInput();
+			CheckForPlayersState();
+			PlayResetJingle();
+		}
 
-			#region Update Ball
-
+		private static void UpdateBall()
+		{
 			//limit how fast ball can move each frame
 			float maxVelocity = 1.5f;
-			if (BallVelocity.X > maxVelocity) { BallVelocity.X = maxVelocity; }
-			else if (BallVelocity.X < -maxVelocity) { BallVelocity.X = -maxVelocity; }
-			if (BallVelocity.Y > maxVelocity) { BallVelocity.Y = maxVelocity; }
-			else if (BallVelocity.Y < -maxVelocity) { BallVelocity.Y = -maxVelocity; }
+			if (BallVelocity.X > maxVelocity)
+			{
+				BallVelocity.X = maxVelocity;
+			}
+			else if (BallVelocity.X < -maxVelocity)
+			{
+				BallVelocity.X = -maxVelocity;
+			}
+
+			if (BallVelocity.Y > maxVelocity)
+			{
+				BallVelocity.Y = maxVelocity;
+			}
+			else if (BallVelocity.Y < -maxVelocity)
+			{
+				BallVelocity.Y = -maxVelocity;
+			}
 
 			//apply velocity to position
 			BallPosition.X += BallVelocity.X * BallSpeed;
@@ -83,15 +106,16 @@ namespace bottlenoselabs.Katabasis.Samples
 					BallVelocity.Y *= 1.1f;
 					HitCounter = 0;
 					BallPosition.X = PaddleLeft.X + PaddleLeft.Width + 10;
-					PlayWave(220.0f, 50, WaveType.Sin, SoundFX, 0.3f);
+					PlayWave(220.0f, 50, WaveType.Sin, Sound, 0.3f);
 				}
+
 				if (PaddleRight.Intersects(Ball))
 				{
 					BallVelocity.X *= -1;
 					BallVelocity.Y *= 1.1f;
 					HitCounter = 0;
 					BallPosition.X = PaddleRight.X - 10;
-					PlayWave(220.0f, 50, WaveType.Sin, SoundFX, 0.3f);
+					PlayWave(220.0f, 50, WaveType.Sin, Sound, 0.3f);
 				}
 			}
 
@@ -100,15 +124,15 @@ namespace bottlenoselabs.Katabasis.Samples
 			{
 				BallPosition.X = 1;
 				BallVelocity.X *= -1;
-				PointsRight++;
-				PlayWave(440.0f, 50, WaveType.Square, SoundFX, 0.3f);
+				Player2State.Points++;
+				PlayWave(440.0f, 50, WaveType.Square, Sound, 0.3f);
 			}
 			else if (BallPosition.X > GameBoundsX) //point for left
 			{
 				BallPosition.X = GameBoundsX - 1;
 				BallVelocity.X *= -1;
-				PointsLeft++;
-				PlayWave(440.0f, 50, WaveType.Square, SoundFX, 0.3f);
+				Player1State.Points++;
+				PlayWave(440.0f, 50, WaveType.Square, Sound, 0.3f);
 			}
 
 			if (BallPosition.Y < 0 + 10) //limit to minimum Y pos
@@ -121,66 +145,95 @@ namespace bottlenoselabs.Katabasis.Samples
 				BallPosition.Y = GameBoundsY - 11;
 				BallVelocity.Y *= -(1 + Rand.Next(-100, 101) * 0.005f);
 			}
+		}
 
-			#endregion
-
-			#region Simulate Left Paddle Input
-
-			{   //simple ai, not very good, moves random amount each frame
-				int amount = Rand.Next(0, 6);
-				int Paddle_Center = PaddleLeft.Y + PaddleLeft.Height / 2;
-				if (Paddle_Center < BallPosition.Y - 20) { PaddleLeft.Y += amount; }
-				else if (Paddle_Center > BallPosition.Y + 20) { PaddleLeft.Y -= amount; }
-				LimitPaddle(ref PaddleLeft);
+		private static void SimulateLeftPaddleInput()
+		{
+			//simple ai, not very good, moves random amount each frame
+			var amount = Rand.Next(0, 6);
+			var paddleCenter = PaddleLeft.Y + PaddleLeft.Height / 2;
+			if (paddleCenter < BallPosition.Y - 20)
+			{
+				PaddleLeft.Y += amount;
+			}
+			else if (paddleCenter > BallPosition.Y + 20)
+			{
+				PaddleLeft.Y -= amount;
 			}
 
-			#endregion
+			LimitPaddle(ref PaddleLeft);
+		}
 
-			#region Simulate Right Paddle Input
-
-			{   //simple ai, better than left, moves % each frame
-				int Paddle_Center = PaddleRight.Y + PaddleRight.Height / 2;
-				if (Paddle_Center < BallPosition.Y - 20)
-				{ PaddleRight.Y -= (int)((Paddle_Center - BallPosition.Y) * 0.08f); }
-				else if (Paddle_Center > BallPosition.Y + 20)
-				{ PaddleRight.Y += (int)((BallPosition.Y - Paddle_Center) * 0.08f); }
-				LimitPaddle(ref PaddleRight);
+		private static void SimulateRightPaddleInput()
+		{
+			//simple ai, better than left, moves % each frame
+			var paddleCenter = PaddleRight.Y + PaddleRight.Height / 2;
+			if (paddleCenter < BallPosition.Y - 20)
+			{
+				PaddleRight.Y -= (int)((paddleCenter - BallPosition.Y) * 0.08f);
+			}
+			else if (paddleCenter > BallPosition.Y + 20)
+			{
+				PaddleRight.Y += (int)((BallPosition.Y - paddleCenter) * 0.08f);
 			}
 
-			#endregion
+			LimitPaddle(ref PaddleRight);
+		}
 
-			//Check for win condition, reset
-			if (PointsLeft >= PointsPerGame) { Reset(); }
-			else if (PointsRight >= PointsPerGame) { Reset(); }
+		private static void CheckForPlayersState()
+		{
+			if (Player1State.Points >= PointsPerGame)
+			{
+				Reset();
+			}
+			else if (Player2State.Points >= PointsPerGame)
+			{
+				Reset();
+			}
+		}
 
-			#region Play Reset Jingle
-
+		private static void PlayResetJingle()
+		{
 			//use jingle counter as a timeline to play notes
 			JingleCounter++;
 
 			int speed = 7; //play a short A minor chord
-			if (JingleCounter == speed * 1) { PlayWave(440.0f, 100, WaveType.Sin, SoundFX, 0.2f); }
-			else if (JingleCounter == speed * 2) { PlayWave(523.25f, 100, WaveType.Sin, SoundFX, 0.2f); }
-			else if (JingleCounter == speed * 3) { PlayWave(659.25f, 100, WaveType.Sin, SoundFX, 0.2f); }
-			else if (JingleCounter == speed * 4) { PlayWave(783.99f, 100, WaveType.Sin, SoundFX, 0.2f); }
+			if (JingleCounter == speed * 1)
+			{
+				PlayWave(440.0f, 100, WaveType.Sin, Sound, 0.2f);
+			}
+			else if (JingleCounter == speed * 2)
+			{
+				PlayWave(523.25f, 100, WaveType.Sin, Sound, 0.2f);
+			}
+			else if (JingleCounter == speed * 3)
+			{
+				PlayWave(659.25f, 100, WaveType.Sin, Sound, 0.2f);
+			}
+			else if (JingleCounter == speed * 4)
+			{
+				PlayWave(783.99f, 100, WaveType.Sin, Sound, 0.2f);
+			}
 			//only play this jingle once
-			else if (JingleCounter > speed * 4) { JingleCounter = int.MaxValue - 1; }
-
-			#endregion
-
+			else if (JingleCounter > speed * 4)
+			{
+				JingleCounter = int.MaxValue - 1;
+			}
 		}
 
 		public static void Draw()
 		{
-			SB.Begin(SpriteSortMode.Deferred,
+			SpriteBatch.Begin(SpriteSortMode.Deferred,
 				BlendState.AlphaBlend, SamplerState.
 				PointClamp, DepthStencilState.None,
 				RasterizerState.CullNone);
 
 			//draw dots down center
-			int total = GameBoundsY / 20;
-			for (int i = 0; i < total; i++)
-			{ DrawRectangle(new Rectangle(GameBoundsX / 2 - 4, 5 + (i * 20), 8, 8), Color.White * 0.2f); }
+			var total = GameBoundsY / 20;
+			for (var i = 0; i < total; i++)
+			{
+				DrawRectangle(new Rectangle(GameBoundsX / 2 - 4, 5 + (i * 20), 8, 8), Color.White * 0.2f);
+			}
 
 			//draw paddles
 			DrawRectangle(PaddleLeft, Color.White);
@@ -192,74 +245,63 @@ namespace bottlenoselabs.Katabasis.Samples
 			DrawRectangle(Ball, Color.White);
 
 			//draw current game points
-			for (int i = 0; i < PointsLeft; i++)
-			{ DrawRectangle(new Rectangle((GameBoundsX / 2 - 25) - i * 12, 10, 10, 10), Color.White * 1.0f); }
-			for (int i = 0; i < PointsRight; i++)
-			{ DrawRectangle(new Rectangle((GameBoundsX / 2 + 15) + i * 12, 10, 10, 10), Color.White * 1.0f); }
+			for (var i = 0; i < Player1State.Points; i++)
+			{
+				DrawRectangle(new Rectangle((GameBoundsX / 2 - 25) - i * 12, 10, 10, 10), Color.White * 1.0f);
+			}
 
-			SB.End();
+			for (var i = 0; i < Player2State.Points; i++)
+			{
+				DrawRectangle(new Rectangle((GameBoundsX / 2 + 15) + i * 12, 10, 10, 10), Color.White * 1.0f);
+			}
+
+			SpriteBatch.End();
 		}
 
-		public static void DrawRectangle(Rectangle Rec, Color color)
+		public static void DrawRectangle(Rectangle rec, Color color)
 		{
-			Vector2 pos = new Vector2(Rec.X, Rec.Y);
-			SB.Draw(Texture, pos, Rec, color * 1.0f,
+			Vector2 pos = new Vector2(rec.X, rec.Y);
+			SpriteBatch.Draw(Texture, pos, rec, color * 1.0f,
 				0, Vector2.Zero, 1.0f,
 				SpriteEffects.None, 0.00001f);
 		}
 
-		public static void LimitPaddle(ref Rectangle Paddle)
+		public static void LimitPaddle(ref Rectangle paddle)
 		{
 			//limit how far paddles can travel on Y axis so they dont exceed top or bottom
-			if (Paddle.Y < 10) { Paddle.Y = 10; }
-			else if (Paddle.Y + Paddle.Height > GameBoundsY - 10)
-			{ Paddle.Y = GameBoundsY - 10 - Paddle.Height; }
+			if (paddle.Y < 10) { paddle.Y = 10; }
+			else if (paddle.Y + paddle.Height > GameBoundsY - 10)
+			{ paddle.Y = GameBoundsY - 10 - paddle.Height; }
 		}
 
-		public static void PlayWave(double freq, short durMS, WaveType Wt, AudioSource Src, float Volume)
+		public static void PlayWave(double freq, short durMs, WaveType wt, AudioSource src, float volume)
 		{
-			Src.DSEI.Stop();
+			src.Instance.Stop();
 
-			Src.BufferSize = Src.DSEI.GetSampleSizeInBytes(TimeSpan.FromMilliseconds(durMS));
-			Src.Buffer = new byte[Src.BufferSize];
+			src.BufferSize = src.Instance.GetSampleSizeInBytes(TimeSpan.FromMilliseconds(durMs));
+			src.Buffer = new byte[src.BufferSize];
 
-			int size = Src.BufferSize - 1;
-			for (int i = 0; i < size; i += 2)
+			var size = src.BufferSize - 1;
+			for (var i = 0; i < size; i += 2)
 			{
-				double time = (double)Src.TotalTime / (double)Src.SampleRate;
+				var time = (double)src.TotalTime / src.SampleRate;
 
-				short currentSample = 0;
-				switch (Wt)
+				short currentSample = wt switch
 				{
-					case WaveType.Sin:
-						{
-							currentSample = (short)(Math.Sin(2 * Math.PI * freq * time) * (double)short.MaxValue * Volume);
-							break;
-						}
-					case WaveType.Tan:
-						{
-							currentSample = (short)(Math.Tan(2 * Math.PI * freq * time) * (double)short.MaxValue * Volume);
-							break;
-						}
-					case WaveType.Square:
-						{
-							currentSample = (short)(Math.Sign(Math.Sin(2 * Math.PI * freq * time)) * (double)short.MaxValue * Volume);
-							break;
-						}
-					case WaveType.Noise:
-						{
-							currentSample = (short)(Rand.Next(-short.MaxValue, short.MaxValue) * Volume);
-							break;
-						}
-				}
+					WaveType.Sin => (short)(Math.Sin(2 * Math.PI * freq * time) * short.MaxValue * volume),
+					WaveType.Tan => (short)(Math.Tan(2 * Math.PI * freq * time) * short.MaxValue * volume),
+					WaveType.Square => (short)(Math.Sign(Math.Sin(2 * Math.PI * freq * time)) * (double)short.MaxValue * volume),
+					WaveType.Noise => (short)(Rand.Next(-short.MaxValue, short.MaxValue) * volume),
+					_ => 0
+				};
 
-				Src.Buffer[i] = (byte)(currentSample & 0xFF);
-				Src.Buffer[i + 1] = (byte)(currentSample >> 8);
-				Src.TotalTime += 2;
+				src.Buffer[i] = (byte)(currentSample & 0xFF);
+				src.Buffer[i + 1] = (byte)(currentSample >> 8);
+				src.TotalTime += 2;
 			}
 
-			Src.DSEI.SubmitBuffer(Src.Buffer);
-			Src.DSEI.Play();
+			src.Instance.SubmitBuffer(src.Buffer);
+			src.Instance.Play();
 		}
 	}
 
@@ -268,18 +310,18 @@ namespace bottlenoselabs.Katabasis.Samples
 	public class AudioSource
 	{
 		public int SampleRate = 48000;
-		public DynamicSoundEffectInstance DSEI;
+		public DynamicSoundEffectInstance Instance;
 		public byte[] Buffer;
 		public int BufferSize;
-		public int TotalTime = 0;
+		public int TotalTime;
 
 		public AudioSource()
 		{
-			DSEI = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Mono);
-			BufferSize = DSEI.GetSampleSizeInBytes(TimeSpan.FromMilliseconds(500));
+			Instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Mono);
+			BufferSize = Instance.GetSampleSizeInBytes(TimeSpan.FromMilliseconds(500));
 			Buffer = new byte[BufferSize];
-			DSEI.Volume = 0.4f;
-			DSEI.IsLooped = false;
+			Instance.Volume = 0.4f;
+			Instance.IsLooped = false;
 		}
 	}
 
@@ -295,7 +337,7 @@ namespace bottlenoselabs.Katabasis.Samples
 		protected override void LoadContent()
 		{
 			IsMouseVisible = true;
-			AutoPong.SB = new SpriteBatch();
+			AutoPong.SpriteBatch = new SpriteBatch();
 			AutoPong.LoadContent();
 			AutoPong.Reset();
 		}

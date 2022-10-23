@@ -4,6 +4,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<IsPackable>false</IsPackable>
+		<RootNamespace>bottlenoselabs.Katabasis.Extended</RootNamespace>
 	</PropertyGroup>
 
 	<!-- bottlenoselabs.MSBuild.Tools settings -->
@@ -16,7 +17,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Katabasis.Framework\Katabasis.Framework.csproj" />
 	</ItemGroup>
-	
+
 	<!-- NuGet packages -->
 
 	<!-- Disable warnins -->
