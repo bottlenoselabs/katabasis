@@ -1,6 +1,7 @@
 // Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System.IO;
+using System.Resources;
 
 namespace bottlenoselabs.Katabasis
 {
@@ -16,8 +17,17 @@ namespace bottlenoselabs.Katabasis
 
 		private static byte[] GetResource(string name)
 		{
-			var stream = typeof(Resources).Assembly.GetManifestResourceStream(
-				$"bottlenoselabs.Katabasis.Graphics.Effect.{name}.fxb");
+			var assembly = typeof(Resources).Assembly;
+			var resourceName = $"bottlenoselabs.Katabasis.Graphics.Effect.{name}.fxb";
+			var stream = assembly.GetManifestResourceStream(resourceName);
+
+			if (stream == null)
+			{
+				var resources = assembly.GetManifestResourceNames();
+				var exceptionMessage =
+					$"Could not find the resource '{resourceName}'. The following resources do exist: '{string.Join("','", resources)}'";
+				throw new MissingManifestResourceException(exceptionMessage);
+			}
 
 			using MemoryStream ms = new();
 			stream!.CopyTo(ms);

@@ -28,7 +28,9 @@
 		<EmbeddedResource Include="Graphics/Effect/YUVToRGBA/YUVToRGBAEffect.fxb">
 			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.YUVToRGBA.YUVToRGBAEffect.fxb</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Graphics\Effect\Sprite\SpriteEffect.fxb" />
+		<EmbeddedResource Include="Graphics/Effect/Sprite/SpriteEffect.fxb">
+			<LogicalName>bottlenoselabs.Katabasis.Graphics.Effect.Sprite.SpriteEffect.fxb</LogicalName>
+		</EmbeddedResource>
 		<EmbeddedResource Include="ImGui/Main.fxb">
 			<LogicalName>bottlenoselabs.Katabasis.ImGui.Main.fxb</LogicalName>
 		</EmbeddedResource>
