@@ -1660,6 +1660,11 @@ namespace bottlenoselabs.Katabasis
             return Keys.None;
         }
 
+        public static bool IsTextInputActive()
+        {
+	        return SDL_IsTextInputActive();
+        }
+
         public static void PollEvents(
             Game game,
             ref GraphicsAdapter currentAdapter,

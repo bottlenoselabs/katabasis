@@ -12,6 +12,11 @@ namespace bottlenoselabs.Katabasis
 
 		public static event Action<string, int, int>? TextEditing;
 
+		public static bool IsTextInputActive()
+		{
+			return FNAPlatform.IsTextInputActive();
+		}
+
 		public static void StartTextInput() => FNAPlatform.StartTextInput();
 
 		public static void StopTextInput() => FNAPlatform.StopTextInput();

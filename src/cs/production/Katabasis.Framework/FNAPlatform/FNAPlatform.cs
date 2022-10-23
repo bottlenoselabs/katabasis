@@ -48,6 +48,8 @@ namespace bottlenoselabs.Katabasis
 
 		public delegate Keys GetKeyFromScancodeFunc(Keys scancode);
 
+		public delegate bool IsTextInputActiveFunc();
+
 		public delegate int GetMicrophoneQueuedBytesFunc(uint handle);
 
 		public delegate int GetMicrophoneSamplesFunc(
@@ -198,6 +200,8 @@ namespace bottlenoselabs.Katabasis
 
 		public static readonly GetKeyFromScancodeFunc GetKeyFromScancode;
 
+		public static readonly IsTextInputActiveFunc IsTextInputActive;
+
 		public static readonly StartTextInputFunc StartTextInput;
 
 		public static readonly StopTextInputFunc StopTextInput;
@@ -330,6 +334,7 @@ namespace bottlenoselabs.Katabasis
 			GetGraphicsAdapters = SDL2_FNAPlatform.GetGraphicsAdapters;
 			GetCurrentDisplayMode = SDL2_FNAPlatform.GetCurrentDisplayMode;
 			GetKeyFromScancode = SDL2_FNAPlatform.GetKeyFromScancode;
+			IsTextInputActive = SDL2_FNAPlatform.IsTextInputActive;
 			StartTextInput = SDL.SDL_StartTextInput;
 			StopTextInput = SDL.SDL_StopTextInput;
 			SetTextInputRectangle = SDL2_FNAPlatform.SetTextInputRectangle;

@@ -252,9 +252,9 @@ namespace bottlenoselabs.Katabasis
 
         public void SaveAsJpeg(Stream stream, int width, int height)
         {
-	        string qualityString = Environment.GetEnvironmentVariable("FNA_GRAPHICS_JPEG_SAVE_QUALITY");
+	        var qualityString = Environment.GetEnvironmentVariable("FNA_GRAPHICS_JPEG_SAVE_QUALITY");
 	        int quality;
-	        if (qualityString == null || !int32.TryParse(qualityString, out quality))
+	        if (qualityString == null || !int.TryParse(qualityString, out quality))
 	        {
 		        quality = 100; // FIXME: What does XNA pick for quality? -flibit
 	        }
