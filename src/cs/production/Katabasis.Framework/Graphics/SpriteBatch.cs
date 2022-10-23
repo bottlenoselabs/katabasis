@@ -22,6 +22,11 @@ namespace bottlenoselabs.Katabasis
 		private const int MaxSprites = 2048;
 		private const int MaxVertices = MaxSprites * 4;
 		private const int MaxIndices = MaxSprites * 6;
+		/* This is the largest array size for a VertexBuffer using VertexPositionColorTexture.
+ 		 * Note that we do NOT change the GPU buffer size since that would break XNA accuracy,
+ 		 * but if you want to optimize your batching you can make this change in a custom SpriteBatch.
+ 		 */
+		private const int MaxArraySize = 0x3FFFFFF / 96;
 
 		/* If you use this file to make your own SpriteBatch, take the
 		 * shader source and binary and load it as a file. Find it in
@@ -950,17 +955,29 @@ namespace bottlenoselabs.Katabasis
 		{
 			if (_numSprites >= _vertexInfo.Length)
 			{
-				/* We're out of room, add another batch max
-				 * to the total array size. This is required for
-				 * sprite sorting accuracy; note that we do NOT
-				 * increase the graphics buffer sizes!
-				 * -flibit
-				 */
-				var newMax = _vertexInfo.Length + MaxSprites;
-				Array.Resize(ref _vertexInfo, newMax);
-				Array.Resize(ref _textureInfo, newMax);
-				Array.Resize(ref _spriteInfos, newMax);
-				Array.Resize(ref _sortedSpriteInfos, newMax);
+				if (_vertexInfo.Length >= MaxArraySize)
+				{
+					/* FIXME: We're doing this for safety but it's possible that
+					  * XNA just keeps expanding and crashes with OutOfMemory.
+					  * Since GraphicsProfile has a buffer cap, we use that for safety.
+					  * This might change if someone depends on running out of memory(?!).
+					  */
+					FlushBatch();
+				}
+				else
+				{
+					/* We're out of room, add another batch max
+					  * to the total array size. This is required for
+					  * sprite sorting accuracy; note that we do NOT
+					  * increase the graphics buffer sizes!
+					  * -flibit
+					  */
+					var newMax = Math.Min(_vertexInfo.Length * 2, MaxArraySize);
+					Array.Resize(ref _vertexInfo, newMax);
+					Array.Resize(ref _textureInfo, newMax);
+					Array.Resize(ref _spriteInfos, newMax);
+					Array.Resize(ref _sortedSpriteInfos, newMax);
+				}
 			}
 
 			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
