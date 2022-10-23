@@ -61,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Katabasis.Samples.Video.01-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{4AEB1D15-D139-4336-84F4-0043E81CC2D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoPong", "src\cs\samples\games\AutoPong\AutoPong.csproj", "{31655B5F-B28E-46FB-9193-A977500147E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pong", "src\cs\samples\games\Pong\Pong.csproj", "{31655B5F-B28E-46FB-9193-A977500147E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoTetris", "src\cs\samples\games\AutoTetris\AutoTetris.csproj", "{8420E2D7-FE1F-493B-9A96-E28619E9010D}"
 EndProject
