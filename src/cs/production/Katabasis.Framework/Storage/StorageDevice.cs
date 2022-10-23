@@ -4,10 +4,11 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[PublicAPI]
 	public sealed class StorageDevice
 	{
 		private static readonly string StorageRoot = FNAPlatform.GetStorageRoot();

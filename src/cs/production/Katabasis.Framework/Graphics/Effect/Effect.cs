@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
@@ -18,6 +19,7 @@ namespace bottlenoselabs.Katabasis
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Local", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("Microsoft.Naming", "CA1712", Justification = "Will gut Mojo shader soon.")]
 	[SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Will gut Mojo shader soon.")]
+	[PublicAPI]
 	public unsafe class Effect : GraphicsResource
 	{
 		private static readonly EffectParameterType[] XNAType =

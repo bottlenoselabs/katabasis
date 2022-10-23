@@ -3,10 +3,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	[PublicAPI]
 	public static class GamePad
 	{
 		/* Based on the XInput constants */

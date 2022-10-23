@@ -3,10 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	[PublicAPI]
 	public struct KeyboardState
 	{
 		public KeyState this[Keys key] => InternalGetKey(key) ? KeyState.Down : KeyState.Up;

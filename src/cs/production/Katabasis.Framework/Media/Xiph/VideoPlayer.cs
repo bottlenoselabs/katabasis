@@ -6,10 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	[PublicAPI]
 	public sealed unsafe class VideoPlayer : IDisposable
 	{
 		private const int AudioBufferSize = 4096 * 2;

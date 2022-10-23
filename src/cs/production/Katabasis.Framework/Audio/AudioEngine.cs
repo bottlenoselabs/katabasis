@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/dd940262.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[PublicAPI]
 	public unsafe class AudioEngine : IDisposable
 	{
 		public const int ContentVersion = 46;

@@ -4,12 +4,13 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.wavebank.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[PublicAPI]
 	public unsafe class WaveBank : IDisposable
 	{
 		private readonly AudioEngine _engine;

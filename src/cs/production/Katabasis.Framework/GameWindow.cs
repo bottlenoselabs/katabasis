@@ -3,11 +3,11 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
-	[SuppressMessage("ReSharper", "UnusedMemberInSuper.Global", Justification = "TODO: Not used?")]
+	[PublicAPI]
 	public abstract class GameWindow
 	{
 		private string _title = string.Empty;

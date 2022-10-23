@@ -2,11 +2,12 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 using static bottlenoselabs.Theorafile;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[PublicAPI]
 	public sealed unsafe class Video
 	{
 		private IntPtr _handle;

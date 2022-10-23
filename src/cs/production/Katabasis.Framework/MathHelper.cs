@@ -2,13 +2,14 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	/// <summary>
 	///     Contains commonly used precalculated values and mathematical operations.
 	/// </summary>
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[PublicAPI]
 	public static class MathHelper
 	{
 		public const float E = (float)Math.E;

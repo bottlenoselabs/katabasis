@@ -3,10 +3,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	[PublicAPI]
 	public class StorageDeviceNotConnectedException : ExternalException
 	{
 		public StorageDeviceNotConnectedException()

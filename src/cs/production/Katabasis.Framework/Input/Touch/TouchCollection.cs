@@ -4,11 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchcollection.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	[PublicAPI]
 	public readonly struct TouchCollection : IList<TouchLocation>
 	{
 		private readonly List<TouchLocation> _touches;

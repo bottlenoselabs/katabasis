@@ -2,15 +2,14 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FNA3D;
 
 namespace bottlenoselabs.Katabasis
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
-    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
+    [PublicAPI]
     public unsafe class Texture2D : Texture
     {
         public Texture2D(

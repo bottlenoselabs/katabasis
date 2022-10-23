@@ -3,10 +3,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[PublicAPI]
 	public class Microphone
 	{
 		/* FIXME: This is what XNA4 aims for, but it _could_ be lower.

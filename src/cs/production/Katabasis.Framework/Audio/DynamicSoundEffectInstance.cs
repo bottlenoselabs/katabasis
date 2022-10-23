@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.dynamicsoundeffectinstance.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Need tests.")]
+	[PublicAPI]
 	public sealed unsafe class DynamicSoundEffectInstance : SoundEffectInstance
 	{
 		private const int MinimumBufferCheck = 3;

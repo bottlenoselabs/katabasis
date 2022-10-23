@@ -7,12 +7,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	[Serializable]
 	[TypeConverter(typeof(ColorConverter))]
 	[DebuggerDisplay("{" + nameof(DebugDisplayString) + ",nq}")]
+	[PublicAPI]
 	public struct Color : IEquatable<Color>, IPackedVector<uint>
 	{
 		public byte B

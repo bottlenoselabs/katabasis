@@ -3,10 +3,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
+	[PublicAPI]
 	public class StorageContainer : IDisposable
 	{
 		private readonly string _storagePath;

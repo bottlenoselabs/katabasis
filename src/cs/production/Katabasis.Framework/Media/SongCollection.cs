@@ -3,9 +3,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	public sealed class SongCollection : IEnumerable<Song>, IDisposable
 	{
 		private readonly List<Song> _list;

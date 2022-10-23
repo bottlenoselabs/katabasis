@@ -2,10 +2,12 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	[Serializable]
+	[PublicAPI]
 	public struct RendererDetail
 	{
 		public string FriendlyName { get; private set; }

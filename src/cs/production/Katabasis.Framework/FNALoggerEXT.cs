@@ -3,10 +3,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FNA3D;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	[SuppressMessage("ReSharper", "CA2211", Justification = "Hooks.")]
 	public static unsafe class FNALoggerEXT
 	{

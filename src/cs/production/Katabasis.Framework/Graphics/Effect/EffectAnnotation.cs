@@ -3,10 +3,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Will gut Mojo shader soon.")]
+	[PublicAPI]
 	public sealed class EffectAnnotation
 	{
 		private readonly IntPtr _values;

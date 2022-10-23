@@ -2,9 +2,11 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Numerics;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	public struct GamePadThumbSticks
 	{
 		private Vector2 _left;

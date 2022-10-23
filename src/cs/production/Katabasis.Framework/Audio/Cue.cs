@@ -3,12 +3,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.cue.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[PublicAPI]
 	public sealed unsafe class Cue : IDisposable
 	{
 		private readonly SoundBank _bank;

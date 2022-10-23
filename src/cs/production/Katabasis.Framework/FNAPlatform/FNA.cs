@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FNA3D;
 
 namespace bottlenoselabs.Katabasis
 {
+    [PublicAPI]
     public static unsafe class FNA
     {
         private static int _readGlobal;

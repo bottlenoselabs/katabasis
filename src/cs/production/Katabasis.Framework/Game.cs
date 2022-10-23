@@ -6,9 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	public class Game : IDisposable
 	{
 		private static readonly TimeSpan MaxElapsedTime = TimeSpan.FromMilliseconds(500);

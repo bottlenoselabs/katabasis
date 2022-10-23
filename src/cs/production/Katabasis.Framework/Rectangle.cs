@@ -5,13 +5,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	[Serializable]
 	[TypeConverter(typeof(RectangleConverter))]
 	[DebuggerDisplay("{" + nameof(DebugDisplayString) + ",nq}")]
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	[PublicAPI]
 	public struct Rectangle : IEquatable<Rectangle>
 	{
 		public int Left => X;

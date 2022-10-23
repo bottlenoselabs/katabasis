@@ -3,9 +3,11 @@
 
 using System;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	public static class TitleContainer
 	{
 		public static Stream OpenStream(string name)

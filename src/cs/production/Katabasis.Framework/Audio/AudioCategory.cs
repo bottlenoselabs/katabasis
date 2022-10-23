@@ -3,12 +3,13 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.audiocategory.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	[PublicAPI]
 	public readonly unsafe struct AudioCategory : IEquatable<AudioCategory>
 	{
 		private readonly AudioEngine _parent;

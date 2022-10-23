@@ -2,11 +2,13 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Numerics;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.audiolistener.aspx
+	[PublicAPI]
 	public unsafe class AudioListener
 	{
 		internal F3DAUDIO_LISTENER _listenerData;

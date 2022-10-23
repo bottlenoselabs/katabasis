@@ -4,10 +4,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Will gut Mojo shader soon.")]
+	[PublicAPI]
 	public sealed class EffectParameterCollection : IEnumerable<EffectParameter>
 	{
 		private readonly List<EffectParameter> _elements;

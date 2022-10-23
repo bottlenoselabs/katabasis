@@ -3,12 +3,12 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	[PublicAPI]
 	public static class MediaPlayer
 	{
 		private static bool _isMuted;

@@ -3,11 +3,13 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.instanceplaylimitexception.aspx
 	[Serializable]
+	[PublicAPI]
 	public sealed class InstancePlayLimitException : ExternalException
 	{
 		public InstancePlayLimitException()

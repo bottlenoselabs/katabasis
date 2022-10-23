@@ -2,11 +2,13 @@
 // Licensed under the MS-PL license. See LICENSE file in the Git repository root directory for full license information.
 using System;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.nomicrophoneconnectedexception.aspx
 	[Serializable]
+	[PublicAPI]
 	public sealed class NoMicrophoneConnectedException : Exception
 	{
 		public NoMicrophoneConnectedException()

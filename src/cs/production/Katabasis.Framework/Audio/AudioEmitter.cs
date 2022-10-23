@@ -3,11 +3,13 @@
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.audioemitter.aspx
+	[PublicAPI]
 	public unsafe class AudioEmitter
 	{
 		private static readonly float[] StereoAzimuth = {0.0f, 0.0f};

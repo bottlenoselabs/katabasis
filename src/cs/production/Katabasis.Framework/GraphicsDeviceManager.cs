@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	public unsafe class GraphicsDeviceManager : IDisposable
 	{
 		public static readonly int DefaultBackBufferWidth = 800;

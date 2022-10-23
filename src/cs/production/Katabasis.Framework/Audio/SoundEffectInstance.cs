@@ -3,11 +3,13 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using static bottlenoselabs.FAudio;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.soundeffectinstance.aspx
+	[PublicAPI]
 	public unsafe class SoundEffectInstance : IDisposable
 	{
 		private readonly SoundEffect? _parentEffect;

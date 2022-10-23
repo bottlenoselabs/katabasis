@@ -4,10 +4,11 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Not used?")]
+	[PublicAPI]
 	public sealed class Song : IEquatable<Song>, IDisposable
 	{
 		internal string _handle;

@@ -3,11 +3,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	[Serializable]
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Need tests.")]
+	[PublicAPI]
 	public struct Viewport
 	{
 		internal FNA3D.FNA3D_Viewport _viewport;

@@ -3,11 +3,13 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	// http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.audio.noaudiohardwareexception.aspx
 	[Serializable]
+	[PublicAPI]
 	public sealed class NoAudioHardwareException : ExternalException
 	{
 		public NoAudioHardwareException()

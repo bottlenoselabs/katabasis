@@ -3,11 +3,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
 	// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchlocation.aspx
-	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "TODO: Needs tests.")]
+	[PublicAPI]
 	public readonly struct TouchLocation : IEquatable<TouchLocation>
 	{
 		private readonly Vector2 _prevPosition;

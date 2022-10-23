@@ -4,9 +4,11 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
+using JetBrains.Annotations;
 
 namespace bottlenoselabs.Katabasis
 {
+	[PublicAPI]
 	public class ColorConverter : MathTypeConverter
 	{
 		public override object ConvertFrom(
