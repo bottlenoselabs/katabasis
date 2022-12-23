@@ -1,3 +1,7 @@
+# ON-HOLD
+
+This project is on-hold until C2CS is re-written: https://github.com/bottlenoselabs/c2cs/issues/130.
+
 <p align="center">
   <b>Katabasis</b> - <a href=https://en.wikipedia.org/wiki/Microsoft_XNA>XNA</a> re-imagined.</br>The software developer journeys to the underworld in search of augmented knowledge of game development.</a>
 </p>
