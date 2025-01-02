@@ -1,6 +1,6 @@
-# ON-HOLD
+# Archived
 
-This project is on-hold until C2CS is re-written: https://github.com/bottlenoselabs/c2cs/issues/130.
+**This project is discontinued as FNA is putting resources into Moonworks for a similar goal.**
 
 <p align="center">
   <b>Katabasis</b> - <a href=https://en.wikipedia.org/wiki/Microsoft_XNA>XNA</a> re-imagined.</br>The software developer journeys to the underworld in search of augmented knowledge of game development.</a>
